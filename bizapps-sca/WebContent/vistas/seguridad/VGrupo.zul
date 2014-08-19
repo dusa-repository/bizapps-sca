@@ -1,0 +1,56 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divGrupo" apply="controlador.seguridad.CGrupo" width="80%">
+		<groupbox width="40em" mold="3d" title="Grupos">
+			<grid>
+				<columns visible="false">
+					<column label="" width="28%" />
+					<column label="" width="48%" />
+					<column label="" width="6%" />
+					<column label="" width="18%" />
+				</columns>
+				<rows>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Nombre:" />
+							<space />
+							<label value="*" style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtNombreGrupo" tooltiptext="Ingrese el Nombre del Grupo" />
+						<hbox />
+						<button autodisable="self" id="btnCatalogoGrupo" class="btn"
+							label="Buscar" tooltiptext="Catalogo" image="/public/imagenes/botones/buscar.png" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+
+			<hbox width="100%">
+				<groupbox width="100%" title="Funcionalidades Disponibles">
+					<tree id="treeGrupo" width="99%">
+						<template name="model">
+							<treeitem context="menupopup" open="true">
+								<treerow>
+									<treecell context="${each.index}" label="${each.label}" />
+								</treerow>
+							</treeitem>
+						</template>
+					</tree>
+				</groupbox>
+				<groupbox width="100%" title="Funcionalidades Seleccionadas">
+					<listbox width="auto" id="ltbFuncionalidadesSeleccionados">
+						<listhead></listhead>
+						<template name="model">
+							<listitem>
+								<listcell label="${each}"></listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</groupbox>
+			</hbox>
+			<separator />
+			<div id="botoneraGrupo" />
+			<div id="catalogoGrupo" />
+		</groupbox>
+	</div>
+</zk>
