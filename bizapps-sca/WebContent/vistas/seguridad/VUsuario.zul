@@ -1,0 +1,393 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divUsuario" apply="controlador.maestros.CUsuario"
+		width="80%">
+		<groupbox width="100%" mold="3d" title="Usuario">
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="15%" />
+					<column label="" width="22%" />
+					<column label="" width="14%" />
+					<column label="" width="15%" />
+					<column label="" width="22%" />
+					<column label="" width="12%" />
+				</columns>
+				<rows>
+					<row>
+						<cell colspan="2">
+							<hbox>
+								<label class="etiqueta"
+									value="¿El Usuario es Doctor?" />
+								<space />
+								<label value="*"
+									style="font-weight:bold;color:red" />
+							</hbox>
+						</cell>
+						<radiogroup id="rdgTipoPaciente">
+							<radio label="SI" value="doctor"
+								id="rdoDoctor" />
+							<radio label="NO" value="noDoctor"
+								id="rdoNoDoctor" />
+						</radiogroup>
+						<hbox />
+						<button id="btnBuscarUsuario" class="btn"
+							label="Buscar" tooltiptext="Catalogo"
+							image="/public/imagenes/botones/buscar.png" />
+						<hbox />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Cedula:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtCedulaUsuario" hflex="1"
+							maxlength="12" tooltiptext="Ingrese la Cedula del Usuario" />
+						<button
+							style="	background: #952C2C;font-size: 13px;color: white;cursor: pointer;width: 100px;height: 33px;	-webkit-border-radius: 0.7em;-moz-border-radius: 0.7em;	border-radius: 0.7em;"
+							upload="true" image="/public/imagenes/botones/cargar.png"
+							id="fudImagenUsuario" label="Foto">
+						</button>
+						<hbox>
+							<label class="etiqueta" value="Ficha:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtFichaUsuario" hflex="1"
+							maxlength="50" tooltiptext="Ingrese la Ficha del Usuario" />
+						<hbox />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Primer Nombre:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtNombreUsuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Primer Nombre del Usuario" />
+						<image id="imagen" width="50px" height="50px" />
+						<hbox>
+							<label class="etiqueta"
+								value="Segundo Nombre:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtNombre2Usuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Segundo Nombre del Usuario" />
+						<hbox />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Primer Apellido:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtApellidoUsuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Primer Apellido del Usuario" />
+						<hbox />
+						<hbox>
+							<label class="etiqueta"
+								value="Segundo Apellido:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtApellido2Usuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Segundo Apellido del Usuario" />
+						<hbox />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<tabbox width="100%">
+				<tabs>
+					<tab label="Datos Basicos" id="tabBasicos" />
+					<tab label="Datos de Usuario" id="tabUsuarios" />
+				</tabs>
+				<tabpanels>
+					<tabpanel>
+						<groupbox width="100%"
+							title="Datos Personales">
+							<grid width="100%">
+								<columns visible="false">
+									<column label="" width="20%" />
+									<column label="" width="30%" />
+									<column label="" width="20%" />
+									<column label="" width="30%" />
+								</columns>
+								<rows>
+									<row>
+										<hbox>
+											<label class="etiqueta"
+												value="Telefono:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<textbox id="txtTelefonoUsuario"
+											hflex="1" maxlength="50"
+											tooltiptext="Ingrese el Numero de Telefono del Usuario (0426-9999999)" />
+										<hbox>
+											<label class="etiqueta"
+												value="Correo:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<textbox id="txtCorreoUsuario"
+											hflex="1" maxlength="50"
+											tooltiptext="Ingrese el Correo Electronico del Usuario (ejemplo@ejemplo.com)" />
+									</row>
+									<row>
+										<hbox>
+											<label class="etiqueta"
+												value="Sexo:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<radiogroup
+											id="rdbSexoUsuario">
+											<radio id="rdoSexoFUsuario"
+												label="Femenino" />
+											<radio id="rdoSexoMUsuario"
+												label="Masculino" />
+										</radiogroup>
+										<hbox>
+											<label class="etiqueta"
+												value="Direccion:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<textbox class="multilinea"
+											id="txtDireccionUsuario" hflex="1" maxlength="500"
+											tooltiptext="Ingrese el Numero de Telefono del Usuario"
+											multiline="true" />
+									</row>
+								</rows>
+							</grid>
+						</groupbox>
+						<groupbox id="gpxDoctor" width="100%"
+							title="Datos Medicos">
+							<grid width="100%">
+								<columns visible="false">
+									<column label="" width="20%" />
+									<column label="" width="26%" />
+									<column label="" width="8%" />
+									<column label="" width="20%" />
+									<column label="" width="26%" />
+								</columns>
+								<rows>
+									<row>
+										<hbox>
+											<label class="etiqueta"
+												value="Unidad:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<combobox id="cmbUnidad"
+											readonly="true" tabindex="1" width="100%"
+											tooltiptext="Seleccione una Unidad"
+											placeholder="Seleccione una Unidad">
+											<template name="model">
+												<comboitem
+													label="${each.nombre}" context="${each.idUnidadUsuario}" />
+											</template>
+										</combobox>
+										<button class="abrir"
+											id="btnAbrirUnidad" label=""
+											tooltiptext="Crear una Nueva Unidad"
+											image="/public/imagenes/botones/agregar.png" />
+										<hbox />
+										<hbox />
+									</row>
+									<row>
+										<hbox>
+											<label class="etiqueta"
+												value="Especialidad:" />
+											<space />
+											<label value="*"
+												style="font-weight:bold;color:red" />
+										</hbox>
+										<combobox id="cmbEspecialidad"
+											readonly="true" tabindex="1" width="100%"
+											tooltiptext="Seleccione una Especialidad"
+											placeholder="Seleccione una Especialidad">
+											<template name="model">
+												<comboitem
+													label="${each.descripcion}"
+													context="${each.idEspecialidad}" />
+											</template>
+										</combobox>
+										<button class="abrir"
+											id="btnAbrirEspecialidad" label=""
+											tooltiptext="Crear una Nueva Especialidad"
+											image="/public/imagenes/botones/agregar.png" />
+										<label class="etiqueta"
+											value="Licencia CM:" />
+										<textbox
+											id="txtLicenciaCUsuario" hflex="1" maxlength="50"
+											tooltiptext="Ingrese la licencia CM del Usuario" />
+									</row>
+									<row>
+										<label class="etiqueta"
+											value="Licencia MSDS:" />
+										<textbox
+											id="txtLicenciaMUsuario" hflex="1" maxlength="50"
+											tooltiptext="Ingrese la Licencia MSDS del Usuario" />
+										<hbox />
+										<label class="etiqueta"
+											value="Numero de Citas Diarias:" />
+										<spinner
+											constraint="min 0 max 100000000" value="1"
+											id="spnCitasUsuario"
+											tooltiptext="Ingrese la Cantidad de Citas Diarias" />
+									</row>
+
+									<row>
+										<label class="etiqueta"
+											value="Licencia INPSASEL:" />
+										<textbox
+											id="txtLicenciaIUsuario" hflex="1" maxlength="50"
+											tooltiptext="Ingrese la Licencia INPSASEL del Usuario (Solo Numeros)" />
+										<hbox />
+										<label class="etiqueta"
+											value="Tiempo entre citas(min):" />
+										<spinner
+											constraint="min 0 max 100000000" value="1"
+											id="spnTiempoUsuario"
+											tooltiptext="Ingrese el Tiempo entre Citas" />
+									</row>
+								</rows>
+							</grid>
+							<separator />
+						</groupbox>
+						<div align="right" style="float: right;">
+							<separator />
+							<separator />
+							<button id="btnSiguientePestanna"
+								label="Siguiente" class="btn"
+								image="/public/imagenes/botones/adelante.png" />
+						</div>
+					</tabpanel>
+					<tabpanel>
+						<grid width="100%">
+							<columns visible="false">
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+							</columns>
+							<rows>
+								<row>
+									<hbox>
+										<label class="etiqueta"
+											value="Login de Usuario:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red" />
+									</hbox>
+									<textbox id="txtLoginUsuario"
+										hflex="1" maxlength="50"
+										tooltiptext="Ingrese el Login del Usuario" />
+									<hbox />
+									<hbox />
+								</row>
+								<row>
+									<hbox>
+										<label class="etiqueta"
+											value="Password:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red" />
+									</hbox>
+									<textbox id="txtPasswordUsuario"
+										hflex="1" maxlength="256"
+										tooltiptext="Ingrese la Contraseña del Usuario"
+										type="password" />
+									<hbox>
+										<label class="etiqueta"
+											value="Reescriba el Password:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red" />
+									</hbox>
+									<textbox id="txtPassword2Usuario"
+										hflex="1" maxlength="256"
+										tooltiptext="Reescriba el Login del Usuario" type="password" />
+								</row>
+							</rows>
+						</grid>
+						<separator />
+						<groupbox width="100%"
+							title="Seleccione los Grupos Correspondientes al Usuario">
+							<vbox>
+								<button class="abrir" id="btnAbrirGrupo"
+									label="" tooltiptext="Crear un Nuevo Grupo"
+									image="/public/imagenes/botones/agregar.png" />
+								<separator />
+							</vbox>
+							<hbox>
+								<listbox id="ltbGruposDisponibles"
+									height="160px" emptyMessage="No hay Grupos registrados">
+									<template name="model">
+										<listitem>
+											<listcell
+												label="${each.nombre}">
+											</listcell>
+										</listitem>
+									</template>
+								</listbox>
+								<vbox>
+									<button class="abrir" id="pasar1"
+										image="/public/imagenes/botones/adelante.png"
+										tooltiptext="Agregar Grupos" width="30px" />
+									<separator />
+									<button class="abrir" id="pasar2"
+										image="/public/imagenes/botones/atras.png"
+										tooltiptext="Quitar Grupos" width="30px" />
+								</vbox>
+								<listbox id="ltbGruposAgregados"
+									height="160px" emptyMessage="No ha Seleccionado ningun Grupo"
+									checkmark="true">
+									<template name="model">
+										<listitem>
+											<listcell
+												label="${each.nombre}">
+											</listcell>
+										</listitem>
+									</template>
+								</listbox>
+							</hbox>
+						</groupbox>
+						<separator />
+						<separator />
+						<div align="left" style="float: right;">
+							<button class="btn" label="Anterior"
+								id="btnAnteriorPestanna"
+								image="/public/imagenes/botones/atras.png" />
+						</div>
+						<vbox>
+							<div width="50%" id="botoneraUsuario"
+								align="left" style="float: left;" />
+						</vbox>
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
+			<div id="catalogoUsuario" />
+		</groupbox>
+	</div>
+</zk>
