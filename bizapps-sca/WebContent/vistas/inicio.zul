@@ -27,7 +27,7 @@
 							<separator />
 							<separator />
 							<label style="font-size:23px;color:white;font-weight: bold"
-								value="SISTEMA DE CONTROL DE ASISTENCIA" />
+								value="SISTEMA DE CONTROL DE ASISTENCIA (SCA)" />
 						</hbox>
 					</div>
 					<div align="center" width="100%">

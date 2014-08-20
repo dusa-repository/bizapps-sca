@@ -54,7 +54,7 @@
 						<separator />
 						<separator />
 						<label class="lblIndex"
-							value="SISTEMA DE CONTROL DE ASISTENCIA" />
+							value="SISTEMA DE CONTROL DE ASISTENCIA (SCA)" />
 					</div>
 					<div align="center">
 						<groupbox width="35em" height="18em">

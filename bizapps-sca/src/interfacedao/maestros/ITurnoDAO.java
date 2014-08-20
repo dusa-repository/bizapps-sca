@@ -1,0 +1,25 @@
+package interfacedao.maestros;
+
+
+import java.util.List;
+
+import modelo.maestros.Turno;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+public interface ITurnoDAO extends JpaRepository<Turno, Long> {
+
+	Turno findByDescripcion(String value);
+
+	public List<Turno> findByDescripcionStartingWithAllIgnoreCase(String valor);
+
+	public List<Turno> findByHoraEntradaStartingWithAllIgnoreCase(String valor);
+
+	public List<Turno> findByHoraSalidaStartingWithAllIgnoreCase(String valor);
+
+	public List<Turno> findByMinutosStartingWithAllIgnoreCase(String valor);
+
+
+
+}

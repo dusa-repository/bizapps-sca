@@ -1,0 +1,48 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divPlanificacion"
+		apply="controlador.transacciones.CPlanificacion">
+		<groupbox width="auto" mold="3d">
+			<separator />
+			<separator />
+			<div align="left">
+				<label
+					value="Seleccione un archivo que contenga la planificación semanal con el formato válido para subir al portal."
+					class="etiqueta" style="margin-right:10px">
+				</label>
+			</div>
+			<separator />
+			<separator />
+			<separator />
+			<separator />
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="20%" />
+					<column label="" width="45%" />
+					<column label="" width="30%" />
+				</columns>
+				<rows>
+					<row>
+						<button autodisable="self"
+							id="btnSeleccionarArchivo" class="btn" upload="true"
+							label="Seleccionar archivo" tooltiptext="Seleccionar archivo"
+							style="width:auto" />
+						<textbox id="txtArchivoPlanificacion"
+							style="color:black !important;" disabled="true" />
+						<button autodisable="self" id="btnSubirArchivo"
+							style="margin-left:20px" class="btn" label="Subir archivo"
+							tooltiptext="Subir archivo" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<separator />
+			<separator />
+			<separator />
+			<div id="botoneraPlanificacion" style="margin-left:10px" />
+			<separator />
+			<separator />
+		</groupbox>
+	</div>
+	<separator />
+</zk>
