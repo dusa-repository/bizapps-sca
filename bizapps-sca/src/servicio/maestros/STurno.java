@@ -23,7 +23,7 @@ public class STurno {
 		turnoDAO.save(turno);
 	}
 
-	public Turno buscar(long id) {
+	public Turno buscar(String id) {
 		return turnoDAO.findOne(id);
 	}
 	
@@ -39,6 +39,11 @@ public class STurno {
 		return turnoDAO.findAll();
 	}
 
+	
+	public List<Turno> filtroCodigo(String valor) {
+		return turnoDAO.findByIdStartingWithAllIgnoreCase(valor);
+	}
+	
 	public List<Turno> filtroDescripcion(String valor) {
 		return turnoDAO.findByDescripcionStartingWithAllIgnoreCase(valor);
 	}

@@ -17,11 +17,10 @@ public class TipoAusentismo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
-	@Column(name="id_ausentismo")
-	private long id;
+	@Column(name="id_permiso", nullable = false, length = 50)
+	private String id;
 
-	@Column(name="descripcion")
+	@Column(name="descripcion", length = 500)
 	private String descripcion;
 
 	@Column(name="fecha_auditoria")
@@ -38,8 +37,8 @@ public class TipoAusentismo implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TipoAusentismo(long id, String descripcion, Timestamp fechaAuditoria,
-			String horaAuditoria, String usuario) {
+	public TipoAusentismo(String id, String descripcion,
+			Timestamp fechaAuditoria, String horaAuditoria, String usuario) {
 		super();
 		this.id = id;
 		this.descripcion = descripcion;
@@ -48,11 +47,11 @@ public class TipoAusentismo implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -87,5 +86,10 @@ public class TipoAusentismo implements Serializable {
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
+	
+	
+	
+	
 
+	
 }

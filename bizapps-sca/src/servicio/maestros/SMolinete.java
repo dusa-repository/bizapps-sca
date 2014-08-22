@@ -23,7 +23,7 @@ public class SMolinete {
 		molineteDAO.save(molinete);
 	}
 
-	public Molinete buscar(long id) {
+	public Molinete buscar(String id) {
 		return molineteDAO.findOne(id);
 	}
 	
@@ -37,6 +37,10 @@ public class SMolinete {
 
 	public List<Molinete> buscarTodos() {
 		return molineteDAO.findAll();
+	}
+	
+	public List<Molinete> filtroCodigo(String valor) {
+		return molineteDAO.findByIdStartingWithAllIgnoreCase(valor);
 	}
 
 	public List<Molinete> filtroDescripcion(String valor) {

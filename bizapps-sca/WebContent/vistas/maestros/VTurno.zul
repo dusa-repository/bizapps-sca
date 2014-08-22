@@ -1,0 +1,61 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divTurno" apply="controlador.maestros.CTurno">
+		<groupbox width="42em" mold="3d" title="Turno">
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="22%" />
+					<column label="" width="60%" />
+					<column label="" width="18%" />
+				</columns>
+				<rows>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Código:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtCodigoTurno" hflex="1"
+							maxlength="50" tooltiptext="Ingrese el codigo del turno" />
+						<button autodisable="self" id="btnBuscarTurno"
+							class="btn" label="Buscar" tooltiptext="Catalogo de turnos"
+							image="/public/imagenes/botones/buscar.png" />
+					</row>
+					<row>
+						<label class="etiqueta" value="Descripción:" />
+
+						<textbox class="multilinea"
+							id="txtDescripcionTurno" hflex="1" maxlength="500"
+							multiline="true" tooltiptext="Ingrese la descripcion del turno" />
+					</row>
+					<row>
+						<label class="etiqueta"
+							value="Hora de entrada:" />
+
+						<timebox id="tmbHoraEntrada" width="120px"
+							tooltiptext="Ingrese la hora de entrada" format="hh:mm:ss a"
+							readonly="true" onCreate="self.value = new Date()" />
+					</row>
+					<row>
+						<label class="etiqueta" value="Hora de salida:" />
+
+						<timebox id="tmbHoraSalida" width="120px"
+							tooltiptext="Ingrese la hora de salida" format="hh:mm:ss a"
+							readonly="true" onCreate="self.value = new Date()" />
+					</row>
+					<row>
+						<label class="etiqueta"
+							value="Minutos a laborar:" />
+
+						<intbox id="itbMinutos" hflex="1" maxlength="11"
+							tooltiptext="Ingrese los minutos a laborar en el turno" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<div id="botoneraTurno" />
+			<div id="catalogoTurno" />
+		</groupbox>
+	</div>
+</zk>

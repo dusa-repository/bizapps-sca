@@ -1,6 +1,5 @@
 package interfacedao.maestros;
 
-
 import java.util.List;
 
 import modelo.maestros.Turno;
@@ -8,7 +7,7 @@ import modelo.maestros.Turno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ITurnoDAO extends JpaRepository<Turno, Long> {
+public interface ITurnoDAO extends JpaRepository<Turno, String> {
 
 	Turno findByDescripcion(String value);
 
@@ -20,6 +19,6 @@ public interface ITurnoDAO extends JpaRepository<Turno, Long> {
 
 	public List<Turno> findByMinutosStartingWithAllIgnoreCase(String valor);
 
-
+	public List<Turno> findByIdStartingWithAllIgnoreCase(String valor);
 
 }

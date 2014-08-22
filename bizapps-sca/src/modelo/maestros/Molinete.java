@@ -17,11 +17,10 @@ public class Molinete implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
-	@Column(name="id_molinete")
-	private long id;
+	@Column(name="id_molinete", nullable = false, length = 50)
+	private String id;
 
-	@Column(name="descripcion")
+	@Column(name="descripcion", length = 500)
 	private String descripcion;
 
 	@Column(name="fecha_auditoria")
@@ -38,7 +37,7 @@ public class Molinete implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Molinete(long id, String descripcion, Timestamp fechaAuditoria,
+	public Molinete(String id, String descripcion, Timestamp fechaAuditoria,
 			String horaAuditoria, String usuario) {
 		super();
 		this.id = id;
@@ -48,11 +47,11 @@ public class Molinete implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
