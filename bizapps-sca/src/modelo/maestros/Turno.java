@@ -18,11 +18,10 @@ public class Turno implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
-	@Column(name="id_turno")
-	private long id;
+	@Column(name="id_turno", nullable = false, length = 50)
+	private String id;
 
-	@Column(name="descripcion")
+	@Column(name="descripcion", length = 500)
 	private String descripcion;
 	
 	@Temporal(TemporalType.TIME)
@@ -33,7 +32,7 @@ public class Turno implements Serializable {
 	@Column(name = "hora_salida")
 	private Date horaSalida;
 	
-	@Column(name="minutos")
+	@Column(name="minutos_laborar", length = 11)
 	private int minutos;
 
 	@Column(name="fecha_auditoria")
@@ -50,9 +49,9 @@ public class Turno implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Turno(long id, String descripcion, Date horaEntrada, Date horaSalida,
-			int minutos, Timestamp fechaAuditoria, String horaAuditoria,
-			String usuario) {
+	public Turno(String id, String descripcion, Date horaEntrada,
+			Date horaSalida, int minutos, Timestamp fechaAuditoria,
+			String horaAuditoria, String usuario) {
 		super();
 		this.id = id;
 		this.descripcion = descripcion;
@@ -64,11 +63,11 @@ public class Turno implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -127,4 +126,5 @@ public class Turno implements Serializable {
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
+	
 }

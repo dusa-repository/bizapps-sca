@@ -1,0 +1,41 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divMolinete" apply="controlador.maestros.CMolinete">
+		<groupbox width="42em" mold="3d" title="Molinete">
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="22%" />
+					<column label="" width="60%" />
+					<column label="" width="18%" />
+				</columns>
+				<rows>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Código:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtCodigoMolinete" hflex="1"
+							maxlength="50" tooltiptext="Ingrese el codigo del molinete" />
+						<button autodisable="self"
+							id="btnBuscarMolinete" class="btn" label="Buscar"
+							tooltiptext="Catalogo de Molinetes"
+							image="/public/imagenes/botones/buscar.png" />
+					</row>
+					<row>
+						<label class="etiqueta" value="Descripción:" />
+
+						<textbox class="multilinea"
+							id="txtDescripcionMolinete" hflex="1" maxlength="500"
+							multiline="true"
+							tooltiptext="Ingrese la descripcion del molinete" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<div id="botoneraMolinete" />
+			<div id="catalogoMolinete" />
+		</groupbox>
+	</div>
+</zk>

@@ -23,7 +23,7 @@ public class STipoAusentismo {
 		ausentismoDAO.save(ausentismo);
 	}
 
-	public TipoAusentismo buscar(long id) {
+	public TipoAusentismo buscar(String id) {
 		return ausentismoDAO.findOne(id);
 	}
 	
@@ -39,6 +39,11 @@ public class STipoAusentismo {
 		return ausentismoDAO.findAll();
 	}
 
+	
+	public List<TipoAusentismo> filtroCodigo(String valor) {
+		return ausentismoDAO.findByIdStartingWithAllIgnoreCase(valor);
+	}
+	
 	public List<TipoAusentismo> filtroDescripcion(String valor) {
 		return ausentismoDAO.findByDescripcionStartingWithAllIgnoreCase(valor);
 	}
