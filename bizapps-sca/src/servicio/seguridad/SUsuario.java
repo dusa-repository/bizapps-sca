@@ -48,10 +48,6 @@ public class SUsuario {
 		return usuarioDAO.findByCedulaStartingWithAllIgnoreCase(valor);
 	}
 
-	public List<Usuario> filtroFicha(String valor) {
-		return usuarioDAO.findByFichaStartingWithAllIgnoreCase(valor);
-	}
-
 	public List<Usuario> filtroNombre(String valor) {
 		return usuarioDAO.findByPrimerNombreStartingWithAllIgnoreCase(valor);
 	}
