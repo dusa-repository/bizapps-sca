@@ -1,16 +1,20 @@
 package controlador.seguridad;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 import modelo.seguridad.Usuario;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -31,18 +35,28 @@ public class CReinicioPassword extends CGenerico {
 	@Wire
 	private Div botoneraReinicio;
 	@Wire
-	private Window wdwRecordar;
+	private Div divReiniciar;
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private static final long serialVersionUID = 6988038390488496987L;
 
 	@Override
 	public void inicializar() throws IOException {
+		
+		HashMap<String, Object> mapa = (HashMap<String, Object>) Sessions
+				.getCurrent().getAttribute("mapaGeneral");
+		if (mapa != null) {
+			if (mapa.get("tabsGenerales") != null) {
+				tabs = (List<Tab>) mapa.get("tabsGenerales");
+				mapa.clear();
+				mapa = null;
+			}
+		}
 
 		Botonera botonera = new Botonera() {
 
 			@Override
 			public void salir() {
-				wdwRecordar.onClose();
+				cerrarVentana(divReiniciar, "Reiniciar Password", tabs);
 			}
 
 			@Override
