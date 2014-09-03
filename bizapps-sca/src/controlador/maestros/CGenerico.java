@@ -40,6 +40,8 @@ import servicio.maestros.STurno;
 import servicio.seguridad.SArbol;
 import servicio.seguridad.SGrupo;
 import servicio.seguridad.SUsuario;
+import servicio.transacciones.SPlanificacionSemanal;
+import servicio.transacciones.SRegistroAcceso;
 
 import componentes.Mensaje;
 
@@ -59,6 +61,10 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SMolinete servicioMolinete;
 	@WireVariable("STipoAusentismo")
 	protected STipoAusentismo servicioTipoAusentismo;
+	@WireVariable("SRegistroAcceso")
+	protected SRegistroAcceso servicioRegistroAcceso;
+	@WireVariable("SPlanificacionSemanal")
+	protected SPlanificacionSemanal servicioPlanificacionSemanal;
 	
 
 	private static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(

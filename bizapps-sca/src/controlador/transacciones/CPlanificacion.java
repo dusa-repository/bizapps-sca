@@ -4,8 +4,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import java.io.File;
+
+import jxl.*;
+import jxl.read.biff.BiffException;
+
+import modelo.maestros.Molinete;
 import modelo.seguridad.Arbol;
 
+import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -44,18 +51,17 @@ public class CPlanificacion extends CGenerico {
 	@Wire
 	private Div botoneraPlanificacion;
 	@Wire
-	private Media media;
+	private Media mediaPlanificacion;
+	File archivoPlanificacion;
+	long lineasEvaluadas;
+	long lineasValidas;
+	long lineasInvalidas;
 
 	private CArbol cArbol = new CArbol();
 
 	@Override
 	public void inicializar() throws IOException {
-		
-		contenido = (Include) divPlanificacion.getParent();
-		Tabbox tabox = (Tabbox) divPlanificacion.getParent().getParent().getParent()
-				.getParent();
-		tabBox = tabox;
-		tab = (Tab) tabox.getTabs().getLastChild();
+
 		HashMap<String, Object> map = (HashMap<String, Object>) Sessions
 				.getCurrent().getAttribute("mapaGeneral");
 		if (map != null) {
@@ -78,10 +84,7 @@ public class CPlanificacion extends CGenerico {
 
 			@Override
 			public void limpiar() {
-				txtArchivoPlanificacion.setText("");
-				txtArchivoPlanificacion
-						.setPlaceholder("Ningún archivo seleccionado");
-				txtArchivoPlanificacion.setStyle("color:black !important;");
+				limpiarCampos();
 			}
 
 			@Override
@@ -106,27 +109,80 @@ public class CPlanificacion extends CGenerico {
 	 * 
 	 * @param event
 	 *            archivo subido al sistema por el usuario
+	 * @throws IOException
 	 */
 	@Listen("onUpload = #btnSeleccionarArchivo")
-	public void subirArchivo(UploadEvent event) {
+	public void seleccionarArchivo(UploadEvent event) throws IOException {
 
-		media = event.getMedia();
-		if (media != null) {
+		mediaPlanificacion = event.getMedia();
+		if (mediaPlanificacion != null) {
 
-			if (media.getContentType().equals("application/vnd.ms-excel")
-					|| media.getContentType()
-							.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+			if (mediaPlanificacion.getContentType().equals(
+					"application/vnd.ms-excel"))
 
 			{
+				txtArchivoPlanificacion.setValue(mediaPlanificacion.getName());
 
-				txtArchivoPlanificacion.setValue(media.getName());
+				// Copiar archivo excel en el directorio C:\files\
+				Files.copy(
+						new File("C:\\files\\" + mediaPlanificacion.getName()),
+						mediaPlanificacion.getStreamData());
 
 			} else {
-				Messagebox.show(media.getName()
-						+ " No es un tipo de archivo valido!", "Error",
-						Messagebox.OK, Messagebox.ERROR);
+				Messagebox
+						.show(mediaPlanificacion.getName()
+								+ " No es un tipo de archivo valido!, el archivo debe tener la extensión .xls",
+								"Error", Messagebox.OK, Messagebox.ERROR);
 			}
 		}
 	}
 
+	@Listen("onClick = #btnSubirArchivo")
+	public void subirArchivo() throws BiffException, IOException {
+
+		if (mediaPlanificacion != null) {
+
+			// Pasamos el excel que vamos a leer
+			Workbook workbook = Workbook.getWorkbook(mediaPlanificacion.getStreamData());
+			// Seleccionamos la hoja que vamos a leer
+			Sheet sheet = workbook.getSheet(0);
+
+			// Definimos las columnas que debe tener el archivo de excel
+			String id;
+			String descripcion;
+			String usuario = nombreUsuarioSesion();
+
+			// Recorremos las filas del archivo de excel
+			for (int fila = 0; fila < sheet.getRows(); fila++) {
+
+				// sheet.getColumns() Total de columnas que debe tener el
+				// archivo de excel
+
+				id = sheet.getCell(0, fila).getContents();
+				descripcion = sheet.getCell(1, fila).getContents();
+
+				Molinete molinete = new Molinete(id, descripcion, fechaHora,
+						horaAuditoria, usuario);
+				servicioMolinete.guardar(molinete);
+
+			}
+
+			msj.mensajeInformacion(Mensaje.datosImportados);
+			limpiarCampos();
+
+		} else {
+
+			Messagebox.show("Debe seleccionar un archivo", "Advertencia",
+					Messagebox.OK, Messagebox.EXCLAMATION);
+
+		}
+
+	}
+
+	private void limpiarCampos() {
+		txtArchivoPlanificacion.setText("");
+		txtArchivoPlanificacion.setPlaceholder("Ningún archivo seleccionado");
+		txtArchivoPlanificacion.setStyle("color:black !important;");
+
+	}
 }
