@@ -180,6 +180,8 @@ public class CUsuario extends CGenerico {
 					String nombre2 = txtNombre2Usuario.getValue();
 					String apellido2 = txtApellido2Usuario.getValue();
 					String telefono = txtTelefonoUsuario.getValue();
+					String ficha = txtFichaUsuario.getValue();
+					String usuarioAuditoria = nombreUsuarioSesion();
 
 					String sexo = "";
 					if (rdoSexoFUsuario.isChecked())
@@ -199,10 +201,13 @@ public class CUsuario extends CGenerico {
 						imagenUsuario = imagen.getContent().getByteData();
 					}
 
-					Usuario usuario = new Usuario(cedula, correo, login,
-							password, imagenUsuario, true, gruposUsuario,
-							nombre, apellido, nombre2, apellido2, sexo,
-							telefono, direccion);
+					Usuario usuario = new Usuario(cedula, correo, login, password,
+							imagenUsuario, true, ficha,
+							usuarioAuditoria,  gruposUsuario, apellido,
+							nombre, apellido2, nombre2,
+							sexo, telefono, direccion);
+					
+					
 
 					servicioUsuario.guardar(usuario);
 					limpiar();
@@ -257,6 +262,7 @@ public class CUsuario extends CGenerico {
 		txtApellido2Usuario.setValue("");
 		txtCedulaUsuario.setValue("");
 		txtCorreoUsuario.setValue("");
+		txtFichaUsuario.setValue("");
 		txtDireccionUsuario.setValue("");
 		txtLoginUsuario.setValue("");
 		txtPasswordUsuario.setValue("");
@@ -489,6 +495,53 @@ public class CUsuario extends CGenerico {
 		};
 		catalogo.setParent(catalogoUsuario);
 		catalogo.doModal();
+	}
+	
+	/*
+	 * Selecciona un usuario del catalogo y llena los campos con la informacion
+	 */
+	@Listen("onSeleccion = #catalogoUsuario")
+	public void seleccion() {
+		Usuario usuario = catalogo.objetoSeleccionadoDelCatalogo();
+		llenarCampos(usuario);
+		catalogo.setParent(null);
+	}
+
+	/* LLena los campos del formulario dado un usuario */
+	public void llenarCampos(Usuario usuario) {
+
+		txtCedulaUsuario.setValue(usuario.getCedula());
+		txtCorreoUsuario.setValue(usuario.getEmail());
+		txtDireccionUsuario.setValue(usuario.getDireccion());
+		txtFichaUsuario.setValue(usuario.getFicha());
+		txtLoginUsuario.setValue(usuario.getLogin());
+		txtPasswordUsuario.setValue(usuario.getPassword());
+		txtPassword2Usuario.setValue(usuario.getPassword());
+		txtNombreUsuario.setValue(usuario.getPrimerNombre());
+		txtNombre2Usuario.setValue(usuario.getSegundoNombre());
+		txtApellidoUsuario.setValue(usuario.getPrimerApellido());
+		txtApellido2Usuario.setValue(usuario.getSegundoApellido());
+		txtTelefonoUsuario.setValue(usuario.getTelefono());
+	
+		String sexo = usuario.getSexo();
+		if (sexo.equals("F"))
+			rdoSexoFUsuario.setChecked(true);
+		else
+			rdoSexoMUsuario.setChecked(true);
+		
+		BufferedImage imag;
+		if (usuario.getImagen() != null) {
+			try {
+				imag = ImageIO.read(new ByteArrayInputStream(usuario
+						.getImagen()));
+				imagen.setContent(imag);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		txtCedulaUsuario.setDisabled(true);
+		id = usuario.getCedula();
+		llenarListas(usuario);
 	}
 
 

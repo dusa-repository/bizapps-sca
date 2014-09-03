@@ -1,204 +1,248 @@
 <zk>
 	<style src="/public/Estilo.css" />
-	<div id="divUsuario" width="100%" apply="controlador.maestros.CUsuario">
+	<div id="divUsuario" width="100%"
+		apply="controlador.maestros.CUsuario">
 		<groupbox mold="3d" width="auto" title="Usuario">
 			<separator />
-				<grid width="100%">
-					<columns visible="false">
-						<column label="" width="10%" />
-						<column label="" width="25%" />
-						<column label="" width="15%" />
-						<column label="" width="10%" />
-						<column label="" width="25%" />
-						<column label="" width="15%" />
-					</columns>
-					<rows>
-						<row>
-							<hbox>
-								<label class="etiqueta" value="Cedula:" />
-								<space />
-								<label value="*" style="font-weight:bold;color:red">
-								</label>
-							</hbox>
-							<textbox id="txtCedulaUsuario" hflex="1" maxlength="12"
-								tooltiptext="Ingrese la Cedula del Usuario" />
-							<fileupload
-								style="	background: #952C2C;font-size: 13px;color: white;cursor: pointer;width: 100px;height: 33px;	-webkit-border-radius: 0.7em;-moz-border-radius: 0.7em;	border-radius: 0.7em;"
-								image="/public/imagenes/botones/cargar.png" id="fudImagenUsuario"
-								label="Foto">
-							</fileupload>
-							<hbox />
-							<hbox />
-							<hbox />
-						</row>
-						<row>
-							<hbox>
-								<label class="etiqueta" value="Primer Nombre:" />
-								<space />
-								<label value="*" style="font-weight:bold;color:red">
-								</label>
-							</hbox>
-							<textbox id="txtNombreUsuario" hflex="1" maxlength="100"
-								tooltiptext="Ingrese el Primer Nombre del Usuario" />
-							<image id="imagen" width="50px" height="50px" />
-							<label class="etiqueta" value="Segundo Nombre:" />
-							<textbox id="txtNombre2Usuario" hflex="1" maxlength="100"
-								tooltiptext="Ingrese el Segundo Nombre del Usuario" />
-							<hbox />
-						</row>
-						<row>
-							<hbox>
-								<label class="etiqueta" value="Primer Apellido:" />
-								<space />
-								<label value="*" style="font-weight:bold;color:red">
-								</label>
-							</hbox>
-							<textbox id="txtApellidoUsuario" hflex="1" maxlength="100"
-								tooltiptext="Ingrese el Primer Apellido del Usuario" />
-							<hbox />
-							<label class="etiqueta" value="Segundo Apellido:" />
-							<textbox id="txtApellido2Usuario" hflex="1" maxlength="100"
-								tooltiptext="Ingrese el Segundo Apellido del Usuario" />
-							<hbox />
-						</row>
-					</rows>
-				</grid>
-				<separator />
-				<tabbox width="100%">
-					<tabs>
-						<tab label="Datos Basicos" id="tabBasicos" />
-						<tab label="Datos de Usuario" id="tabUsuarios" />
-					</tabs>
-					<tabpanels>
-						<tabpanel>
-							<groupbox width="100%" title="Datos Personales">
-								<grid width="100%">
-									<columns visible="false">
-										<column label="" width="20%" />
-										<column label="" width="30%" />
-										<column label="" width="20%" />
-										<column label="" width="30%" />
-									</columns>
-									<rows>
-										<row>
-											<label class="etiqueta" value="Telefono:" />
-											<textbox id="txtTelefonoUsuario" hflex="1" maxlength="50"
-												tooltiptext="Ingrese el Numero de Telefono del Usuario (0426-9999999)" />
-											<hbox>
-												<label class="etiqueta" value="Correo:" />
-												<space />
-												<label value="*" style="font-weight:bold;color:red">
-												</label>
-											</hbox>
-											<textbox id="txtCorreoUsuario" hflex="1" maxlength="50"
-												tooltiptext="Ingrese el Correo Electronico del Usuario (ejemplo@ejemplo.com)" />
-										</row>
-										<row>
-											<hbox>
-												<label class="etiqueta" value="Sexo:" />
-												<space />
-												<label value="*" style="font-weight:bold;color:red">
-												</label>
-											</hbox>
-											<radiogroup id="rdbSexoUsuario">
-												<radio id="rdoSexoFUsuario" label="Femenino" />
-												<radio id="rdoSexoMUsuario" label="Masculino" />
-											</radiogroup>
-											<label class="etiqueta" value="Direccion:" />
-											<textbox class="multilinea" id="txtDireccionUsuario"
-												hflex="1" maxlength="500"
-												tooltiptext="Ingrese el Numero de Telefono del Usuario"
-												multiline="true" />
-										</row>
-									</rows>
-								</grid>
-							</groupbox>
-							<div align="right" style="float: right;">
-								<button id="btnSiguientePestanna" label="Siguiente"
-									image="/public/imagenes/botones/adelante.png" />
-							</div>
-						</tabpanel>
-						<tabpanel>
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="10%" />
+					<column label="" width="25%" />
+					<column label="" width="15%" />
+					<column label="" width="10%" />
+					<column label="" width="25%" />
+					<column label="" width="15%" />
+				</columns>
+				<rows>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Cedula:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red">
+							</label>
+						</hbox>
+						<textbox id="txtCedulaUsuario" hflex="1"
+							maxlength="12" tooltiptext="Ingrese la Cedula del Usuario" />
+						<fileupload
+							style="	background: #952C2C;font-size: 13px;color: white;cursor: pointer;width: 100px;height: 33px;	-webkit-border-radius: 0.7em;-moz-border-radius: 0.7em;	border-radius: 0.7em;"
+							image="/public/imagenes/botones/cargar.png" id="fudImagenUsuario"
+							label="Foto">
+						</fileupload>
+
+						<label class="etiqueta" value="Ficha:" />
+						<textbox id="txtFichaUsuario" hflex="1"
+							maxlength="50" tooltiptext="Ingrese la Ficha del Usuario" />
+						<button id="btnBuscarUsuario" class="btn"
+							label="Buscar" tooltiptext="Catalogo"
+							image="/public/imagenes/botones/buscar.png" />
+
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Primer Nombre:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red">
+							</label>
+						</hbox>
+						<textbox id="txtNombreUsuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Primer Nombre del Usuario" />
+						<image id="imagen" width="50px" height="50px" />
+						<label class="etiqueta" value="Segundo Nombre:" />
+						<textbox id="txtNombre2Usuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Segundo Nombre del Usuario" />
+						<hbox />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Primer Apellido:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red">
+							</label>
+						</hbox>
+						<textbox id="txtApellidoUsuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Primer Apellido del Usuario" />
+						<hbox />
+						<label class="etiqueta"
+							value="Segundo Apellido:" />
+						<textbox id="txtApellido2Usuario" hflex="1"
+							maxlength="100"
+							tooltiptext="Ingrese el Segundo Apellido del Usuario" />
+						<hbox />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<tabbox width="100%">
+				<tabs>
+					<tab label="Datos Basicos" id="tabBasicos" />
+					<tab label="Datos de Usuario" id="tabUsuarios" />
+				</tabs>
+				<tabpanels>
+					<tabpanel>
+						<groupbox width="100%"
+							title="Datos Personales">
 							<grid width="100%">
 								<columns visible="false">
-									<column label="" width="25%" />
-									<column label="" width="25%" />
-									<column label="" width="25%" />
-									<column label="" width="25%" />
+									<column label="" width="20%" />
+									<column label="" width="30%" />
+									<column label="" width="20%" />
+									<column label="" width="30%" />
 								</columns>
 								<rows>
 									<row>
+										<label class="etiqueta"
+											value="Telefono:" />
+										<textbox id="txtTelefonoUsuario"
+											hflex="1" maxlength="50"
+											tooltiptext="Ingrese el Numero de Telefono del Usuario (0426-9999999)" />
 										<hbox>
-											<label class="etiqueta" value="Login de Usuario:" />
+											<label class="etiqueta"
+												value="Correo:" />
 											<space />
-											<label value="*" style="font-weight:bold;color:red">
+											<label value="*"
+												style="font-weight:bold;color:red">
 											</label>
 										</hbox>
-										<textbox id="txtLoginUsuario" hflex="1" maxlength="50"
-											tooltiptext="Ingrese el Login del Usuario" />
-										<hbox />
-										<hbox />
+										<textbox id="txtCorreoUsuario"
+											hflex="1" maxlength="50"
+											tooltiptext="Ingrese el Correo Electronico del Usuario (ejemplo@ejemplo.com)" />
 									</row>
 									<row>
 										<hbox>
-											<label class="etiqueta" value="Password:" />
+											<label class="etiqueta"
+												value="Sexo:" />
 											<space />
-											<label value="*" style="font-weight:bold;color:red">
+											<label value="*"
+												style="font-weight:bold;color:red">
 											</label>
 										</hbox>
-										<textbox id="txtPasswordUsuario" hflex="1" maxlength="256"
-											tooltiptext="Ingrese la Contraseña del Usuario" type="password" />
-										<hbox>
-											<label class="etiqueta" value="Reescriba el Password:" />
-											<space />
-											<label value="*" style="font-weight:bold;color:red">
-											</label>
-										</hbox>
-										<textbox id="txtPassword2Usuario" hflex="1" maxlength="256"
-											tooltiptext="Reescriba el Login del Usuario" type="password" />
+										<radiogroup
+											id="rdbSexoUsuario">
+											<radio id="rdoSexoFUsuario"
+												label="Femenino" />
+											<radio id="rdoSexoMUsuario"
+												label="Masculino" />
+										</radiogroup>
+										<label class="etiqueta"
+											value="Direccion:" />
+										<textbox class="multilinea"
+											id="txtDireccionUsuario" hflex="1" maxlength="500"
+											tooltiptext="Ingrese el Numero de Telefono del Usuario"
+											multiline="true" />
 									</row>
 								</rows>
 							</grid>
-							<separator />
-							<groupbox width="100%"
-								title="Seleccione los Grupos Correspondientes al Usuario">
-								<hbox>
-									<listbox id="ltbGruposDisponibles" height="160px"
-										emptyMessage="No hay Grupos registrados">
-										<template name="model">
-											<listitem>
-												<listcell label="${each.nombre}">
-												</listcell>
-											</listitem>
-										</template>
-									</listbox>
-									<vbox>
-										<button id="pasar1" image="/public/imagenes/botones/adelante.png"
-											tooltiptext="Agregar Grupos" width="30px" />
-										<separator />
-										<button id="pasar2" image="/public/imagenes/botones/atras.png"
-											tooltiptext="Quitar Grupos" width="30px" />
-									</vbox>
-									<listbox id="ltbGruposAgregados" height="160px"
-										emptyMessage="No ha Seleccionado ningun Grupo" checkmark="true">
-										<template name="model">
-											<listitem>
-												<listcell label="${each.nombre}">
-												</listcell>
-											</listitem>
-										</template>
-									</listbox>
-								</hbox>
-							</groupbox>
-							<separator />
-							<separator />
-							<div align="left" style="float: right;">
-								<button label="Anterior" id="btnAnteriorPestanna"
-									image="/public/imagenes/botones/atras.png" />
-							</div>
-						</tabpanel>
-					</tabpanels>
-				</tabbox>
+						</groupbox>
+						<div align="right" style="float: right;">
+							<button id="btnSiguientePestanna"
+								label="Siguiente" image="/public/imagenes/botones/adelante.png" />
+						</div>
+					</tabpanel>
+					<tabpanel>
+						<grid width="100%">
+							<columns visible="false">
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+								<column label="" width="25%" />
+							</columns>
+							<rows>
+								<row>
+									<hbox>
+										<label class="etiqueta"
+											value="Login de Usuario:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red">
+										</label>
+									</hbox>
+									<textbox id="txtLoginUsuario"
+										hflex="1" maxlength="50"
+										tooltiptext="Ingrese el Login del Usuario" />
+									<hbox />
+									<hbox />
+								</row>
+								<row>
+									<hbox>
+										<label class="etiqueta"
+											value="Password:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red">
+										</label>
+									</hbox>
+									<textbox id="txtPasswordUsuario"
+										hflex="1" maxlength="256"
+										tooltiptext="Ingrese la Contraseña del Usuario"
+										type="password" />
+									<hbox>
+										<label class="etiqueta"
+											value="Reescriba el Password:" />
+										<space />
+										<label value="*"
+											style="font-weight:bold;color:red">
+										</label>
+									</hbox>
+									<textbox id="txtPassword2Usuario"
+										hflex="1" maxlength="256"
+										tooltiptext="Reescriba el Login del Usuario" type="password" />
+								</row>
+							</rows>
+						</grid>
+						<separator />
+						<groupbox width="100%"
+							title="Seleccione los Grupos Correspondientes al Usuario">
+							<hbox>
+								<listbox id="ltbGruposDisponibles"
+									height="160px" emptyMessage="No hay Grupos registrados">
+									<template name="model">
+										<listitem>
+											<listcell
+												label="${each.nombre}">
+											</listcell>
+										</listitem>
+									</template>
+								</listbox>
+								<vbox>
+									<button id="pasar1"
+										image="/public/imagenes/botones/adelante.png"
+										tooltiptext="Agregar Grupos" width="30px" />
+									<separator />
+									<button id="pasar2"
+										image="/public/imagenes/botones/atras.png"
+										tooltiptext="Quitar Grupos" width="30px" />
+								</vbox>
+								<listbox id="ltbGruposAgregados"
+									height="160px" emptyMessage="No ha Seleccionado ningun Grupo"
+									checkmark="true">
+									<template name="model">
+										<listitem>
+											<listcell
+												label="${each.nombre}">
+											</listcell>
+										</listitem>
+									</template>
+								</listbox>
+							</hbox>
+						</groupbox>
+						<separator />
+						<separator />
+						<div align="left" style="float: right;">
+							<button label="Anterior"
+								id="btnAnteriorPestanna"
+								image="/public/imagenes/botones/atras.png" />
+						</div>
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
 			<separator />
 			<div id="botoneraUsuario" />
 			<div id="catalogoUsuario" />
