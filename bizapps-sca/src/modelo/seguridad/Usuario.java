@@ -43,6 +43,9 @@ public class Usuario implements Serializable {
 
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean estado;
+	
+	@Column(name="ficha")
+	private String ficha;
 
 //	@Column(name = "fecha_auditoria")
 //	private Timestamp fechaAuditoria;
@@ -84,9 +87,9 @@ public class Usuario implements Serializable {
 	}
 
 	public Usuario(String cedula, String email, String login, String password,
-			byte[] imagen, boolean estado, 
-			 Set<Grupo> grupos, 
-			String nombre, String apellido,String segundoNombre, String segundoApellido,
+			byte[] imagen, boolean estado, String ficha,
+			String usuarioAuditoria, Set<Grupo> grupos, String primerApellido,
+			String primerNombre, String segundoApellido, String segundoNombre,
 			String sexo, String telefono, String direccion) {
 		super();
 		this.cedula = cedula;
@@ -95,16 +98,16 @@ public class Usuario implements Serializable {
 		this.password = password;
 		this.imagen = imagen;
 		this.estado = estado;
-		//this.horaAuditoria = horaAuditoria;
+		this.ficha = ficha;
+		this.usuarioAuditoria = usuarioAuditoria;
 		this.grupos = grupos;
-		this.primerNombre = nombre;
-		this.primerApellido = apellido;
-		this.segundoNombre = segundoNombre;
+		this.primerApellido = primerApellido;
+		this.primerNombre = primerNombre;
 		this.segundoApellido = segundoApellido;
+		this.segundoNombre = segundoNombre;
 		this.sexo = sexo;
 		this.telefono = telefono;
 		this.direccion = direccion;
-		//this.fechaAuditoria = fechaAuditoria;
 	}
 
 	public String getCedula() {
@@ -155,21 +158,13 @@ public class Usuario implements Serializable {
 		this.estado = estado;
 	}
 
-//	public Timestamp getFechaAuditoria() {
-//		return fechaAuditoria;
-//	}
-//
-//	public void setFechaAuditoria(Timestamp fechaAuditoria) {
-//		this.fechaAuditoria = fechaAuditoria;
-//	}
-//
-//	public Timestamp getHoraAuditoria() {
-//		return horaAuditoria;
-//	}
-//
-//	public void setHoraAuditoria(Timestamp horaAuditoria) {
-//		this.horaAuditoria = horaAuditoria;
-//	}
+	public String getFicha() {
+		return ficha;
+	}
+
+	public void setFicha(String ficha) {
+		this.ficha = ficha;
+	}
 
 	public String getUsuarioAuditoria() {
 		return usuarioAuditoria;
@@ -186,7 +181,7 @@ public class Usuario implements Serializable {
 	public void setGrupos(Set<Grupo> grupos) {
 		this.grupos = grupos;
 	}
-	
+
 	public String getPrimerApellido() {
 		return primerApellido;
 	}
@@ -218,8 +213,9 @@ public class Usuario implements Serializable {
 	public void setSegundoNombre(String segundoNombre) {
 		this.segundoNombre = segundoNombre;
 	}
+
 	public String getSexo() {
-		return this.sexo;
+		return sexo;
 	}
 
 	public void setSexo(String sexo) {
@@ -227,14 +223,15 @@ public class Usuario implements Serializable {
 	}
 
 	public String getTelefono() {
-		return this.telefono;
+		return telefono;
 	}
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+
 	public String getDireccion() {
-		return this.direccion;
+		return direccion;
 	}
 
 	public void setDireccion(String direccion) {
