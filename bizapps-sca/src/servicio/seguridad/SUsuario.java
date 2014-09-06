@@ -35,6 +35,11 @@ public class SUsuario {
 	public Usuario buscarPorCedula(String value) {
 		return usuarioDAO.findByCedula(value);
 	}
+	
+	@Transactional
+	public Usuario buscarPorFicha(String ficha) {
+		return usuarioDAO.findByFicha(ficha);
+	}
 
 	public List<Usuario> buscarTodos() {
 		return usuarioDAO.findAll();

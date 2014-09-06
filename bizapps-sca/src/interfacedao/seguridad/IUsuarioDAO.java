@@ -24,4 +24,6 @@ public interface IUsuarioDAO extends JpaRepository<Usuario, Long> {
 	List<Usuario> findByPrimerApellidoStartingWithAllIgnoreCase(String valor);
 
 	List<Usuario> findByGrupos(Grupo grupo);
+
+	Usuario findByFicha(String ficha);
 }

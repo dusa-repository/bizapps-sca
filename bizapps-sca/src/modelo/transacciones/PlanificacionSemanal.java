@@ -23,7 +23,7 @@ public class PlanificacionSemanal implements Serializable {
 	private int id;
 
 	@Column(name="lote_upload", length = 50)
-	private String loteUpload;
+	private int loteUpload;
 	
 	@Column(name="ficha", nullable = false, length = 50)
 	private String ficha;
@@ -73,7 +73,7 @@ public class PlanificacionSemanal implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PlanificacionSemanal(int id, String loteUpload, String ficha,
+	public PlanificacionSemanal(int id, int loteUpload, String ficha,
 			String nombre, Date fechaTurno, int semana, String idTurno,
 			String diaSemana, String tipoTurno, String cuadrilla,
 			String idPermiso, String fichaJefe, String idUsuario,
@@ -105,11 +105,11 @@ public class PlanificacionSemanal implements Serializable {
 		this.id = id;
 	}
 
-	public String getLoteUpload() {
+	public int getLoteUpload() {
 		return loteUpload;
 	}
 
-	public void setLoteUpload(String loteUpload) {
+	public void setLoteUpload(int loteUpload) {
 		this.loteUpload = loteUpload;
 	}
 
