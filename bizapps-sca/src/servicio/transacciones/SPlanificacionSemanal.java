@@ -5,6 +5,8 @@ import interfacedao.transacciones.IPlanificacionSemanalDAO;
 
 import java.util.List;
 
+import modelo.maestros.Molinete;
+import modelo.transacciones.PlanificacionSemanal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,18 @@ public class SPlanificacionSemanal {
 
 	@Autowired
 	private IPlanificacionSemanalDAO planificacionSemanalDAO;
+	
+	
+	public void guardar(PlanificacionSemanal planificacion) {
+		planificacionSemanalDAO.save(planificacion);
+	}
+	
+	/* Servicio que permite buscar los registros de una planificacion de acuerdo al lote_upload */
+	public List<PlanificacionSemanal> buscarPorLoteUpload(int lote) {
+		List<PlanificacionSemanal> planificaciones;
+		planificaciones = planificacionSemanalDAO.findByLoteUpload(lote);
+		return planificaciones;
+	}
 
 
 }

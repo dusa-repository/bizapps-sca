@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface IPlanificacionSemanalDAO extends JpaRepository<PlanificacionSemanal, Integer> {
 
+	public List<PlanificacionSemanal> findByLoteUpload(int lote);
+
 	
 	
 }

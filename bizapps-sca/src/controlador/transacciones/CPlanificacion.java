@@ -1,8 +1,15 @@
 package controlador.transacciones;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import java.io.File;
 
@@ -11,6 +18,7 @@ import jxl.read.biff.BiffException;
 
 import modelo.maestros.Molinete;
 import modelo.seguridad.Arbol;
+import modelo.transacciones.PlanificacionSemanal;
 
 import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
@@ -52,10 +60,20 @@ public class CPlanificacion extends CGenerico {
 	private Div botoneraPlanificacion;
 	@Wire
 	private Media mediaPlanificacion;
+	private static SimpleDateFormat formatoFecha = new SimpleDateFormat(
+			"dd/MM/yyyy");
+	DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+	DateFormat df1 = DateFormat.getDateInstance(DateFormat.MEDIUM);
+	List<String> erroresGenerados = new ArrayList<String>();
+	private int idRow = 0;
 	File archivoPlanificacion;
-	long lineasEvaluadas;
-	long lineasValidas;
-	long lineasInvalidas;
+	int fila = 0;
+	int filaEvaluada = 0;
+	int filaInvalida = 0;
+	int lineasEvaluadas = 0;
+	int lineasValidas = 0;
+	int lineasInvalidas = 0;
+	int errores = 0;
 
 	private CArbol cArbol = new CArbol();
 
@@ -138,37 +156,206 @@ public class CPlanificacion extends CGenerico {
 	}
 
 	@Listen("onClick = #btnSubirArchivo")
-	public void subirArchivo() throws BiffException, IOException {
+	public void subirArchivo() throws BiffException, IOException,
+			ParseException {
 
 		if (mediaPlanificacion != null) {
 
 			// Pasamos el excel que vamos a leer
-			Workbook workbook = Workbook.getWorkbook(mediaPlanificacion.getStreamData());
+			Workbook workbook = Workbook.getWorkbook(mediaPlanificacion
+					.getStreamData());
 			// Seleccionamos la hoja que vamos a leer
 			Sheet sheet = workbook.getSheet(0);
 
-			// Definimos las columnas que debe tener el archivo de excel
-			String id;
-			String descripcion;
-			String usuario = nombreUsuarioSesion();
+			int loteUpload = (int) (Math.random() * (99999 - 11111)) + 11111;
+			int semana = Integer.parseInt(sheet.getCell(22, 2).getContents());
+			String tipoTurno = "D";
+			String fichaJefe = sheet.getCell(22, 4).getContents();
+			String idUsuario = nombreUsuarioSesion();
+			String fichaUsuario = usuarioSesion(idUsuario).getFicha();
+			errores = 0;
 
-			// Recorremos las filas del archivo de excel
-			for (int fila = 0; fila < sheet.getRows(); fila++) {
-
-				// sheet.getColumns() Total de columnas que debe tener el
-				// archivo de excel
-
-				id = sheet.getCell(0, fila).getContents();
-				descripcion = sheet.getCell(1, fila).getContents();
-
-				Molinete molinete = new Molinete(id, descripcion, fechaHora,
-						horaAuditoria, usuario);
-				servicioMolinete.guardar(molinete);
-
+			// VALIDACION SEMANA
+			if (isNumeric(String.valueOf(semana))) {
+				if (semana < 1 || semana > 52) {
+					errores = errores + 1;
+				}
+			} else {
+				errores = errores + 1;
 			}
 
-			msj.mensajeInformacion(Mensaje.datosImportados);
-			limpiarCampos();
+			// VALIDACION FICHA JEFE
+			if (servicioUsuario.buscarPorFicha(fichaJefe) == null) {
+				errores = errores + 1;
+			}
+
+			while (servicioPlanificacionSemanal.buscarPorLoteUpload(loteUpload)
+					.size() != 0) {
+				loteUpload = (int) (Math.random() * (99999 - 11111)) + 11111;
+			}
+
+			// Metodo para recorrer el archivo excel y verificar que no existan
+			// errores
+			while (fila < sheet.getRows()) {
+				if (isNumeric(sheet.getCell(0, fila).getContents())) {
+
+					for (int columna = 0; columna < 7; columna++) {
+
+						String idTurno = sheet.getCell(3, fila).getContents();
+						String idPermiso = "";
+
+						if (sheet.getCell(4 + columna * 2, fila).getContents() == " ") {
+							idPermiso = sheet.getCell(4 + columna * 2, fila)
+									.getContents();
+						} else {
+
+							if (sheet.getCell(5 + columna * 2, fila)
+									.getContents() == " ") {
+								idPermiso = sheet
+										.getCell(5 + columna * 2, fila)
+										.getContents();
+							} else {
+
+								idPermiso = "";
+							}
+						}
+
+						// VALIDACION ID_TURNO
+
+						if (servicioTurno.buscar(idTurno) == null) {
+							errores = errores + 1;
+						}
+
+						// VALIDACION ID_PERMISO
+
+						if (idPermiso != "") {
+
+							if (servicioTipoAusentismo.buscar(idPermiso) == null) {
+								errores = errores + 1;
+
+							}
+
+						}
+
+					}
+
+					if (errores == 0) {
+						lineasValidas = lineasValidas + 1;
+					} else {
+						lineasInvalidas = lineasInvalidas + 1;
+					}
+					fila++;
+					filaEvaluada++;
+
+				} else {
+					filaEvaluada++;
+					filaInvalida++;
+					fila++;
+				
+				}
+
+			}
+			
+			
+			if(lineasInvalidas > 0){
+					
+				
+			}else{
+				
+				//Insercion de los datos en la base de datos
+				
+				fila = 0;
+				filaEvaluada = 0;
+				filaInvalida = 0;
+				lineasEvaluadas = 0;
+				lineasValidas = 0;
+				lineasInvalidas = 0;
+				errores = 0;
+				
+				// Metodo para recorrer el archivo excel y verificar que no existan
+				// errores
+				while (fila < sheet.getRows()) {
+					if (isNumeric(sheet.getCell(0, fila).getContents())) {
+
+						for (int columna = 0; columna < 7; columna++) {
+
+							String ficha = sheet.getCell(1, fila).getContents();
+							String nombre = sheet.getCell(2, fila).getContents();
+							Date fechaTurno = df.parse(sheet.getCell(
+									4 + columna * 2, 7).getContents());
+							String fecha2 = df1.format(fechaTurno);
+							String idTurno = sheet.getCell(3, fila).getContents();
+							String diaSemana = sheet.getCell(4 + columna * 2, 8)
+									.getContents();
+							String cuadrilla = sheet.getCell(18, fila)
+									.getContents();
+							String idPermiso = "";
+
+							if (sheet.getCell(4 + columna * 2, fila).getContents() == " ") {
+								idPermiso = sheet.getCell(4 + columna * 2, fila)
+										.getContents();
+							} else {
+
+								if (sheet.getCell(5 + columna * 2, fila)
+										.getContents() == " ") {
+									idPermiso = sheet
+											.getCell(5 + columna * 2, fila)
+											.getContents();
+								} else {
+
+									idPermiso = "";
+								}
+							}
+
+							// VALIDACION ID_TURNO
+
+							if (servicioTurno.buscar(idTurno) == null) {
+								errores = errores + 1;
+							}
+
+							// VALIDACION ID_PERMISO
+
+							if (idPermiso != "") {
+
+								if (servicioTipoAusentismo.buscar(idPermiso) == null) {
+									errores = errores + 1;
+
+								}
+
+							}
+							
+							
+							PlanificacionSemanal planificacion = new PlanificacionSemanal(idRow, loteUpload, ficha,
+									nombre, fechaTurno, semana, idTurno,
+									diaSemana, tipoTurno,cuadrilla,
+									idPermiso, fichaJefe, idUsuario,
+									fechaHora, horaAuditoria, fichaUsuario);
+							servicioPlanificacionSemanal.guardar(planificacion);
+
+						}
+
+						if (errores == 0) {
+							lineasValidas = lineasValidas + 1;
+						} else {
+							lineasInvalidas = lineasInvalidas + 1;
+						}
+						fila++;
+						filaEvaluada++;
+
+					} else {
+						filaEvaluada++;
+						filaInvalida++;
+						fila++;
+					
+					}
+
+				}
+				
+				msj.mensajeInformacion(Mensaje.guardado);
+				limpiarCampos();
+					
+			}
+			
 
 		} else {
 
@@ -177,12 +364,25 @@ public class CPlanificacion extends CGenerico {
 
 		}
 
+		
 	}
 
 	private void limpiarCampos() {
+		idRow = 0;
 		txtArchivoPlanificacion.setText("");
 		txtArchivoPlanificacion.setPlaceholder("Ningún archivo seleccionado");
 		txtArchivoPlanificacion.setStyle("color:black !important;");
 
 	}
+
+	// Metodo para validar si un dato es numerico o no
+	private static boolean isNumeric(String cadena) {
+		try {
+			Integer.parseInt(cadena);
+			return true;
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+	}
+
 }
