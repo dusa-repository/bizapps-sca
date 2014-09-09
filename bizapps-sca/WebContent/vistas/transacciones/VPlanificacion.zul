@@ -2,7 +2,7 @@
 	<style src="/public/Estilo.css" />
 	<div id="divPlanificacion"
 		apply="controlador.transacciones.CPlanificacion">
-		<groupbox width="auto" mold="3d">
+		<groupbox width="auto" mold="3d" title="Planificación Semanal">
 			<separator />
 			<separator />
 			<div align="left">

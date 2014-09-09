@@ -22,6 +22,7 @@ import modelo.transacciones.PlanificacionSemanal;
 
 import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -36,6 +37,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.West;
 
 import arbol.CArbol;
 
@@ -79,25 +81,31 @@ public class CPlanificacion extends CGenerico {
 
 	@Override
 	public void inicializar() throws IOException {
-
-		HashMap<String, Object> map = (HashMap<String, Object>) Sessions
+		
+		contenido = (Include) divPlanificacion.getParent();
+		Tabbox tabox = (Tabbox) divPlanificacion.getParent().getParent().getParent()
+				.getParent();
+		tabBox = tabox;
+		tab = (Tab) tabox.getTabs().getLastChild();
+		HashMap<String, Object> mapa = (HashMap<String, Object>) Sessions
 				.getCurrent().getAttribute("mapaGeneral");
-		if (map != null) {
-			if (map.get("tabsGenerales") != null) {
-				tabs = (List<Tab>) map.get("tabsGenerales");
-				System.out.println(tabs.size());
-				map.clear();
-				map = null;
+		if (mapa != null) {
+			if (mapa.get("tabsGenerales") != null) {
+				tabs = (List<Tab>) mapa.get("tabsGenerales");
+				mapa.clear();
+				mapa = null;
 			}
 		}
-
+		
 		txtArchivoPlanificacion.setPlaceholder("Ningún archivo seleccionado");
 		txtArchivoPlanificacion.setStyle("color:black !important;");
 		Botonera botonera = new Botonera() {
 
 			@Override
 			public void salir() {
-				cerrarVentana(divPlanificacion, "Planificacion Semanal", tabs);
+				
+				cerrarVista();
+				
 			}
 
 			@Override
@@ -248,7 +256,6 @@ public class CPlanificacion extends CGenerico {
 					filaEvaluada++;
 
 				} else {
-					filaEvaluada++;
 					filaInvalida++;
 					fila++;
 				
@@ -261,6 +268,12 @@ public class CPlanificacion extends CGenerico {
 					
 				
 			}else{
+				
+				
+				// Copiar archivo excel en el directorio C:\files\
+				Files.copy(
+						new File("C:\\files\\" + loteUpload + "_" + mediaPlanificacion.getName()),
+						mediaPlanificacion.getStreamData());
 				
 				//Insercion de los datos en la base de datos
 				
@@ -343,7 +356,6 @@ public class CPlanificacion extends CGenerico {
 						filaEvaluada++;
 
 					} else {
-						filaEvaluada++;
 						filaInvalida++;
 						fila++;
 					
@@ -351,8 +363,20 @@ public class CPlanificacion extends CGenerico {
 
 				}
 				
-				msj.mensajeInformacion(Mensaje.guardado);
 				limpiarCampos();
+				final HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("id", "consulta");
+				map.put("archivo", mediaPlanificacion.getName());
+				map.put("lineasEvaluadas", filaEvaluada);
+				map.put("lineasValidas", lineasValidas);
+				map.put("lineasInvalidas", lineasInvalidas);
+				Sessions.getCurrent().setAttribute("itemsCatalogo", map);
+				List<Arbol> arboles = servicioArbol
+						.buscarPorNombreArbol("Resultado Importacion");
+				if (!arboles.isEmpty()) {
+					Arbol arbolItem = arboles.get(0);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
+				}
 					
 			}
 			
@@ -372,6 +396,12 @@ public class CPlanificacion extends CGenerico {
 		txtArchivoPlanificacion.setText("");
 		txtArchivoPlanificacion.setPlaceholder("Ningún archivo seleccionado");
 		txtArchivoPlanificacion.setStyle("color:black !important;");
+
+	}
+	
+	private void cerrarVista() {
+		
+		cerrarVentana(divPlanificacion, "Planificacion Semanal", tabs);
 
 	}
 
