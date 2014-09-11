@@ -131,13 +131,13 @@
 						<combobox id="cmbReporte" readonly="true"
 							tooltiptext="Seleccione el reporte" width="80%" tabindex="4">
 							<comboitem
-								label="(R00001) Reporte General de Ausentismo Detallado" />
-							<comboitem label="(R00002)" />
-							<comboitem label="(R00003)" />
-							<comboitem label="(R00004)" />
-							<comboitem label="(R00005)" />
-							<comboitem label="(R00006)" />
-							<comboitem label="(R00007)" />
+								label="(R00001) Reporte General De Ausentismo Detallado" />
+							<comboitem label="(R00002) Reporte General De Ausentismo Resumido" />
+							<comboitem label="(R00003) Reporte De Ausentismo vs Planificacion Diaria" />
+							<comboitem label="(R00004) Reporte Diferencia De Tiempo Entre Molinetes" />
+							<comboitem label="(R00005) Reporte Comparativo De Marcaje Entre Molinetes " />
+							<comboitem label="(R00006) Reporte Ausentismo En Area De Trabajo" />
+							<comboitem label="(R00007) Reporte De Ausentismo vs Planificacion Diaria" />
 						</combobox>
 					</row>
 
