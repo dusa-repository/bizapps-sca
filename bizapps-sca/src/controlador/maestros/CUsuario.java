@@ -240,7 +240,14 @@ public class CUsuario extends CGenerico {
 
 			}
 
+			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
+
 		};
+		botonera.getChildren().get(3).setVisible(false);
 		botoneraUsuario.appendChild(botonera);
 	}
 	

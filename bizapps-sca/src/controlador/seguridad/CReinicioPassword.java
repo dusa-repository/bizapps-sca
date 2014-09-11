@@ -35,7 +35,7 @@ public class CReinicioPassword extends CGenerico {
 	@Wire
 	private Div botoneraReinicio;
 	@Wire
-	private Div divReiniciar;
+	private Window wdwReiniciar;
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private static final long serialVersionUID = 6988038390488496987L;
 
@@ -56,7 +56,7 @@ public class CReinicioPassword extends CGenerico {
 
 			@Override
 			public void salir() {
-				cerrarVentana(divReiniciar, "Reiniciar Password", tabs);
+				wdwReiniciar.onClose();
 			}
 
 			@Override
@@ -98,8 +98,15 @@ public class CReinicioPassword extends CGenerico {
 			@Override
 			public void eliminar() {
 			}
+
+			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 		botonera.getChildren().get(1).setVisible(false);
+		botonera.getChildren().get(3).setVisible(false);
 		botoneraReinicio.appendChild(botonera);
 	}
 

@@ -1,7 +1,7 @@
 <zk>
 	<style src="/public/Estilo.css" />
 	<div id="divTurno" apply="controlador.maestros.CTurno">
-		<groupbox width="auto" mold="3d" title="Turno">
+		<groupbox width="45em" mold="3d" title="Turno">
 			<grid width="100%">
 				<columns visible="false">
 					<column label="" width="22%" />

@@ -110,8 +110,15 @@ public class CTipoAusentismo extends CGenerico {
 				}
 
 			}
+
+			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
+		botonera.getChildren().get(3).setVisible(false);
 		botoneraTipoAusentismo.appendChild(botonera);
 	}
 

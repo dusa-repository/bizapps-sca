@@ -140,8 +140,15 @@ public class CEditarUsuario extends CGenerico {
 			public void eliminar() {
 
 			}
+
+			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 		botonera.getChildren().get(1).setVisible(false);
+		botonera.getChildren().get(3).setVisible(false);
 		botoneraEditarUsuario.appendChild(botonera);
 	}
 
