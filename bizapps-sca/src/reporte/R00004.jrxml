@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="R00004" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="47c82f9c-c1f0-4a9d-83b3-62f4df8f906c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="fecha_desde" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2013-07-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_hasta" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2013-07-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="molinete_entrada" class="java.lang.String"/>
+	<parameter name="molinete_salida" class="java.lang.String"/>
+	<parameter name="ficha" class="java.lang.String"/>
+	<parameter name="molinete_entrada_mostrar" class="java.lang.String"/>
+	<parameter name="molinete_salida_mostrar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select fecha,ficha,(select nombre from planificacion_semanal where planificacion_semanal.ficha=ra.ficha limit 1) as nombre,(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora limit 1) as hora_entrada_mol1,(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='SAL' order by hora desc limit 1) as hora_salida_mol1,(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='ENT' order by hora limit 1) as hora_entrada_mol2,(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1) as hora_salida_mol2,(SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) limit 1) as turno,(SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_entrada_turno,(SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_salida_turno,ABS((SELECT TIME_TO_SEC(TIMEDIFF((select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora limit 1),(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='ENT' order by hora limit 1)))/60)) as diff_entrada,ABS((SELECT TIME_TO_SEC(TIMEDIFF((select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='SAL' order by hora desc limit 1),(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1)))/60)) as diff_salida, (SELECT minutos_laborar from turno where id_turno in (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) )) as minutos_laborar from registro_acceso as ra where ra.fecha>= $P{fecha_desde} and ra.fecha<= $P{fecha_hasta} and ra.ficha   like '%$P!{ficha}%'  and ficha in (select ficha from planificacion_semanal where fecha>=$P{fecha_desde} and fecha<= $P{fecha_hasta}) group by fecha,ficha order by ficha]]>
+	</queryString>
+	<field name="fecha" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ficha" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hora_entrada_mol1" class="java.sql.Timestamp"/>
+	<field name="hora_salida_mol1" class="java.sql.Timestamp"/>
+	<field name="hora_entrada_mol2" class="java.sql.Timestamp"/>
+	<field name="hora_salida_mol2" class="java.sql.Timestamp"/>
+	<field name="turno" class="java.lang.String"/>
+	<field name="hora_entrada_turno" class="java.sql.Timestamp"/>
+	<field name="hora_salida_turno" class="java.sql.Timestamp"/>
+	<field name="diff_entrada" class="java.math.BigDecimal"/>
+	<field name="diff_salida" class="java.math.BigDecimal"/>
+	<field name="minutos_laborar" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{nombre}!='']]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="ausencia" class="java.lang.String">
+		<variableExpression><![CDATA[( $F{diff_entrada}<0 ? 0 : $F{diff_entrada} )+( $F{diff_salida}<0 ? 0 : $F{diff_salida} )]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_minutos_entrada" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{diff_entrada}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_minutos_salida" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{diff_salida}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="143" y="0" width="329" height="20" uuid="dfa82a7e-918d-4be5-b801-b4ef70402ba3"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DIFERENCIA DE TIEMPO ENTRE MOLINETES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="21" y="0" width="57" height="20" uuid="e31d0a43-0ca7-4c29-9973-9f8b8370793c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[R00004]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="190" y="25" width="26" height="20" uuid="a4abf256-720d-4e4b-a522-f70289743a2a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[del]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="292" y="25" width="14" height="20" uuid="41491446-a64b-4fc3-b88a-7a3ce0b4ec61"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[al]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="220" y="25" width="72" height="20" uuid="121bada8-d0ae-4cdd-a5b9-9044e0d616be"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$P{fecha_desde}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="309" y="25" width="77" height="20" uuid="83034e8a-cd5a-4c7a-81e8-5e98968b26f6"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{fecha_hasta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-2" x="180" y="45" width="35" height="18" uuid="631074f2-fcd3-47bc-91d0-bda00c3f739f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Ficha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="220" y="45" width="100" height="20" uuid="e351a7b6-43de-4025-b1c3-093d788f8651"/>
+				<textFieldExpression><![CDATA[( $P{ficha}=='' ? "TODOS" : $P{ficha} )]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="46" splitType="Stretch">
+			<staticText>
+				<reportElement x="43" y="20" width="100" height="20" uuid="da62b74f-0db6-48c5-8540-47dcdfe6c544"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="143" y="20" width="57" height="20" uuid="0faeeb95-9f1d-42f4-b0da-00c2428200dd"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="20" width="46" height="20" uuid="e1539d5f-cac7-4c03-879c-d2822e1f28ef"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ficha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="249" y="20" width="32" height="20" uuid="f1ee6af5-aeec-472c-a076-7b8d553fd208"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Turno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="281" y="20" width="51" height="26" uuid="2e537a36-ec97-4a51-bfe0-4a283a7777f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="337" y="20" width="44" height="26" uuid="e8fe28fe-1359-47cb-ae18-73262df402ba"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="20" width="34" height="26" uuid="49ae82f5-0fe2-4693-b07d-4e1bd1339590"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="386" y="20" width="51" height="26" uuid="0a58e4ae-01de-4c29-af74-03d1b37e1aa0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="20" width="41" height="26" uuid="7640478f-de3b-4369-b074-87277b3ff0e5"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Minutos  Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="533" y="20" width="36" height="26" uuid="5acf7587-9dcb-43f5-8d99-1008c222cdec"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Minutos  Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="0" width="77" height="20" uuid="de5bdc8f-32c1-46f3-927b-1d230dfebd0d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Diferencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-2" x="190" y="2" width="91" height="18" uuid="0fc30dbd-52f9-45e7-95e5-190fe39375ed"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Molinetes:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="281" y="2" width="105" height="20" uuid="78635280-2c05-4899-9365-ea128d37a230"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{molinete_entrada_mostrar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="386" y="2" width="106" height="20" uuid="5fea28cd-4ff1-4e9d-b248-5169cd170693"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{molinete_salida_mostrar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="26" height="20" uuid="1cabea15-0752-4003-b507-5c3d805d144f"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="36" y="0" width="107" height="20" uuid="8e5c9718-9875-4150-82bd-df784ceb9997"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement x="332" y="0" width="54" height="20" uuid="a573db07-2a69-40aa-b4c8-f93e3435409a"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{hora_salida_mol1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="143" y="0" width="57" height="20" uuid="61d3d1cf-b31f-46e7-b1e7-0fbd2b801ca1"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement x="281" y="0" width="51" height="20" uuid="327365eb-e987-4135-b3d2-7e0480406b69"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{hora_entrada_mol1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="49" height="20" uuid="4b7cc418-48a0-4399-bfee-f06eeaa5ec94"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{ficha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="249" y="0" width="32" height="20" uuid="95c0cf17-68ca-4d95-b7b7-fc13a78f12a0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement x="438" y="0" width="54" height="20" uuid="f47dd3b3-3d3f-4121-8414-bb5d4d82b1f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{hora_salida_mol2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement x="386" y="0" width="51" height="20" uuid="e2870101-b3ff-401e-a599-cae666abf244"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{hora_entrada_mol2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="492" y="0" width="41" height="20" uuid="61995718-16fe-446a-84dc-e5c059855d4d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{diff_entrada}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="533" y="0" width="36" height="20" uuid="737f6af1-a16c-46ce-ad4a-6224b8ab05b7"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{diff_salida}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="438" y="0" width="80" height="20" uuid="660e8b82-f5d5-4092-913c-38ba5751d00a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement key="textField" x="518" y="0" width="40" height="20" uuid="018980c7-13d1-497b-9a7d-a0c4ccce23ae"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false">
+				<reportElement key="textField" x="21" y="0" width="100" height="20" uuid="e372499c-839f-484d-9286-da44098b872f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="32">
+			<staticText>
+				<reportElement key="staticText" x="418" y="0" width="74" height="20" uuid="57c2d041-1ca8-4eb1-92ec-51db22a0cb62"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Minutos]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="492" y="0" width="41" height="20" uuid="08f1329f-a84e-4efb-bd2d-5813b9ae90b9"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_minutos_entrada}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="0" width="36" height="20" uuid="cc845651-409a-4e9c-90a6-e5a5c6151854"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_minutos_salida}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
