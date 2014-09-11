@@ -13,10 +13,12 @@ public abstract class Botonera extends Hbox {
 		Button btnGuardar = new Button();
 		Button btnEliminar = new Button();
 		Button btnLimpiar = new Button();
+		Button btnReporte = new Button();
 		Button btnSalir = new Button();
 		this.appendChild(btnGuardar);
 		this.appendChild(btnEliminar);
 		this.appendChild(btnLimpiar);
+		this.appendChild(btnReporte);
 		this.appendChild(btnSalir);
 		
 		btnGuardar
@@ -25,22 +27,26 @@ public abstract class Botonera extends Hbox {
 				.setSrc("/public/imagenes/botones/eliminar.png");
 		btnLimpiar
 				.setSrc("/public/imagenes/botones/limpiar.png");
+		btnReporte.setSrc("/public/imagenes/botones/reporte.png");
 		btnSalir.setSrc("/public/imagenes/botones/salir.png");
 		
 		btnGuardar.setLabel("Guardar");
 		btnEliminar.setLabel("Eliminar");
 		btnLimpiar.setLabel("Limpiar");
 		btnSalir.setLabel("Salir");
+		btnReporte.setLabel("Reporte");
 		
 		btnGuardar.setTooltiptext("Guardar");
 		btnEliminar.setTooltiptext("Eliminar");
 		btnLimpiar.setTooltiptext("Limpiar");
 		btnSalir.setTooltiptext("Salir");
+		btnReporte.setTooltiptext("Reporte");
 		
 		btnEliminar.setSclass("btn");
 		btnLimpiar.setSclass("btn");
 		btnSalir.setSclass("btn");
 		btnGuardar.setSclass("btn");
+		btnReporte.setSclass("btn");
 
 		btnGuardar.addEventListener(Events.ON_CLICK,
 				new EventListener<Event>() {
@@ -69,6 +75,14 @@ public abstract class Botonera extends Hbox {
 				salir();
 			}
 		});
+		
+		btnReporte.addEventListener(Events.ON_CLICK,
+				new EventListener<Event>() {
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						reporte();
+					}
+				});
 	}
 
 	/**
@@ -93,4 +107,7 @@ public abstract class Botonera extends Hbox {
 	 * no este asociado a otra entidad
 	 */
 	public abstract void eliminar();
+	
+	
+	public abstract void reporte();
 }

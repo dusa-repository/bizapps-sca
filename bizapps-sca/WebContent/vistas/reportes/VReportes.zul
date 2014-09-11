@@ -1,0 +1,150 @@
+<zk>
+	<style src="/public/Estilo.css" />
+	<div id="divReporte" apply="controlador.reporte.CReportes">
+		<groupbox width="45em" mold="3d" title="Reportes">
+			<grid width="100%">
+				<columns visible="false">
+					<column label="" width="40%" />
+					<column label="" width="60%" />
+				</columns>
+				<rows>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Fecha Desde:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<datebox readonly="true" width="80%"
+							tabindex="4" id="dtbFechaInicio" format="dd/MM/yyyy"
+							onCreate="self.value = new Date()"
+							tooltiptext="Ingrese la fecha" />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Fecha Hasta:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<datebox readonly="true" width="80%"
+							tabindex="4" id="dtbFechaFinal" format="dd/MM/yyyy"
+							onCreate="self.value = new Date()"
+							tooltiptext="Ingrese la fecha" />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Hora Permitida Desde:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+
+						<timebox id="tmbHoraInicio" width="80%"
+							tooltiptext="Ingrese la hora" format="hh:mm a" readonly="true"
+							onCreate="self.value = new Date()" />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Hora Permitida Hasta:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+
+						<timebox id="tmbHoraFinal" width="80%"
+							tooltiptext="Ingrese la hora" format="hh:mm a" readonly="true"
+							onCreate="self.value = new Date()" />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Molinete de Entrada:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+
+						<combobox tooltiptext="Seleccione un molinete"
+							id="cmbMolineteEntrada" readonly="true" width="80%">
+							<template name="model">
+								<comboitem label="${each.descripcion}" />
+							</template>
+						</combobox>
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta"
+								value="Molinete de Salida:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+
+						<combobox tooltiptext="Seleccione un molinete"
+							id="cmbMolineteSalida" readonly="true" width="80%">
+							<template name="model">
+								<comboitem label="${each.descripcion}" />
+							</template>
+						</combobox>
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Turno:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+
+						<combobox tooltiptext="Seleccione un molinete"
+							id="cmbTurno" readonly="true" width="80%">
+							<template name="model">
+								<comboitem label="${each.descripcion}" />
+							</template>
+						</combobox>
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Ficha:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtFicha" width="80%"
+							tooltiptext="Ingrese la ficha" />
+
+					</row>
+					<row>
+						<hbox>
+							<label value="Nombre Reporte:"
+								class="etiqueta" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red">
+							</label>
+						</hbox>
+
+						<combobox id="cmbReporte" readonly="true"
+							tooltiptext="Seleccione el reporte" width="80%" tabindex="4">
+							<comboitem
+								label="(R00001) Reporte General de Ausentismo Detallado" />
+							<comboitem label="(R00002)" />
+							<comboitem label="(R00003)" />
+							<comboitem label="(R00004)" />
+							<comboitem label="(R00005)" />
+							<comboitem label="(R00006)" />
+							<comboitem label="(R00007)" />
+						</combobox>
+					</row>
+
+				</rows>
+			</grid>
+			<separator />
+			<div id="botoneraReporte" />
+		</groupbox>
+	</div>
+</zk>

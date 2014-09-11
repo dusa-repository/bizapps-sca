@@ -1,7 +1,7 @@
 <zk>
 	<style src="/public/Estilo.css" />
 	<div id="divMolinete" apply="controlador.maestros.CMolinete">
-		<groupbox width="auto" mold="3d" title="Molinete">
+		<groupbox width="45em" mold="3d" title="Molinete">
 			<grid width="100%">
 				<columns visible="false">
 					<column label="" width="22%" />

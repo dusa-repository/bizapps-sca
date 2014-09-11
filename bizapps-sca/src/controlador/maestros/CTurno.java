@@ -126,8 +126,15 @@ public class CTurno extends CGenerico {
 				}
 
 			}
+
+			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
+		botonera.getChildren().get(3).setVisible(false);
 		botoneraTurno.appendChild(botonera);
 	}
 
