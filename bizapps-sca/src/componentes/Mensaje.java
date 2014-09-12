@@ -10,6 +10,8 @@ public class Mensaje {
 	public static String noHayRegistros = "No se Encontraron Registros";
 	public static String editarSoloUno = "Solo puede Editar un Item a la vez, "
 			+ "Seleccione un (1) solo Item y Repita la Operacion";
+	public static String eliminarSoloUno = "Solo puede Eliminar un Registro a la vez, "
+			+ "Seleccione un (1) solo Registro y Repita la Operacion";
 	public static String deseaEliminar = "¿Desea Eliminar el Registro?";
 	public static String eliminado = "Registro Eliminado Exitosamente";
 	public static String estaEditando = "No ha culminado la Edicion, ¿Desea Continuar Editando?";

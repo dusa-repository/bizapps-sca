@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import modelo.maestros.Molinete;
 import modelo.maestros.Turno;
 import modelo.transacciones.PlanificacionSemanal;
 
@@ -22,6 +23,7 @@ import org.zkoss.zul.Include;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -30,6 +32,7 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.Window;
 
 import componentes.Botonera;
+import componentes.Mensaje;
 
 import controlador.maestros.CGenerico;
 
@@ -92,6 +95,46 @@ public class CDepuracion extends CGenerico {
 			public void eliminar() {
 				// TODO Auto-generated method stub
 
+				if (validarSeleccion()) {
+					if (obtenerSeleccionados().size() == 1) {
+
+						Messagebox
+								.show("¿Esta Seguro de Eliminar los registros correspondientes al lote seleccionado?",
+										"Alerta",
+										Messagebox.OK | Messagebox.CANCEL,
+										Messagebox.QUESTION,
+										new org.zkoss.zk.ui.event.EventListener<Event>() {
+											public void onEvent(Event evt)
+													throws InterruptedException {
+												if (evt.getName()
+														.equals("onOK")) {
+
+													PlanificacionSemanal planificacion = objetoSeleccionadoDelCatalogo();
+													List<PlanificacionSemanal> planificaciones = servicioPlanificacionSemanal
+															.buscarPorLoteUpload(planificacion
+																	.getLoteUpload());
+
+													for (int i = 0; i < planificaciones
+															.size(); i++) {
+
+														PlanificacionSemanal loteEliminado = planificaciones
+																.get(i);
+														servicioPlanificacionSemanal
+																.eliminar(loteEliminado);
+
+													}
+
+													llenarDatos();
+													msj.mensajeInformacion(Mensaje.eliminado);
+
+												}
+											}
+										});
+
+					} else
+						msj.mensajeAlerta(Mensaje.eliminarSoloUno);
+				}
+
 			}
 
 			@Override
@@ -112,6 +155,7 @@ public class CDepuracion extends CGenerico {
 	// Metodo que permite cargar los datos del listbox
 	public void llenarDatos() {
 
+		lotes = new ArrayList<PlanificacionSemanal>();
 		planificaciones = servicioPlanificacionSemanal.buscarTodos();
 		boolean encontro = false;
 
@@ -149,6 +193,59 @@ public class CDepuracion extends CGenerico {
 		}
 
 		lsbDepuracion.setModel(new ListModelList<PlanificacionSemanal>(lotes));
+		lsbDepuracion.setMultiple(false);
+		lsbDepuracion.setCheckmark(false);
+		lsbDepuracion.setMultiple(true);
+		lsbDepuracion.setCheckmark(true);
+	}
+
+	public boolean validarSeleccion() {
+		List<PlanificacionSemanal> seleccionados = obtenerSeleccionados();
+		if (seleccionados == null) {
+			msj.mensajeAlerta(Mensaje.noHayRegistros);
+			return false;
+		} else {
+			if (seleccionados.isEmpty()) {
+				msj.mensajeAlerta(Mensaje.noSeleccionoRegistro);
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	public List<PlanificacionSemanal> obtenerSeleccionados() {
+		List<PlanificacionSemanal> valores = new ArrayList<PlanificacionSemanal>();
+		boolean entro = false;
+		if (lsbDepuracion.getItemCount() != 0) {
+			final List<Listitem> list1 = lsbDepuracion.getItems();
+			for (int i = 0; i < list1.size(); i++) {
+				if (list1.get(i).isSelected()) {
+					PlanificacionSemanal planificacion = list1.get(i)
+							.getValue();
+					entro = true;
+					valores.add(planificacion);
+				}
+			}
+			if (!entro) {
+				valores.clear();
+				return valores;
+			}
+			return valores;
+		} else
+			return null;
+	}
+
+	public PlanificacionSemanal objetoSeleccionadoDelCatalogo() {
+		return lsbDepuracion.getSelectedItem().getValue();
+	}
+	
+	public void actualizarLista(List<PlanificacionSemanal> lista) {
+		lsbDepuracion.setModel(new ListModelList<PlanificacionSemanal>(lista));
+		lsbDepuracion.setMultiple(false);
+		lsbDepuracion.setCheckmark(false);
+		lsbDepuracion.setMultiple(true);
+		lsbDepuracion.setCheckmark(true);
 	}
 
 }

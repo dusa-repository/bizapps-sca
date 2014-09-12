@@ -10,27 +10,15 @@
 				pageSize="10" oddRowSclass="non-odd"
 				emptyMessage="No hay planificaciones semanales cargadas">
 				<listhead>
-					<listheader label="Código Planificacion" width="15%"
-						visible="false" />
 					<listheader label="Lote de Upload" />
 					<listheader label="Fecha de Registro" />
 					<listheader label="Hora de Registro" />
-					<listheader label="" width="10%" />
 				</listhead>
 				<template name="model">
 					<listitem>
-						<listcell>
-
-							<intbox value="${each.id}" width="auto"
-								style="border:none" readonly="true" />
-
-						</listcell>
 						<listcell label="${each.loteUpload}"></listcell>
 						<listcell label="${each.fechaRegistro}"></listcell>
 						<listcell label="${each.horaRegistro}"></listcell>
-						<listcell>
-							<checkbox />
-						</listcell>
 					</listitem>
 				</template>
 			</listbox>
