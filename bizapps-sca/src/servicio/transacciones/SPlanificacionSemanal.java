@@ -5,7 +5,6 @@ import interfacedao.transacciones.IPlanificacionSemanalDAO;
 
 import java.util.List;
 
-import modelo.maestros.Molinete;
 import modelo.transacciones.PlanificacionSemanal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,10 @@ public class SPlanificacionSemanal {
 	
 	public List<PlanificacionSemanal> buscarTodos() {
 		return planificacionSemanalDAO.findAll();
+	}
+	
+	public void eliminar(PlanificacionSemanal planificacion) {
+		planificacionSemanalDAO.delete(planificacion);
 	}
 
 
