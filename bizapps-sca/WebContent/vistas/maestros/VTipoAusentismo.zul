@@ -2,7 +2,7 @@
 	<style src="/public/Estilo.css" />
 	<div id="divTipoAusentismo"
 		apply="controlador.maestros.CTipoAusentismo">
-		<groupbox width="42em" mold="3d" title="auto">
+		<groupbox width="42em" mold="3d" title="Tipo de Ausentismo">
 			<grid width="100%">
 				<columns visible="false">
 					<column label="" width="22%" />
