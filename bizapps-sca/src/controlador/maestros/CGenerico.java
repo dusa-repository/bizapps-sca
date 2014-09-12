@@ -76,14 +76,12 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 	// public static List<Tab> tabs = new ArrayList<Tab>();
 	public List<Tab> tabs = new ArrayList<Tab>();
-	protected DateFormat df = new SimpleDateFormat("HH:mm:ss");
+	protected DateFormat df = new SimpleDateFormat("HH:mm a");
 	public final Calendar calendario = Calendar.getInstance();
 	public String horaAuditoria = String.valueOf(calendario
 			.get(Calendar.HOUR_OF_DAY))
 			+ ":"
-			+ String.valueOf(calendario.get(Calendar.MINUTE))
-			+ ":"
-			+ String.valueOf(calendario.get(Calendar.SECOND));
+			+ String.valueOf(calendario.get(Calendar.MINUTE));
 	public java.util.Date fecha = new Date();
 	public Timestamp fechaHora = new Timestamp(fecha.getTime());
 

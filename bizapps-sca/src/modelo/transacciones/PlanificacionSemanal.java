@@ -59,8 +59,9 @@ public class PlanificacionSemanal implements Serializable {
 	@Column(name="id_usuario", length = 50)
 	private String idUsuario;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_registro")
-	private Timestamp fechaRegistro;
+	private Date fechaRegistro;
 
 	@Column(name="hora_registro")
 	private String horaRegistro;
@@ -77,7 +78,7 @@ public class PlanificacionSemanal implements Serializable {
 			String nombre, Date fechaTurno, int semana, String idTurno,
 			String diaSemana, String tipoTurno, String cuadrilla,
 			String idPermiso, String fichaJefe, String idUsuario,
-			Timestamp fechaRegistro, String horaRegistro, String fichaUsuario) {
+			Date fechaRegistro, String horaRegistro, String fichaUsuario) {
 		super();
 		this.id = id;
 		this.loteUpload = loteUpload;
@@ -201,11 +202,11 @@ public class PlanificacionSemanal implements Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public Timestamp getFechaRegistro() {
+	public Date getFechaRegistro() {
 		return fechaRegistro;
 	}
 
-	public void setFechaRegistro(Timestamp fechaRegistro) {
+	public void setFechaRegistro(Date fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
 	}
 

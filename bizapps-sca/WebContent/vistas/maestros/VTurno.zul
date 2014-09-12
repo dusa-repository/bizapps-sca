@@ -34,14 +34,14 @@
 							value="Hora de entrada:" />
 
 						<timebox id="tmbHoraEntrada" width="120px"
-							tooltiptext="Ingrese la hora de entrada" format="hh:mm:ss a"
+							tooltiptext="Ingrese la hora de entrada" format="hh:mm a"
 							readonly="true" onCreate="self.value = new Date()" />
 					</row>
 					<row>
 						<label class="etiqueta" value="Hora de salida:" />
 
 						<timebox id="tmbHoraSalida" width="120px"
-							tooltiptext="Ingrese la hora de salida" format="hh:mm:ss a"
+							tooltiptext="Ingrese la hora de salida" format="hh:mm a"
 							readonly="true" onCreate="self.value = new Date()" />
 					</row>
 					<row>

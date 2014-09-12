@@ -28,6 +28,11 @@ public class SPlanificacionSemanal {
 		planificaciones = planificacionSemanalDAO.findByLoteUpload(lote);
 		return planificaciones;
 	}
+	
+	
+	public List<PlanificacionSemanal> buscarTodos() {
+		return planificacionSemanalDAO.findAll();
+	}
 
 
 }

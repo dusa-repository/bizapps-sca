@@ -188,6 +188,7 @@ public class CPlanificacion extends CGenerico {
 			String fichaJefe = sheet.getCell(22, 4).getContents();
 			String idUsuario = nombreUsuarioSesion();
 			String fichaUsuario = usuarioSesion(idUsuario).getFicha();
+			Date fechaRegistro = new Date();
 			errores = 0;
 
 			// VALIDACION SEMANA
@@ -272,8 +273,24 @@ public class CPlanificacion extends CGenerico {
 			
 			
 			if(lineasInvalidas > 0){
-					
 				
+				
+				limpiarCampos();
+				final HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("id", "consulta");
+				map.put("archivo", mediaPlanificacion.getName());
+				map.put("lineasEvaluadas", filaEvaluada);
+				map.put("lineasValidas", lineasValidas);
+				map.put("lineasInvalidas", lineasInvalidas);
+				Sessions.getCurrent().setAttribute("itemsCatalogo", map);
+				List<Arbol> arboles = servicioArbol
+						.buscarPorNombreArbol("Resultado Importacion");
+				if (!arboles.isEmpty()) {
+					Arbol arbolItem = arboles.get(0);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
+				}
+				
+					
 			}else{
 				
 				
@@ -349,7 +366,7 @@ public class CPlanificacion extends CGenerico {
 									nombre, fechaTurno, semana, idTurno,
 									diaSemana, tipoTurno,cuadrilla,
 									idPermiso, fichaJefe, idUsuario,
-									fechaHora, horaAuditoria, fichaUsuario);
+									fechaRegistro, horaAuditoria, fichaUsuario);
 							servicioPlanificacionSemanal.guardar(planificacion);
 
 						}
