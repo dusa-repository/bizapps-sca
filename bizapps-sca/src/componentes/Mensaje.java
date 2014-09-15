@@ -6,6 +6,7 @@ public class Mensaje {
 	public static String guardado = "Registro Guardado Exitosamente.";
 	public static String claveUsada = "La Clave ha sido Usada por Otro Registro.";
 	public static String camposVacios = "Debe Llenar Todos los Campos Requeridos.";
+	public static String errorEnReporte = "Ha ocurrido un error originando el reporte";
 	public static String noSeleccionoItem = "No ha seleccionado ningun Item";
 	public static String noHayRegistros = "No se Encontraron Registros";
 	public static String editarSoloUno = "Solo puede Editar un Item a la vez, "
