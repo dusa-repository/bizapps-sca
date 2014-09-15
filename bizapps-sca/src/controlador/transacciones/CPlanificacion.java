@@ -76,15 +76,16 @@ public class CPlanificacion extends CGenerico {
 	int lineasValidas = 0;
 	int lineasInvalidas = 0;
 	int errores = 0;
+	int errorLinea = 0;
 
 	private CArbol cArbol = new CArbol();
 
 	@Override
 	public void inicializar() throws IOException {
-		
+
 		contenido = (Include) divPlanificacion.getParent();
-		Tabbox tabox = (Tabbox) divPlanificacion.getParent().getParent().getParent()
-				.getParent();
+		Tabbox tabox = (Tabbox) divPlanificacion.getParent().getParent()
+				.getParent().getParent();
 		tabBox = tabox;
 		tab = (Tab) tabox.getTabs().getLastChild();
 		HashMap<String, Object> mapa = (HashMap<String, Object>) Sessions
@@ -96,16 +97,16 @@ public class CPlanificacion extends CGenerico {
 				mapa = null;
 			}
 		}
-		
+
 		txtArchivoPlanificacion.setPlaceholder("Ningún archivo seleccionado");
 		txtArchivoPlanificacion.setStyle("color:black !important;");
 		Botonera botonera = new Botonera() {
 
 			@Override
 			public void salir() {
-				
+
 				cerrarVista();
-				
+
 			}
 
 			@Override
@@ -126,7 +127,7 @@ public class CPlanificacion extends CGenerico {
 			@Override
 			public void reporte() {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		botonera.getChildren().get(0).setVisible(false);
@@ -215,6 +216,8 @@ public class CPlanificacion extends CGenerico {
 			while (fila < sheet.getRows()) {
 				if (isNumeric(sheet.getCell(0, fila).getContents())) {
 
+					errorLinea = 0;
+
 					for (int columna = 0; columna < 7; columna++) {
 
 						String idTurno = sheet.getCell(3, fila).getContents();
@@ -240,6 +243,7 @@ public class CPlanificacion extends CGenerico {
 
 						if (servicioTurno.buscar(idTurno) == null) {
 							errores = errores + 1;
+							errorLinea = errorLinea + 1;
 						}
 
 						// VALIDACION ID_PERMISO
@@ -248,6 +252,7 @@ public class CPlanificacion extends CGenerico {
 
 							if (servicioTipoAusentismo.buscar(idPermiso) == null) {
 								errores = errores + 1;
+								errorLinea = errorLinea + 1;
 
 							}
 
@@ -255,26 +260,27 @@ public class CPlanificacion extends CGenerico {
 
 					}
 
-					if (errores == 0) {
-						lineasValidas = lineasValidas + 1;
-					} else {
+					if (errorLinea != 0) {
 						lineasInvalidas = lineasInvalidas + 1;
+						
+					}else{
+						
+						lineasValidas = lineasValidas + 1;
 					}
+
 					fila++;
 					filaEvaluada++;
 
 				} else {
 					filaInvalida++;
 					fila++;
-				
+
 				}
 
 			}
-			
-			
-			if(lineasInvalidas > 0){
-				
-				
+
+			if (lineasInvalidas > 0) {
+
 				limpiarCampos();
 				final HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("id", "consulta");
@@ -287,20 +293,19 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab,
+							tabs);
 				}
-				
-					
-			}else{
-				
-				
+
+			} else {
+
 				// Copiar archivo excel en el directorio C:\files\
-				Files.copy(
-						new File("C:\\files\\" + loteUpload + "_" + mediaPlanificacion.getName()),
+				Files.copy(new File("C:\\files\\" + loteUpload + "_"
+						+ mediaPlanificacion.getName()),
 						mediaPlanificacion.getStreamData());
-				
-				//Insercion de los datos en la base de datos
-				
+
+				// Insercion de los datos en la base de datos
+
 				fila = 0;
 				filaEvaluada = 0;
 				filaInvalida = 0;
@@ -308,8 +313,9 @@ public class CPlanificacion extends CGenerico {
 				lineasValidas = 0;
 				lineasInvalidas = 0;
 				errores = 0;
-				
-				// Metodo para recorrer el archivo excel y verificar que no existan
+
+				// Metodo para recorrer el archivo excel y verificar que no
+				// existan
 				// errores
 				while (fila < sheet.getRows()) {
 					if (isNumeric(sheet.getCell(0, fila).getContents())) {
@@ -317,27 +323,30 @@ public class CPlanificacion extends CGenerico {
 						for (int columna = 0; columna < 7; columna++) {
 
 							String ficha = sheet.getCell(1, fila).getContents();
-							String nombre = sheet.getCell(2, fila).getContents();
+							String nombre = sheet.getCell(2, fila)
+									.getContents();
 							Date fechaTurno = df.parse(sheet.getCell(
 									4 + columna * 2, 7).getContents());
 							String fecha2 = df1.format(fechaTurno);
-							String idTurno = sheet.getCell(3, fila).getContents();
-							String diaSemana = sheet.getCell(4 + columna * 2, 8)
+							String idTurno = sheet.getCell(3, fila)
 									.getContents();
+							String diaSemana = sheet
+									.getCell(4 + columna * 2, 8).getContents();
 							String cuadrilla = sheet.getCell(18, fila)
 									.getContents();
 							String idPermiso = "";
 
-							if (sheet.getCell(4 + columna * 2, fila).getContents() == " ") {
-								idPermiso = sheet.getCell(4 + columna * 2, fila)
+							if (sheet.getCell(4 + columna * 2, fila)
+									.getContents() == " ") {
+								idPermiso = sheet
+										.getCell(4 + columna * 2, fila)
 										.getContents();
 							} else {
 
 								if (sheet.getCell(5 + columna * 2, fila)
 										.getContents() == " ") {
-									idPermiso = sheet
-											.getCell(5 + columna * 2, fila)
-											.getContents();
+									idPermiso = sheet.getCell(5 + columna * 2,
+											fila).getContents();
 								} else {
 
 									idPermiso = "";
@@ -360,13 +369,13 @@ public class CPlanificacion extends CGenerico {
 								}
 
 							}
-							
-							
-							PlanificacionSemanal planificacion = new PlanificacionSemanal(idRow, loteUpload, ficha,
-									nombre, fechaTurno, semana, idTurno,
-									diaSemana, tipoTurno,cuadrilla,
-									idPermiso, fichaJefe, idUsuario,
-									fechaRegistro, horaAuditoria, fichaUsuario);
+
+							PlanificacionSemanal planificacion = new PlanificacionSemanal(
+									idRow, loteUpload, ficha, nombre,
+									fechaTurno, semana, idTurno, diaSemana,
+									tipoTurno, cuadrilla, idPermiso, fichaJefe,
+									idUsuario, fechaRegistro, horaAuditoria,
+									fichaUsuario);
 							servicioPlanificacionSemanal.guardar(planificacion);
 
 						}
@@ -382,11 +391,11 @@ public class CPlanificacion extends CGenerico {
 					} else {
 						filaInvalida++;
 						fila++;
-					
+
 					}
 
 				}
-				
+
 				limpiarCampos();
 				final HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("id", "consulta");
@@ -399,11 +408,11 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab,
+							tabs);
 				}
-					
+
 			}
-			
 
 		} else {
 
@@ -412,7 +421,6 @@ public class CPlanificacion extends CGenerico {
 
 		}
 
-		
 	}
 
 	private void limpiarCampos() {
@@ -422,9 +430,9 @@ public class CPlanificacion extends CGenerico {
 		txtArchivoPlanificacion.setStyle("color:black !important;");
 
 	}
-	
+
 	private void cerrarVista() {
-		
+
 		cerrarVentana(divPlanificacion, "Planificacion Semanal", tabs);
 
 	}
