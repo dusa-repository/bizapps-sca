@@ -44,7 +44,7 @@
 						</hbox>
 
 						<timebox id="tmbHoraInicio" width="80%"
-							tooltiptext="Ingrese la hora" format="hh:mm a" readonly="true"
+							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
 					</row>
 					<row>
@@ -57,7 +57,7 @@
 						</hbox>
 
 						<timebox id="tmbHoraFinal" width="80%"
-							tooltiptext="Ingrese la hora" format="hh:mm a" readonly="true"
+							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
 					</row>
 					<row>
