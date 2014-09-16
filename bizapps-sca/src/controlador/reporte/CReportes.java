@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 import modelo.maestros.Molinete;
 import modelo.maestros.Turno;
+import modelo.transacciones.PlanificacionSemanal;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -70,6 +72,7 @@ public class CReportes extends CGenerico {
 	protected Connection conexion;
 	List<Turno> turnos = new ArrayList<Turno>();
 	List<Molinete> molinetes = new ArrayList<Molinete>();
+	List<PlanificacionSemanal> planificaciones = new ArrayList<PlanificacionSemanal>();
 
 	@Override
 	public void inicializar() throws IOException {
@@ -125,35 +128,60 @@ public class CReportes extends CGenerico {
 				// TODO Auto-generated method stub
 
 				if (validar()) {
-
+					
+					DateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
+					DateFormat hora = new SimpleDateFormat("hh:mm:ss");
+					String hora1 = "1";
+					String hora2 = "2";
+					String fecha1 = fecha.format(dtbFechaInicio.getValue());
+					String fecha2 = fecha.format(dtbFechaFinal.getValue());
+					
+					System.out.println(fecha1);
+					
+					String molineteEntrada = servicioMolinete
+							.buscarPorDescripcion(cmbMolineteEntrada.getValue())
+							.getId();
+					String molineteSalida = servicioMolinete
+							.buscarPorDescripcion(cmbMolineteSalida.getValue())
+							.getId();
+					String turno = servicioTurno.buscarPorDescripcion(
+							cmbTurno.getValue()).getId();
+					String ficha = txtFicha.getValue();
+					int totalNomina = 2;
 					String reporte = "";
 					System.out.println(cmbReporte.getSelectedItem().getId());
 
-					if (cmbReporte.getSelectedItem().getId() == "R00001") {
+					if (cmbReporte.getSelectedItem().getId().equals("R00001")) {
 						reporte = "R00001";
 					} else {
 
-						if (cmbReporte.getSelectedItem().getId() == "R00002") {
+						if (cmbReporte.getSelectedItem().getId()
+								.equals("R00002")) {
 							reporte = "R00002";
 						} else {
 
-							if (cmbReporte.getSelectedItem().getId() == "R00003") {
+							if (cmbReporte.getSelectedItem().getId()
+									.equals("R00003")) {
 								reporte = "R00003";
 							} else {
 
-								if (cmbReporte.getSelectedItem().getId() == "R00004") {
+								if (cmbReporte.getSelectedItem().getId()
+										.equals("R00004")) {
 									reporte = "R00004";
 								} else {
 
-									if (cmbReporte.getSelectedItem().getId() == "R00005") {
+									if (cmbReporte.getSelectedItem().getId()
+											.equals("R00005")) {
 										reporte = "R00005";
 									} else {
 
-										if (cmbReporte.getSelectedItem().getId() == "R00006") {
+										if (cmbReporte.getSelectedItem()
+												.getId().equals("R00006")) {
 											reporte = "R00006";
 										} else {
 
-											if (cmbReporte.getSelectedItem().getId() == "R00007") {
+											if (cmbReporte.getSelectedItem()
+													.getId().equals("R00007")) {
 												reporte = "R00007";
 											}
 										}
@@ -166,9 +194,27 @@ public class CReportes extends CGenerico {
 					}
 
 					System.out.println(reporte);
-					
+
 					Clients.evalJavaScript("window.open('/bizapps-sca/Generador?valor=1&valor2="
 							+ reporte
+							+ "&valor3="
+							+ fecha1
+							+ "&valor4="
+							+ fecha2
+							+ "&valor5="
+							+ hora1
+							+ "&valor6="
+							+ hora2
+							+ "&valor7="
+							+ molineteEntrada
+							+ "&valor8="
+							+ molineteSalida
+							+ "&valor9="
+							+ turno
+							+ "&valor10="
+							+ ficha
+							+ "&valor11="
+							+ totalNomina
 							+ "','','top=100,left=200,height=600,width=800,scrollbars=1,resizable=1')");
 
 				}
@@ -212,97 +258,89 @@ public class CReportes extends CGenerico {
 
 	}
 
-	public byte[] reporte(String part2) {
-		
+	public byte[] reporte(String part2, String part3, String part4,
+			String part5, String part6, String part7, String part8,
+			String part9, String part10, String part11) {
+
 		byte[] fichero = null;
 
-        conexion = null;
-        try {
+		conexion = null;
+		try {
 
+			ClassLoader cl = this.getClass().getClassLoader();
+			InputStream fis = null;
+			
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			
+			Date fechaInicio = null;
+			Timestamp fechaInicioHora = null;
+			try {
+				fechaInicio = formato.parse(part3);
+				fechaInicioHora = new Timestamp(fechaInicio.getTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-            ClassLoader cl = this.getClass().getClassLoader();
-            InputStream fis = null;
-           
-            
-            Date fechaInicio = dtbFechaInicio.getValue();
-            Date fechaFin = dtbFechaFinal.getValue();
-            Date horaInicio = tmbHoraInicio.getValue();
-            Date horaFin = tmbHoraFinal.getValue();
-            String molineteEntrada = cmbMolineteEntrada.getValue();
-            String molineteSalida = cmbMolineteSalida.getValue();
-            String turno = cmbTurno.getValue();
-            String ficha = txtFicha.getValue();
-            
-            
-            
-            Map parameters = new HashMap();
+			Map parameters = new HashMap();
 
-            parameters.put("fecha_desde",part2);
-            parameters.put("fecha_hasta", part2);
-            parameters.put("molinete_entrada", part2);
-            parameters.put("molinete_salida", part2);
-            parameters.put("ficha", part2);
-            parameters.put("total_nomina_planificada", part2);
-            parameters.put("molinete_entrada_mostrar", part2);
-            parameters.put("molinete_salida_mostrar", part2);
-            parameters.put("turno", part2);
-            
-            
-        
-            fis = (cl.getResourceAsStream("/reporte/R00001.jasper"));
-
-            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-            String url = "jdbc:sqlserver:localhost:1433;DatabaseName=dusa_sca";
-            //String url = "jdbc:sqlserver://172.23.20.72:1433;databaseName=dusa_sca";
-            String user = "client";
-            String password = "123";
-
-            try {
-                
-                try {
-                    conexion = java.sql.DriverManager.getConnection(url, user, password);
-                    //conexion=Conexion.getConexion();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            JasperPrint jasperPrint = null;
-
-            try {
-
-                if (fichero==null)
-                {
-                  fichero = JasperRunManager.runReportToPdf(fis, parameters, conexion);
-                }
-
-            } catch (JRException ex) {
-            	ex.printStackTrace();
-            	System.out.println(ex.toString());
-            }
-
-            if (conexion != null) {
-                conexion.close();
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error de conexión: " + e.getMessage());
-            System.exit(4);
-        } catch (Exception e) {
-            System.out.println("Error de Reporte: " + e.toString());
-            System.exit(4);
-        }
-
- 
-        return fichero;
-        
-        
-       
-
-    }
+			if(part2.equals("R00003")){
 				
+				parameters.put("fecha_desde", fechaInicioHora);
+				parameters.put("molinete_entrada", part7);
+				parameters.put("total_nomina_planificada", part11);
+				parameters.put("molinete_entrada_mostrar", part7);
+				parameters.put("turno", part9);
+
+				fis = (cl.getResourceAsStream("/reporte/R00003.jasper"));
+				
+			}
+			
+			
+
+			String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+			String url = "jdbc:sqlserver://localhost:1433;DatabaseName=dusa_sca";
+			String user = "client";
+			String password = "123";
+
+			try {
+
+				try {
+					conexion = java.sql.DriverManager.getConnection(url, user,
+							password);
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+			JasperPrint jasperPrint = null;
+
+			try {
+
+				if (fichero == null) {
+					fichero = JasperRunManager.runReportToPdf(fis, parameters,
+							conexion);
+				}
+
+			} catch (JRException ex) {
+				ex.printStackTrace();
+				System.out.println(ex.toString());
+			}
+
+			if (conexion != null) {
+				conexion.close();
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error de conexión: " + e.getMessage());
+			System.exit(4);
+		}
+
+		return fichero;
+
+	}
 
 }

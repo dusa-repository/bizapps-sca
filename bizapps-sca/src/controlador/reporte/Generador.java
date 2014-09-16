@@ -35,10 +35,19 @@ public class Generador extends HttpServlet {
 		ServletOutputStream out;
 		String par1 = request.getParameter("valor");
 		String part2 = request.getParameter("valor2");
+		String part3 = request.getParameter("valor3");
+		String part4 = request.getParameter("valor4");
+		String part5 = request.getParameter("valor5");
+		String part6 = request.getParameter("valor6");
+		String part7 = request.getParameter("valor7");
+		String part8 = request.getParameter("valor8");
+		String part9 = request.getParameter("valor9");
+		String part10 = request.getParameter("valor10");
+		String part11 = request.getParameter("valor11");
 		byte[] fichero = null;
 		switch (par1) {
 		case "1":
-			fichero = cReportes.reporte(part2);
+			fichero = cReportes.reporte(part2,part3,part4,part5,part6,part7,part8,part9,part10,part11);
 			break;
 		default:
 			break;
