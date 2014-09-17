@@ -99,7 +99,7 @@ ORDER BY id_turno,cuadrilla]]>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="235" y="26" width="76" height="19" uuid="121bada8-d0ae-4cdd-a5b9-9044e0d616be"/>
+				<reportElement key="textField" x="235" y="26" width="61" height="19" uuid="121bada8-d0ae-4cdd-a5b9-9044e0d616be"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>

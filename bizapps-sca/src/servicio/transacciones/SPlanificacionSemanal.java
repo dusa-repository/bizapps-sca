@@ -3,6 +3,7 @@ package servicio.transacciones;
 
 import interfacedao.transacciones.IPlanificacionSemanalDAO;
 
+import java.util.Date;
 import java.util.List;
 
 import modelo.transacciones.PlanificacionSemanal;
@@ -25,6 +26,14 @@ public class SPlanificacionSemanal {
 	public List<PlanificacionSemanal> buscarPorLoteUpload(int lote) {
 		List<PlanificacionSemanal> planificaciones;
 		planificaciones = planificacionSemanalDAO.findByLoteUpload(lote);
+		return planificaciones;
+	}
+	
+	
+	/* Servicio que permite buscar los registros de una planificacion de acuerdo a la fecha y al id_turno*/
+	public List<PlanificacionSemanal> buscarPorFechaYTurno(Date fecha, String turno) {
+		List<PlanificacionSemanal> planificaciones;
+		planificaciones = planificacionSemanalDAO.findByFechaTurnoAndIdTurno(fecha,turno);
 		return planificaciones;
 	}
 	
