@@ -20,17 +20,23 @@
 	<parameter name="molinete_entrada_mostrar" class="java.lang.String"/>
 	<parameter name="molinete_salida_mostrar" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select fecha,ficha,(select nombre from planificacion_semanal where planificacion_semanal.ficha=ra.ficha limit 1) as nombre,(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora limit 1) as hora_entrada_mol1,(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='SAL' order by hora desc limit 1) as hora_salida_mol1,(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='ENT' order by hora limit 1) as hora_entrada_mol2,(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1) as hora_salida_mol2,(SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) limit 1) as turno,(SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_entrada_turno,(SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_salida_turno,ABS((SELECT TIME_TO_SEC(TIMEDIFF((select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora limit 1),(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='ENT' order by hora limit 1)))/60)) as diff_entrada,ABS((SELECT TIME_TO_SEC(TIMEDIFF((select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='SAL' order by hora desc limit 1),(select hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1)))/60)) as diff_salida, (SELECT minutos_laborar from turno where id_turno in (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) )) as minutos_laborar from registro_acceso as ra where ra.fecha>= $P{fecha_desde} and ra.fecha<= $P{fecha_hasta} and ra.ficha   like '%$P!{ficha}%'  and ficha in (select ficha from planificacion_semanal where fecha>=$P{fecha_desde} and fecha<= $P{fecha_hasta}) group by fecha,ficha order by ficha]]>
+		<![CDATA[select fecha,ficha,
+(select TOP 1 nombre from planificacion_semanal where planificacion_semanal.ficha=ra.ficha ) as nombre,
+(select TOP 1 hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) as hora_entrada_mol1,
+(select TOP 1 hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='SAL' order by hora desc) as hora_salida_mol1,
+(select TOP 1 hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='ENT' order by hora ) as hora_entrada_mol2,
+(select TOP 1 hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ) as hora_salida_mol2,
+(SELECT   TOP 1  id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) ) as turno,
+(SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT   TOP 1  id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_entrada_turno,
+(SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_salida_turno,
+ABS((DATEDIFF(MINUTE,(SELECT    hora_entrada  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) ,(SELECT  TOP 1   hora  from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) ))) as diff_entrada,
+ABS((DATEDIFF(MINUTE,(select TOP 1  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ),(SELECT    hora_salida  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha   =ra.ficha) AND (fecha_turno = ra.fecha) )))  ))) as diff_salida,
+(SELECT minutos_laborar from turno where id_turno in (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) )) as minutos_laborar
+from registro_acceso as ra where ra.fecha>= $P{fecha_desde} and ra.fecha<= $P{fecha_hasta} and ra.ficha   like '%$P!{ficha}%'  and ficha in (select ficha from planificacion_semanal where fecha>=$P{fecha_desde} and fecha<= $P{fecha_hasta}) group by fecha,ficha order by ficha]]>
 	</queryString>
-	<field name="fecha" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ficha" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="nombre" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="ficha" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
 	<field name="hora_entrada_mol1" class="java.sql.Timestamp"/>
 	<field name="hora_salida_mol1" class="java.sql.Timestamp"/>
 	<field name="hora_entrada_mol2" class="java.sql.Timestamp"/>
@@ -38,11 +44,9 @@
 	<field name="turno" class="java.lang.String"/>
 	<field name="hora_entrada_turno" class="java.sql.Timestamp"/>
 	<field name="hora_salida_turno" class="java.sql.Timestamp"/>
-	<field name="diff_entrada" class="java.math.BigDecimal"/>
-	<field name="diff_salida" class="java.math.BigDecimal"/>
-	<field name="minutos_laborar" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="diff_entrada" class="java.lang.Integer"/>
+	<field name="diff_salida" class="java.lang.Integer"/>
+	<field name="minutos_laborar" class="java.lang.Integer"/>
 	<variable name="contador" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$F{nombre}!='']]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
