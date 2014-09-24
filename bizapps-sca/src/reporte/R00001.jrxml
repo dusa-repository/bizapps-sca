@@ -22,41 +22,29 @@
 	<parameter name="molinete_salida_mostrar" class="java.lang.String"/>
 	<parameter name="turno" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select fecha_turno,planificacion_semanal.ficha, nombre,(SELECT count(*) FROM dusa_sca.planificacion_semanal as ps where ps.fecha_turno=planificacion_semanal.fecha_turno and ps.id_permiso<>'VAC'  and ps.id_turno in ( $P!{turno} )) as total_nomina_planificada,
-(select  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora limit 1) as hora_entrada,
-(select  IFNULL(hora,cast(NOW() as datetime)) as hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1) as hora_salida,
-(SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) limit 1) as turno,
-(SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_entrada_turno,
-(SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) as hora_salida_turno,
-((SELECT TIME_TO_SEC(TIMEDIFF((SELECT    TIME_FORMAT( hora_entrada, '%H:%i:%s')  FROM         turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))),(SELECT    TIME_FORMAT( hora, '%H:%i:%s')  from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora  limit 1)))/1)) as diff_entrada,
-(SELECT TIME_TO_SEC(TIMEDIFF((select TIME_FORMAT( hora, '%H:%i:%s') from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc limit 1), (SELECT    TIME_FORMAT( hora_salida, '%H:%i:%s')  FROM         turno WHERE     (id_turno = (SELECT     id_turno FROM    planificacion_semanal WHERE     (ficha   =ra.ficha) AND (fecha_turno = ra.fecha) limit 1))) )/1)) as diff_salida ,
+		<![CDATA[select fecha_turno,planificacion_semanal.ficha, nombre,(SELECT count(*) FROM planificacion_semanal as ps where ps.fecha_turno=planificacion_semanal.fecha_turno and ps.id_permiso<>'VAC'  and ps.id_turno in ( $P!{turno} )) as total_nomina_planificada,
+(select TOP 1 hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) as hora_entrada,
+(select TOP 1 ISNULL(hora,cast(getdate() as datetime)) as hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ) as hora_salida,
+(SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) ) as turno,
+(SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_entrada_turno,
+(SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_salida_turno,
+(DATEDIFF(MINUTE,(SELECT    hora_entrada  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) ,(SELECT  TOP 1   hora  from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) )) as diff_entrada,
+(DATEDIFF(MINUTE,(select TOP 1  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ),(SELECT    hora_salida  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha   =ra.ficha) AND (fecha_turno = ra.fecha) )))  )) as diff_salida,
 (SELECT minutos_laborar from turno where id_turno=planificacion_semanal.id_turno ) as minutos_laborar
-from planificacion_semanal  inner join registro_acceso as ra ON ra.ficha= planificacion_semanal.ficha AND fecha=fecha_turno  where fecha_turno>=$P{fecha_desde}  and fecha_turno<=$P{fecha_hasta}  and planificacion_semanal.ficha like '%$P!{ficha}%'  and id_turno in ( $P!{turno} )   and id_permiso='' group by fecha_turno,ficha order by fecha_turno,id_turno,nombre,planificacion_semanal.ficha]]>
+from planificacion_semanal  inner join registro_acceso as ra ON ra.ficha= planificacion_semanal.ficha AND fecha=fecha_turno  where fecha_turno>=$P{fecha_desde}  and fecha_turno<=$P{fecha_hasta}  and planificacion_semanal.ficha like '%$P!{ficha}%'  and id_turno in ( $P!{turno} )   and id_permiso='' group by fecha_turno,ra.fecha,planificacion_semanal.ficha,ra.ficha,nombre,planificacion_semanal.id_turno order by fecha_turno,id_turno,nombre,planificacion_semanal.ficha]]>
 	</queryString>
-	<field name="fecha_turno" class="java.sql.Date">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ficha" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="nombre" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="total_nomina_planificada" class="java.lang.Long"/>
-	<field name="hora_entrada" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="hora_salida" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="fecha_turno" class="java.sql.Timestamp"/>
+	<field name="ficha" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="total_nomina_planificada" class="java.lang.Integer"/>
+	<field name="hora_entrada" class="java.sql.Timestamp"/>
+	<field name="hora_salida" class="java.sql.Timestamp"/>
 	<field name="turno" class="java.lang.String"/>
 	<field name="hora_entrada_turno" class="java.sql.Timestamp"/>
 	<field name="hora_salida_turno" class="java.sql.Timestamp"/>
-	<field name="diff_entrada" class="java.math.BigDecimal"/>
-	<field name="diff_salida" class="java.lang.Long"/>
-	<field name="minutos_laborar" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="diff_entrada" class="java.lang.Integer"/>
+	<field name="diff_salida" class="java.lang.Integer"/>
+	<field name="minutos_laborar" class="java.lang.Integer"/>
 	<variable name="contador" class="java.lang.Integer" resetType="Group" resetGroup="fecha" calculation="Count">
 		<variableExpression><![CDATA[$F{nombre}!='']]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
