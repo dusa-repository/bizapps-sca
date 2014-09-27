@@ -175,6 +175,8 @@ public class CPlanificacion extends CGenerico {
 	public void subirArchivo() throws BiffException, IOException,
 			ParseException {
 
+		lineasInvalidas = 0;
+		
 		if (mediaPlanificacion != null) {
 
 			// Pasamos el excel que vamos a leer

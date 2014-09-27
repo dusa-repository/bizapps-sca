@@ -23,9 +23,11 @@ import modelo.seguridad.Usuario;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -67,7 +69,7 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SPlanificacionSemanal servicioPlanificacionSemanal;
 	
 
-	private static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+	protected static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 			"/META-INF/ConfiguracionAplicacion.xml");
 	public Mensaje msj = new Mensaje();
 	public Tabbox tabBox;
@@ -183,6 +185,20 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 		if (age == -1)
 			age = 0;
 		return age;
+	}
+	
+	public String damePath() {
+		return Executions.getCurrent().getContextPath() + "/";
+	}
+
+	public List<String> obtenerPropiedades() {
+		List<String> arreglo = new ArrayList<String>();
+		DriverManagerDataSource ds = (DriverManagerDataSource) applicationContext
+				.getBean("dataSource");
+		arreglo.add(ds.getUsername());
+		arreglo.add(ds.getPassword());
+		arreglo.add(ds.getUrl());
+		return arreglo;
 	}
 
 	

@@ -28,10 +28,10 @@
 (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha =ra.ficha ) AND (fecha_turno = ra.fecha) ) as turno,
 (SELECT     hora_entrada FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_entrada_turno,
 (SELECT  hora_salida FROM  turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) as hora_salida_turno,
-(DATEDIFF(MINUTE,(SELECT    hora_entrada  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) ,(SELECT  TOP 1   hora  from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) )) as diff_entrada,
-(DATEDIFF(MINUTE,(select TOP 1  hora from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ),(SELECT    hora_salida  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha   =ra.ficha) AND (fecha_turno = ra.fecha) )))  )) as diff_salida,
+(DATEDIFF(MINUTE,(SELECT   convert(VARCHAR,hora_entrada,108)  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha  =ra.ficha) AND (fecha_turno = ra.fecha) ))) ,(SELECT  TOP 1   convert(VARCHAR,hora,108)  from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_entrada} and tipo_movimiento='ENT' order by hora ) )) as diff_entrada,
+(DATEDIFF(MINUTE,(select TOP 1  convert(VARCHAR,hora,108) from registro_acceso where fecha= ra.fecha and ficha=ra.ficha and id_molinete=$P{molinete_salida} and tipo_movimiento='SAL' order by hora desc ),(SELECT    convert(VARCHAR,hora_salida,108)  FROM         turno WHERE     (id_turno = (SELECT  TOP 1   id_turno FROM    planificacion_semanal WHERE     (ficha   =ra.ficha) AND (fecha_turno = ra.fecha) )))  )) as diff_salida,
 (SELECT minutos_laborar from turno where id_turno=planificacion_semanal.id_turno ) as minutos_laborar
-from planificacion_semanal  inner join registro_acceso as ra ON ra.ficha= planificacion_semanal.ficha AND fecha=fecha_turno  where fecha_turno>=$P{fecha_desde}  and fecha_turno<=$P{fecha_hasta}  and planificacion_semanal.ficha like '%$P!{ficha}%'  and id_turno in ( $P!{turno} )   and id_permiso='' group by fecha_turno,ra.fecha,planificacion_semanal.ficha,ra.ficha,nombre,planificacion_semanal.id_turno order by fecha_turno,id_turno,nombre,planificacion_semanal.ficha]]>
+from planificacion_semanal  inner join registro_acceso as ra ON ra.ficha= planificacion_semanal.ficha AND fecha=fecha_turno  where fecha_turno>=convert(datetime,$P{fecha_desde},103)  and fecha_turno<=convert(datetime,$P{fecha_hasta},103)  and planificacion_semanal.ficha like '%$P!{ficha}%'  and id_turno in ( $P!{turno} )   and id_permiso='' group by fecha_turno,ra.fecha,planificacion_semanal.ficha,ra.ficha,nombre,planificacion_semanal.id_turno order by fecha_turno,id_turno,nombre,planificacion_semanal.ficha]]>
 	</queryString>
 	<field name="fecha_turno" class="java.sql.Timestamp"/>
 	<field name="ficha" class="java.lang.String"/>
@@ -50,7 +50,7 @@ from planificacion_semanal  inner join registro_acceso as ra ON ra.ficha= planif
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="ausencia" class="java.lang.Float">
-		<variableExpression><![CDATA[(Math.abs(( $F{diff_entrada}<0 ? $F{diff_entrada} : 0  )+($F{diff_salida}==null ? 0:( $F{diff_salida}<0 ? $F{diff_salida} : 0 ))   ))/60]]></variableExpression>
+		<variableExpression><![CDATA[(Math.abs(( $F{diff_entrada}<0 ? $F{diff_entrada} : 0  )+($F{diff_salida}==null ? 0:( $F{diff_salida}<0 ? $F{diff_salida} : 0 ))   ))]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="total_minutos_laborar" class="java.lang.Integer" calculation="Sum">
