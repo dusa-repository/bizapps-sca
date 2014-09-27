@@ -24,27 +24,15 @@
 		<![CDATA[SELECT     registro_acceso.id_molinete, registro_acceso.fecha, registro_acceso.tipo_movimiento, registro_acceso.hora, registro_acceso.ficha, molinete.descripcion
 FROM         registro_acceso INNER JOIN
                       molinete ON registro_acceso.id_molinete = molinete.id_molinete
-WHERE     (registro_acceso.ficha = $P{ficha}) and fecha>=$P{fecha_desde} and fecha<= $P{fecha_hasta}
+WHERE     (registro_acceso.ficha = $P{ficha}) and fecha>=convert(datetime,$P{fecha_desde},103) and fecha<= convert(datetime,$P{fecha_hasta},103)
 ORDER BY registro_acceso.fecha, registro_acceso.hora]]>
 	</queryString>
-	<field name="id_molinete" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="fecha" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="tipo_movimiento" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="hora" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ficha" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="descripcion" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="id_molinete" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="tipo_movimiento" class="java.lang.String"/>
+	<field name="hora" class="java.sql.Timestamp"/>
+	<field name="ficha" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
 	<variable name="contador" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>

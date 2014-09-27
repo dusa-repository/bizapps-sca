@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import modelo.maestros.Molinete;
 import modelo.maestros.Turno;
@@ -25,6 +26,9 @@ import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -142,8 +146,24 @@ public class CReportes extends CGenerico {
 					String molineteSalida = servicioMolinete
 							.buscarPorDescripcion(cmbMolineteSalida.getValue())
 							.getId();
-					String turno = servicioTurno.buscarPorDescripcion(
-							cmbTurno.getValue()).getId();
+					
+					String turno ="";
+					
+					if (cmbTurno.getValue().compareTo("TODOS")==0)
+					{
+						for (Turno turnoAux : servicioTurno.buscarTodos()) {
+							turno = turno + "" + turnoAux.getId() + ",";
+						}
+						
+						turno= turno.substring(0,turno.length()-1);
+					}
+					else
+					{
+						turno = "" + servicioTurno.buscarPorDescripcion(
+								cmbTurno.getValue()).getId() + "";
+					}
+					
+					
 					String ficha = txtFicha.getValue();
 
 					int totalNomina = 0;
@@ -221,7 +241,8 @@ public class CReportes extends CGenerico {
 
 					System.out.println(reporte);
 
-					Clients.evalJavaScript("window.open('/bizapps-sca/Generador?valor=1&valor2="
+					Clients.evalJavaScript("window.open('"
+							+ damePath() + "Generador?valor=1&valor2="
 							+ reporte
 							+ "&valor3="
 							+ fecha1
@@ -245,6 +266,10 @@ public class CReportes extends CGenerico {
 							+ nombreFicha
 							+ "&valor13="
 							+ minutosFuera
+							+ "&valor14="
+							+ cmbMolineteEntrada.getValue()
+							+ "&valor15="
+							+ cmbMolineteSalida.getValue()
 							+ "','','top=100,left=200,height=600,width=800,scrollbars=1,resizable=1')");
 
 				}
@@ -256,6 +281,7 @@ public class CReportes extends CGenerico {
 		botonera.getChildren().get(1).setVisible(false);
 		botoneraReporte.appendChild(botonera);
 	}
+	
 
 	/* Permite validar que todos los campos esten completos */
 	public boolean validar() {
@@ -266,7 +292,6 @@ public class CReportes extends CGenerico {
 				|| cmbMolineteEntrada.getText().compareTo("") == 0
 				|| cmbMolineteSalida.getText().compareTo("") == 0
 				|| cmbTurno.getText().compareTo("") == 0
-				|| txtFicha.getText().compareTo("") == 0
 				|| cmbReporte.getText().compareTo("") == 0) {
 			msj.mensajeError(Mensaje.camposVacios);
 			return false;
@@ -291,7 +316,7 @@ public class CReportes extends CGenerico {
 	public byte[] reporte(String part2, String part3, String part4,
 			String part5, String part6, String part7, String part8,
 			String part9, String part10, String part11, String part12,
-			String part13) {
+			String part13,String part14,String part15) {
 
 		byte[] fichero = null;
 
@@ -323,6 +348,22 @@ public class CReportes extends CGenerico {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			String turnoParseado="";
+			
+			if (part9.indexOf(",")!=-1)
+			{
+			StringTokenizer tokens=new StringTokenizer(part9,",");
+			while(tokens.hasMoreTokens()){
+		            turnoParseado= turnoParseado + "'" + tokens.nextToken() + "',";
+		        }
+			 turnoParseado= turnoParseado.substring(0,turnoParseado.length()-1);
+			 part9= turnoParseado;
+			}
+			else
+			{
+				part9= "'" + part9 + "'";
+			}
 
 			Map parameters = new HashMap();
 
@@ -330,13 +371,13 @@ public class CReportes extends CGenerico {
 
 				System.out.println("Pase por r1");
 
-				parameters.put("fecha_desde", fechaInicioHora);
-				parameters.put("fecha_hasta", fechaFinalHora);
+				parameters.put("fecha_desde", part3);
+				parameters.put("fecha_hasta", part4);
 				parameters.put("ficha", part10);
 				parameters.put("molinete_entrada", part7);
-				parameters.put("molinete_entrada_mostrar", part7);
+				parameters.put("molinete_entrada_mostrar", part14);
 				parameters.put("molinete_salida", part8);
-				parameters.put("molinete_salida_mostrar", part8);
+				parameters.put("molinete_salida_mostrar", part15);
 				parameters.put("total_nomina_planificada", part11);
 				parameters.put("turno", part9);
 
@@ -348,13 +389,13 @@ public class CReportes extends CGenerico {
 
 					System.out.println("Pase por r2");
 
-					parameters.put("fecha_desde", fechaInicioHora);
-					parameters.put("fecha_hasta", fechaFinalHora);
+					parameters.put("fecha_desde", part3);
+					parameters.put("fecha_hasta", part4);
 					parameters.put("ficha", part10);
 					parameters.put("molinete_entrada", part7);
-					parameters.put("molinete_entrada_mostrar", part7);
+					parameters.put("molinete_entrada_mostrar", part14);
 					parameters.put("molinete_salida", part8);
-					parameters.put("molinete_salida_mostrar", part8);
+					parameters.put("molinete_salida_mostrar", part15);
 					parameters.put("total_nomina_planificada", part11);
 					parameters.put("turno", part9);
 
@@ -366,10 +407,10 @@ public class CReportes extends CGenerico {
 
 						System.out.println("Pase por r3");
 
-						parameters.put("fecha_desde", fechaInicioHora);
+						parameters.put("fecha_desde", part3);
 						parameters.put("molinete_entrada", part7);
 						parameters.put("total_nomina_planificada", part11);
-						parameters.put("molinete_entrada_mostrar", part7);
+						parameters.put("molinete_entrada_mostrar", part14);
 						parameters.put("turno", part9);
 
 						fis = (cl.getResourceAsStream("/reporte/R00003.jasper"));
@@ -378,13 +419,13 @@ public class CReportes extends CGenerico {
 
 						if (part2.equals("R00004")) {
 
-							parameters.put("fecha_desde", fechaInicioHora);
-							parameters.put("fecha_hasta", fechaFinalHora);
+							parameters.put("fecha_desde", part3);
+							parameters.put("fecha_hasta", part4);
 							parameters.put("ficha", part10);
 							parameters.put("molinete_entrada", part7);
-							parameters.put("molinete_entrada_mostrar", part7);
+							parameters.put("molinete_entrada_mostrar", part14);
 							parameters.put("molinete_salida", part8);
-							parameters.put("molinete_salida_mostrar", part8);
+							parameters.put("molinete_salida_mostrar", part15);
 
 							fis = (cl
 									.getResourceAsStream("/reporte/R00004.jasper"));
@@ -393,14 +434,14 @@ public class CReportes extends CGenerico {
 
 							if (part2.equals("R00005")) {
 
-								parameters.put("fecha_desde", fechaInicioHora);
-								parameters.put("fecha_hasta", fechaFinalHora);
+								parameters.put("fecha_desde", part3);
+								parameters.put("fecha_hasta", part4);
 								parameters.put("molinete_entrada", part7);
 								parameters.put("molinete_salida", part8);
 								parameters.put("ficha", part10);
 								parameters.put("nombre", part12);
 								parameters.put("minutos_fuera", part13);
-								parameters.put("molinete_entrada_mostrar", part7);
+								parameters.put("molinete_entrada_mostrar", part14);
 								
 								fis = (cl
 										.getResourceAsStream("/reporte/R00005.jasper"));
@@ -409,14 +450,14 @@ public class CReportes extends CGenerico {
 
 								if (part2.equals("R00006")) {
 									
-									parameters.put("fecha_desde", fechaInicioHora);
-									parameters.put("fecha_hasta", fechaFinalHora);
+									parameters.put("fecha_desde", part3);
+									parameters.put("fecha_hasta", part4);
 									parameters.put("molinete_entrada", part7);
 									parameters.put("molinete_salida", part8);
 									parameters.put("ficha", part10);
 									parameters.put("total_nomina_planificada", part11);
-									parameters.put("molinete_entrada_mostrar", part7);
-									parameters.put("molinete_salida_mostrar", part8);
+									parameters.put("molinete_entrada_mostrar", part14);
+									parameters.put("molinete_salida_mostrar", part15);
 									
 									fis = (cl
 											.getResourceAsStream("/reporte/R00006.jasper"));
@@ -426,15 +467,15 @@ public class CReportes extends CGenerico {
 
 									if (part2.equals("R00007")) {
 										
-										parameters.put("fecha_desde", fechaInicioHora);
-										parameters.put("total_nomina_planificada", part11);
+										parameters.put("fecha_desde", part3);
+										parameters.put("total_nomina_planificada", Integer.parseInt(part11));
 										parameters.put("hora_ausencia_desde", part5);
 										parameters.put("molinete_entrada", part7);
-										parameters.put("molinete_entrada_mostrar", part7);
+										parameters.put("molinete_entrada_mostrar", part14);
 										parameters.put("hora_ausencia_hasta", part6);
 										parameters.put("hora_ausencia_desde_date", part6);
 										parameters.put("hora_ausencia_hasta_date", part6);
-										parameters.put("turno", part9);
+										parameters.put("turno",part9);
 										
 										fis = (cl
 												.getResourceAsStream("/reporte/R00007.jasper"));
@@ -452,11 +493,17 @@ public class CReportes extends CGenerico {
 				}
 
 			}
-
+			
+			List<String> lista = obtenerPropiedades();
 			String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-			String url = "jdbc:sqlserver://localhost:1433;DatabaseName=dusa_sca";
+			String user = lista.get(0);
+			String password = lista.get(1);
+			String url = lista.get(2);
+
+			
+			/*String url = "jdbc:sqlserver://localhost:1433;DatabaseName=dusa_sca";
 			String user = "client";
-			String password = "123";
+			String password = "123";*/
 
 			try {
 

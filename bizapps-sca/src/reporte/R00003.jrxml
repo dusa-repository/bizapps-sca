@@ -16,37 +16,27 @@
 	<parameter name="molinete_entrada_mostrar" class="java.lang.String"/>
 	<parameter name="turno" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT nombre, ficha, id_turno,cuadrilla,id_permiso,cantidad_cuadrilla FROM (SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso,(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = $P{fecha_desde} and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
+		<![CDATA[SELECT nombre, ficha, id_turno,cuadrilla,id_permiso,cantidad_cuadrilla FROM (SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso,(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
 FROM         planificacion_semanal
-WHERE     fecha_turno = $P{fecha_desde} and id_turno in ($P!{turno})  AND    ficha not IN    (SELECT     distinct(ficha)   FROM   registro_acceso
-                            WHERE   fecha = $P{fecha_desde}  )
+WHERE     fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})  AND    ficha not IN    (SELECT     distinct(ficha)   FROM   registro_acceso
+                            WHERE   fecha = convert(datetime,$P{fecha_desde},103)  )
 UNION
-SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso,(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = $P{fecha_desde} and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
-FROM         planificacion_semanal where fecha_turno =$P{fecha_desde} and id_turno in ($P!{turno}) and ficha in (SELECT     distinct(ficha)   FROM   registro_acceso  WHERE   fecha =$P{fecha_desde} and ficha  in (select distinct(ficha) from planificacion_semanal where id_permiso<>'' and id_turno in ($P!{turno}) and fecha_turno =$P{fecha_desde}) )
+SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso,(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
+FROM         planificacion_semanal where fecha_turno =convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno}) and ficha in (SELECT     distinct(ficha)   FROM   registro_acceso  WHERE   fecha =convert(datetime,$P{fecha_desde},103) and ficha  in (select distinct(ficha) from planificacion_semanal where id_permiso<>'' and id_turno in ($P!{turno}) and fecha_turno =convert(datetime,$P{fecha_desde},103)  ) )
 UNION
-SELECT     '','' as fecha, '', '0',cuadrilla,'',(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = $P{fecha_desde} and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
+SELECT     '','' as fecha, '', '0',cuadrilla,'',(select count(*) from planificacion_semanal as ps where ps.cuadrilla = planificacion_semanal.cuadrilla and ps.fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})  ) as cantidad_cuadrilla
 FROM         planificacion_semanal
-WHERE     fecha_turno = $P{fecha_desde} and id_turno in ($P!{turno})
+WHERE     fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})
 ) as tmp
 group by nombre, ficha, id_turno,cuadrilla,id_permiso,cantidad_cuadrilla
 ORDER BY cuadrilla,id_turno]]>
 	</queryString>
-	<field name="nombre" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ficha" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="id_turno" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="cuadrilla" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="id_permiso" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="cantidad_cuadrilla" class="java.lang.Long"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="ficha" class="java.lang.String"/>
+	<field name="id_turno" class="java.lang.String"/>
+	<field name="cuadrilla" class="java.lang.String"/>
+	<field name="id_permiso" class="java.lang.String"/>
+	<field name="cantidad_cuadrilla" class="java.lang.Integer"/>
 	<variable name="contador" class="java.lang.Integer" resetType="Group" resetGroup="cuadrilla" calculation="Count">
 		<variableExpression><![CDATA[$F{nombre}!='']]></variableExpression>
 		<initialValueExpression><![CDATA[new Double(5)]]></initialValueExpression>
