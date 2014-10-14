@@ -15,6 +15,7 @@ public class Mensaje {
 			+ "Seleccione un (1) solo Registro y Repita la Operacion";
 	public static String deseaEliminar = "¿Desea Eliminar el Registro?";
 	public static String eliminado = "Registro Eliminado Exitosamente";
+	public static String fichaoEmpleado = "La ficha del empleado definido por el usuario no existe";
 	public static String estaEditando = "No ha culminado la Edicion, ¿Desea Continuar Editando?";
 	public static String noSeleccionoRegistro = "No ha seleccionado ningun Registro";
 	public static String exportar = "¿Desea exportar los datos de la lista a formato CSV?";

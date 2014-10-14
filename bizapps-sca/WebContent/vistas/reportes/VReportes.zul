@@ -4,8 +4,10 @@
 		<groupbox width="45em" mold="3d" title="Reportes">
 			<grid width="100%">
 				<columns visible="false">
+					<column label="" width="30%" />
 					<column label="" width="40%" />
-					<column label="" width="60%" />
+					<column label="" width="20%" />
+					<column label="" width="10%" />
 				</columns>
 				<rows>
 					<row>
@@ -16,10 +18,12 @@
 							<label value="*"
 								style="font-weight:bold;color:red" />
 						</hbox>
-						<datebox readonly="true" width="80%"
+						<datebox readonly="true" width="100%"
 							tabindex="4" id="dtbFechaInicio" format="dd/MM/yyyy"
 							onCreate="self.value = new Date()"
 							tooltiptext="Ingrese la fecha" />
+							<hbox/>
+							<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -29,10 +33,12 @@
 							<label value="*"
 								style="font-weight:bold;color:red" />
 						</hbox>
-						<datebox readonly="true" width="80%"
+						<datebox readonly="true" width="100%"
 							tabindex="4" id="dtbFechaFinal" format="dd/MM/yyyy"
 							onCreate="self.value = new Date()"
 							tooltiptext="Ingrese la fecha" />
+							<hbox/>
+							<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -43,9 +49,11 @@
 								style="font-weight:bold;color:red" />
 						</hbox>
 
-						<timebox id="tmbHoraInicio" width="80%"
+						<timebox id="tmbHoraInicio" width="100%"
 							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
+							<hbox/>
+							<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -56,9 +64,11 @@
 								style="font-weight:bold;color:red" />
 						</hbox>
 
-						<timebox id="tmbHoraFinal" width="80%"
+						<timebox id="tmbHoraFinal" width="100%"
 							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
+							<hbox/>
+							<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -70,11 +80,14 @@
 						</hbox>
 
 						<combobox tooltiptext="Seleccione un molinete"
-							id="cmbMolineteEntrada" readonly="true" width="80%">
+							id="cmbMolineteEntrada" readonly="true" width="100%">
 							<template name="model">
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
+						
+						<hbox/>
+						<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -86,11 +99,14 @@
 						</hbox>
 
 						<combobox tooltiptext="Seleccione un molinete"
-							id="cmbMolineteSalida" readonly="true" width="80%">
+							id="cmbMolineteSalida" readonly="true" width="100%">
 							<template name="model">
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
+						
+						<hbox/>
+						<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -101,11 +117,13 @@
 						</hbox>
 
 						<combobox tooltiptext="Seleccione un molinete"
-							id="cmbTurno" readonly="true" width="80%">
+							id="cmbTurno" readonly="true" width="100%">
 							<template name="model">
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
+						<hbox/>
+						<hbox/>
 					</row>
 					<row>
 						<hbox>
@@ -114,8 +132,13 @@
 							<label value="*"
 								style="font-weight:bold;color:red" />
 						</hbox>
-						<textbox id="txtFicha" width="80%"
+						<textbox id="txtFicha" width="100%"
 							tooltiptext="Ingrese la ficha" />
+						<button autodisable="self"
+							id="btnBuscarEmpleado" class="btn" label="Buscar"
+							tooltiptext="Catalogo de Empleados"
+							image="/public/imagenes/botones/buscar.png" />
+							<hbox/>
 
 					</row>
 					<row>
@@ -129,22 +152,38 @@
 						</hbox>
 
 						<combobox id="cmbReporte" readonly="true"
-							tooltiptext="Seleccione el reporte" width="80%" tabindex="4">
+							tooltiptext="Seleccione el reporte" width="100%" tabindex="4">
 							<comboitem
-								label="(R00001) Reporte General De Ausentismo Detallado" id="R00001"/>
-							<comboitem label="(R00002) Reporte General De Ausentismo Resumido" id="R00002"/>
-							<comboitem label="(R00003) Reporte De Ausentismo vs Planificacion Diaria" id="R00003"/>
-							<comboitem label="(R00004) Reporte Diferencia De Tiempo Entre Molinetes" id="R00004"/>
-							<comboitem label="(R00005) Reporte Comparativo De Marcaje Entre Molinetes" id="R00005"/>
-							<comboitem label="(R00006) Reporte Ausentismo En Area De Trabajo" id="R00006"/>
-							<comboitem label="(R00007) Reporte 2 De Ausentismo vs Planificacion Diaria" id="R00007"/>
+								label="(R00001) Reporte General De Ausentismo Detallado"
+								id="R00001" />
+							<comboitem
+								label="(R00002) Reporte General De Ausentismo Resumido"
+								id="R00002" />
+							<comboitem
+								label="(R00003) Reporte De Ausentismo vs Planificacion Diaria"
+								id="R00003" />
+							<comboitem
+								label="(R00004) Reporte Diferencia De Tiempo Entre Molinetes"
+								id="R00004" />
+							<comboitem
+								label="(R00005) Reporte Comparativo De Marcaje Entre Molinetes"
+								id="R00005" />
+							<comboitem
+								label="(R00006) Reporte Ausentismo En Area De Trabajo"
+								id="R00006" />
+							<comboitem
+								label="(R00007) Reporte 2 De Ausentismo vs Planificacion Diaria"
+								id="R00007" />
 						</combobox>
+						<hbox/>
+						<hbox/>
 					</row>
 
 				</rows>
 			</grid>
 			<separator />
 			<div id="botoneraReporte" />
+			<div id="divCatalogoEmpleado" />
 		</groupbox>
 	</div>
 </zk>
