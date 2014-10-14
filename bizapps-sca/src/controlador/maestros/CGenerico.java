@@ -36,6 +36,7 @@ import org.zkoss.zul.Include;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 
+import servicio.maestros.SEmpleado;
 import servicio.maestros.SMolinete;
 import servicio.maestros.STipoAusentismo;
 import servicio.maestros.STurno;
@@ -67,6 +68,8 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SRegistroAcceso servicioRegistroAcceso;
 	@WireVariable("SPlanificacionSemanal")
 	protected SPlanificacionSemanal servicioPlanificacionSemanal;
+	@WireVariable("SEmpleado")
+	protected SEmpleado servicioEmpleado;
 	
 
 	protected static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(

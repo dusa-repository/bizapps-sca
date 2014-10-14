@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import modelo.maestros.Empleado;
 import modelo.maestros.Molinete;
 import modelo.maestros.Turno;
 import modelo.transacciones.PlanificacionSemanal;
@@ -68,6 +69,10 @@ public class CReportes extends CGenerico {
 	@Wire
 	private Combobox cmbTurno;
 	@Wire
+	private Button btnBuscarEmpleado;
+	@Wire
+	private Div divCatalogoEmpleado;
+	@Wire
 	private Textbox txtFicha;
 	@Wire
 	private Combobox cmbReporte;
@@ -78,6 +83,8 @@ public class CReportes extends CGenerico {
 	List<Molinete> molinetes = new ArrayList<Molinete>();
 	List<PlanificacionSemanal> planificaciones = new ArrayList<PlanificacionSemanal>();
 	List<PlanificacionSemanal> totalPlanificaciones = new ArrayList<PlanificacionSemanal>();
+	
+	Catalogo<Empleado> catalogo;
 
 	@Override
 	public void inicializar() throws IOException {
@@ -544,5 +551,91 @@ public class CReportes extends CGenerico {
 		return fichero;
 
 	}
+	
+	
+	/* Muestra el catalogo de los turnos */
+	@Listen("onClick = #btnBuscarEmpleado")
+	public void mostrarCatalogo() {
+		final List<Empleado> empleados = servicioEmpleado.buscarTodos();
+		catalogo = new Catalogo<Empleado>(divCatalogoEmpleado, "Catalogo de Empleados",
+				empleados, "Empresa", "Cargo", "Unidad Organizativa", "Nombre", "Ficha",
+				"Ficha Supervisor", "Grado Auxiliar") {
+
+			@Override
+			protected List<Empleado> buscar(String valor, String combo) {
+				switch (combo) {
+				case "Empresa":
+					return servicioEmpleado.filtroEmpresa(valor);
+				case "Cargo":
+					return servicioEmpleado.filtroCargo(valor);
+				case "Unidad Organizativa":
+					return servicioEmpleado.filtroUnidadOrganizativa(valor);
+				case "Nombre":
+					return servicioEmpleado.filtroNombre(valor);
+				case "Ficha":
+					return servicioEmpleado.filtroNombre(valor);
+				case "Ficha Supervisor":
+					return servicioEmpleado.filtroFichaSupervisor(valor);
+				case "Grado Auxiliar":
+					return servicioEmpleado.filtroGradoAuxiliar(valor);
+				default:
+					return empleados;
+				}
+			}
+
+			@Override
+			protected String[] crearRegistros(Empleado empleado) {
+				String[] registros = new String[7];
+				registros[0] = empleado.getEmpresa().getNombre();
+				registros[1] = empleado.getCargo().getDescripcion();
+				registros[2] = empleado.getUnidadOrganizativa()
+						.getDescripcion();
+				registros[3] = empleado.getNombre();
+				registros[4] = empleado.getFicha();
+				registros[5] = empleado.getFichaSupervisor();
+				registros[6] = String.valueOf(empleado.getGradoAuxiliar());
+
+				return registros;
+			}
+
+		};
+		catalogo.setParent(divCatalogoEmpleado);
+		catalogo.doModal();
+	}
+	
+	
+	@Listen("onSeleccion = #divCatalogoEmpleado")
+	public void seleccionEmpleado() {
+		Empleado empleado = catalogo.objetoSeleccionadoDelCatalogo();
+		txtFicha.setValue(empleado.getFicha());
+		catalogo.setParent(null);
+	}
+	
+	/* Busca si existe un empleado de acuerdo a la ficha */
+	@Listen("onChange = #txtFicha")
+	public void buscarPorFicha() {
+		
+		if(txtFicha.getText().compareTo("") != 0){
+			
+			Empleado empleado = servicioEmpleado.buscarPorFicha(txtFicha.getValue());
+			if (empleado == null){
+				msj.mensajeAlerta(Mensaje.fichaoEmpleado);
+				txtFicha.setFocus(true);
+			}
+					
+		}
+				
+				
+		
+		
+			
+	}
+	
+
+	
+	
+	
+	
+	
 
 }
