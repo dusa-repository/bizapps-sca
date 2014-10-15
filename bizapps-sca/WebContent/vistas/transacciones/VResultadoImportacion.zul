@@ -39,10 +39,22 @@
 			<separator />
 			<separator />
 			<separator />
+			<listbox id="lsbErrores" model="${strset}" visible="false" style="margin-left:40px"
+				width="80%" mold="paging" pageSize="12">
+				<listhead>
+					<listheader label="Listado de Errores Generados" />
+				</listhead>
+			</listbox>
+			<separator />
+			<separator />
+			<separator />
 			<div style="margin-left:10px">
 				<label class="etiqueta"
 					value="*Los registros serán importados al portal si y solo si la cantidad de lineas invalidas es igual a cero (0)" />
 			</div>
+			<separator />
+			<separator />
+
 			<div id="botonera" />
 			<separator />
 			<separator />
