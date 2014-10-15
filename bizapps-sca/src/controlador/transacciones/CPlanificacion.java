@@ -16,6 +16,7 @@ import java.io.File;
 import jxl.*;
 import jxl.read.biff.BiffException;
 
+import modelo.maestros.Empleado;
 import modelo.maestros.Molinete;
 import modelo.seguridad.Arbol;
 import modelo.transacciones.PlanificacionSemanal;
@@ -33,6 +34,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -77,6 +79,7 @@ public class CPlanificacion extends CGenerico {
 	int lineasInvalidas = 0;
 	int errores = 0;
 	int errorLinea = 0;
+	String validacionError;
 
 	private CArbol cArbol = new CArbol();
 
@@ -176,7 +179,7 @@ public class CPlanificacion extends CGenerico {
 			ParseException {
 
 		lineasInvalidas = 0;
-		
+
 		if (mediaPlanificacion != null) {
 
 			// Pasamos el excel que vamos a leer
@@ -198,14 +201,32 @@ public class CPlanificacion extends CGenerico {
 			if (isNumeric(String.valueOf(semana))) {
 				if (semana < 1 || semana > 52) {
 					errores = errores + 1;
+					validacionError = "El numero de semana:" + semana + " "
+							+ "de la linea:3 no es valido";
+					erroresGenerados.add(validacionError);
 				}
 			} else {
 				errores = errores + 1;
+				validacionError = "El numero de semana de la linea 3 no es valido, el valor es nulo";
+				erroresGenerados.add(validacionError);
 			}
 
 			// VALIDACION FICHA JEFE
-			if (servicioUsuario.buscarPorFicha(fichaJefe) == null) {
+			if (fichaJefe == null) {
+
 				errores = errores + 1;
+				validacionError = "El codigo de la ficha del jefe de area de la linea 5 no es valido, el valor es nulo";
+				erroresGenerados.add(validacionError);
+
+			} else {
+
+				if (servicioUsuario.buscarPorFicha(fichaJefe) == null) {
+					errores = errores + 1;
+					validacionError = "El codigo de la ficha del jefe de area:"
+							+ fichaJefe + " " + "de la linea 5 no es valido";
+					erroresGenerados.add(validacionError);
+				}
+
 			}
 
 			while (servicioPlanificacionSemanal.buscarPorLoteUpload(loteUpload)
@@ -219,10 +240,111 @@ public class CPlanificacion extends CGenerico {
 				if (isNumeric(sheet.getCell(0, fila).getContents())) {
 
 					errorLinea = 0;
+					boolean entro = false;
+					
+					String ficha = sheet.getCell(1, fila).getContents();
 
+					// VALIDACION FICHA
+					if (ficha == null) {
+
+						errores = errores + 1;
+						errorLinea = errorLinea + 1;
+						validacionError = "El codigo de la ficha del empleado de la linea:"
+								+ (fila + 1)
+								+ " "
+								+ "no es valido, el valor es nulo";
+						erroresGenerados.add(validacionError);
+
+					} else {
+
+						Empleado empleado = servicioEmpleado
+								.buscarPorFicha(ficha);
+
+						if (empleado == null) {
+
+							errores = errores + 1;
+							errorLinea = errorLinea + 1;
+							validacionError = "El codigo de la ficha del empleado de la linea:"
+									+ (fila + 1) + " " + "no es valido";
+							erroresGenerados.add(validacionError);
+						}
+
+					}
+					
+					String nombre = sheet.getCell(2, fila).getContents();
+
+					// VALIDACION NOMBRE DEL EMPLEADO
+
+					if (nombre.compareTo("") == 0) {
+
+						errores = errores + 1;
+						errorLinea = errorLinea + 1;
+						validacionError = "El nombre del empleado de la linea:"
+								+ (fila + 1)
+								+ " "
+								+ "no es valido, el valor es nulo";
+						erroresGenerados.add(validacionError);
+
+					}
+					
+					String cuadrilla = sheet.getCell(18, fila)
+							.getContents();
+					
+					//VALIDACION CUADRILLA
+					
+					if(cuadrilla == null){
+						
+						errores = errores + 1;
+						errorLinea = errorLinea + 1;
+						validacionError = "El codigo de la cuadrilla de la linea:"
+								+ (fila + 1)
+								+ " "
+								+ "no es valido, el valor es nulo";
+						erroresGenerados.add(validacionError);
+						
+					}
+					
+					String idTurno = sheet.getCell(3, fila).getContents();
+					
+					
 					for (int columna = 0; columna < 7; columna++) {
 
-						String idTurno = sheet.getCell(3, fila).getContents();
+					
+						Date fechaTurno = df.parse(sheet.getCell(
+								4 + columna * 2, 7).getContents());
+
+						// VALIDACION FECHA DEL TURNO
+
+						if (fechaTurno == null) {
+
+							errores = errores + 1;
+							errorLinea = errorLinea + 1;
+							validacionError = "La fecha del turno de la linea:"
+									+ (fila + 1) + " "
+									+ "no es valido, el valor es nulo";
+							erroresGenerados.add(validacionError);
+
+						}
+
+						String fecha2 = df1.format(fechaTurno);
+						
+						String diaSemana = sheet.getCell(4 + columna * 2, 8)
+								.getContents();
+
+						// VALIDACION DIA DE LA SEMANA
+						if (diaSemana == null) {
+
+							errores = errores + 1;
+							errorLinea = errorLinea + 1;
+							validacionError = "El dia de la semana de la linea:"
+									+ (fila + 1)
+									+ " "
+									+ "no es valido, el valor es nulo";
+							erroresGenerados.add(validacionError);
+
+						}
+
+						
 						String idPermiso = "";
 
 						if (sheet.getCell(4 + columna * 2, fila).getContents() == " ") {
@@ -241,12 +363,6 @@ public class CPlanificacion extends CGenerico {
 							}
 						}
 
-						// VALIDACION ID_TURNO
-
-						if (servicioTurno.buscar(idTurno) == null) {
-							errores = errores + 1;
-							errorLinea = errorLinea + 1;
-						}
 
 						// VALIDACION ID_PERMISO
 
@@ -255,6 +371,10 @@ public class CPlanificacion extends CGenerico {
 							if (servicioTipoAusentismo.buscar(idPermiso) == null) {
 								errores = errores + 1;
 								errorLinea = errorLinea + 1;
+								validacionError = "El codigo del permiso:"
+										+ idPermiso + " " + "de la linea:"
+										+ (fila + 1) + " " + "no es valido";
+								erroresGenerados.add(validacionError);
 
 							}
 
@@ -264,9 +384,9 @@ public class CPlanificacion extends CGenerico {
 
 					if (errorLinea != 0) {
 						lineasInvalidas = lineasInvalidas + 1;
-						
-					}else{
-						
+
+					} else {
+
 						lineasValidas = lineasValidas + 1;
 					}
 
@@ -290,6 +410,7 @@ public class CPlanificacion extends CGenerico {
 				map.put("lineasEvaluadas", filaEvaluada);
 				map.put("lineasValidas", lineasValidas);
 				map.put("lineasInvalidas", lineasInvalidas);
+				map.put("erroresGenerados", erroresGenerados);
 				Sessions.getCurrent().setAttribute("itemsCatalogo", map);
 				List<Arbol> arboles = servicioArbol
 						.buscarPorNombreArbol("Resultado Importacion");
@@ -315,6 +436,7 @@ public class CPlanificacion extends CGenerico {
 				lineasValidas = 0;
 				lineasInvalidas = 0;
 				errores = 0;
+				erroresGenerados = new ArrayList<String>();
 
 				// Metodo para recorrer el archivo excel y verificar que no
 				// existan
@@ -405,6 +527,7 @@ public class CPlanificacion extends CGenerico {
 				map.put("lineasEvaluadas", filaEvaluada);
 				map.put("lineasValidas", lineasValidas);
 				map.put("lineasInvalidas", lineasInvalidas);
+				map.put("erroresGenerados", erroresGenerados);
 				Sessions.getCurrent().setAttribute("itemsCatalogo", map);
 				List<Arbol> arboles = servicioArbol
 						.buscarPorNombreArbol("Resultado Importacion");

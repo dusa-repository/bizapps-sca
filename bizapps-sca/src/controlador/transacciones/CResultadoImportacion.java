@@ -1,8 +1,11 @@
 package controlador.transacciones;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import modelo.transacciones.PlanificacionSemanal;
 
 import org.springframework.stereotype.Controller;
 import org.zkoss.zk.ui.Component;
@@ -16,8 +19,11 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
@@ -48,7 +54,10 @@ public class CResultadoImportacion extends CGenerico {
 	private Label lblLineasValidas;
 	@Wire
 	private Label lblLineasInvalidas;
+	@Wire
+	private Listbox lsbErrores;
 	
+	List<String> erroresGenerados = new ArrayList<String>();
 	int lineasEvaluadas;
 	int lineasValidas;
 	int lineasInvalidas;
@@ -84,10 +93,20 @@ public class CResultadoImportacion extends CGenerico {
 				lineasValidas = (Integer) map.get("lineasValidas");
 				lineasInvalidas = (Integer) map.get("lineasInvalidas");
 				archivo = (String) map.get("archivo");
+				erroresGenerados = (List<String>) map.get("erroresGenerados");
 				map.clear();
 				map = null;
 			}
 		}
+		
+		if(erroresGenerados.size() != 0){
+			
+			ListModel strset = new SimpleListModel(erroresGenerados);
+			lsbErrores.setModel(new ListModelList<String>(erroresGenerados));
+			lsbErrores.setVisible(true);
+			
+		}
+		
 		
 		
 		lblEncabezado.setValue("Resultado del Proceso de Validacion del Archivo:" + " " + archivo);
