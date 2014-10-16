@@ -218,7 +218,7 @@ public class CPlanificacion extends CGenerico {
 				validacionError = "El codigo de la ficha del jefe de area de la linea 5 no es valido, el valor es nulo";
 				erroresGenerados.add(validacionError);
 
-			} else {
+			} /*else {
 
 				if (servicioUsuario.buscarPorFicha(fichaJefe) == null) {
 					errores = errores + 1;
@@ -227,7 +227,7 @@ public class CPlanificacion extends CGenerico {
 					erroresGenerados.add(validacionError);
 				}
 
-			}
+			}*/
 
 			while (servicioPlanificacionSemanal.buscarPorLoteUpload(loteUpload)
 					.size() != 0) {
@@ -255,7 +255,7 @@ public class CPlanificacion extends CGenerico {
 								+ "no es valido, el valor es nulo";
 						erroresGenerados.add(validacionError);
 
-					} else {
+					} /*else {
 
 						Empleado empleado = servicioEmpleado
 								.buscarPorFicha(ficha);
@@ -269,7 +269,7 @@ public class CPlanificacion extends CGenerico {
 							erroresGenerados.add(validacionError);
 						}
 
-					}
+					}*/
 					
 					String nombre = sheet.getCell(2, fila).getContents();
 
@@ -509,11 +509,12 @@ public class CPlanificacion extends CGenerico {
 						} else {
 							lineasInvalidas = lineasInvalidas + 1;
 						}
+						errores = 0;
 						fila++;
 						filaEvaluada++;
 
 					} else {
-						filaInvalida++;
+						//filaInvalida++;
 						fila++;
 
 					}
