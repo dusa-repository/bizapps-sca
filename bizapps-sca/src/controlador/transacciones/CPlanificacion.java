@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import java.io.File;
@@ -218,16 +219,17 @@ public class CPlanificacion extends CGenerico {
 				validacionError = "El codigo de la ficha del jefe de area de la linea 5 no es valido, el valor es nulo";
 				erroresGenerados.add(validacionError);
 
-			} /*else {
-
-				if (servicioUsuario.buscarPorFicha(fichaJefe) == null) {
-					errores = errores + 1;
-					validacionError = "El codigo de la ficha del jefe de area:"
-							+ fichaJefe + " " + "de la linea 5 no es valido";
-					erroresGenerados.add(validacionError);
-				}
-
-			}*/
+			} /*
+			 * else {
+			 * 
+			 * if (servicioUsuario.buscarPorFicha(fichaJefe) == null) { errores
+			 * = errores + 1; validacionError =
+			 * "El codigo de la ficha del jefe de area:" + fichaJefe + " " +
+			 * "de la linea 5 no es valido";
+			 * erroresGenerados.add(validacionError); }
+			 * 
+			 * }
+			 */
 
 			while (servicioPlanificacionSemanal.buscarPorLoteUpload(loteUpload)
 					.size() != 0) {
@@ -241,7 +243,7 @@ public class CPlanificacion extends CGenerico {
 
 					errorLinea = 0;
 					boolean entro = false;
-					
+
 					String ficha = sheet.getCell(1, fila).getContents();
 
 					// VALIDACION FICHA
@@ -255,22 +257,23 @@ public class CPlanificacion extends CGenerico {
 								+ "no es valido, el valor es nulo";
 						erroresGenerados.add(validacionError);
 
-					} /*else {
+					} /*
+					 * else {
+					 * 
+					 * Empleado empleado = servicioEmpleado
+					 * .buscarPorFicha(ficha);
+					 * 
+					 * if (empleado == null) {
+					 * 
+					 * errores = errores + 1; errorLinea = errorLinea + 1;
+					 * validacionError =
+					 * "El codigo de la ficha del empleado de la linea:" + (fila
+					 * + 1) + " " + "no es valido";
+					 * erroresGenerados.add(validacionError); }
+					 * 
+					 * }
+					 */
 
-						Empleado empleado = servicioEmpleado
-								.buscarPorFicha(ficha);
-
-						if (empleado == null) {
-
-							errores = errores + 1;
-							errorLinea = errorLinea + 1;
-							validacionError = "El codigo de la ficha del empleado de la linea:"
-									+ (fila + 1) + " " + "no es valido";
-							erroresGenerados.add(validacionError);
-						}
-
-					}*/
-					
 					String nombre = sheet.getCell(2, fila).getContents();
 
 					// VALIDACION NOMBRE DEL EMPLEADO
@@ -280,20 +283,18 @@ public class CPlanificacion extends CGenerico {
 						errores = errores + 1;
 						errorLinea = errorLinea + 1;
 						validacionError = "El nombre del empleado de la linea:"
-								+ (fila + 1)
-								+ " "
+								+ (fila + 1) + " "
 								+ "no es valido, el valor es nulo";
 						erroresGenerados.add(validacionError);
 
 					}
-					
-					String cuadrilla = sheet.getCell(18, fila)
-							.getContents();
-					
-					//VALIDACION CUADRILLA
-					
-					if(cuadrilla == null){
-						
+
+					String cuadrilla = sheet.getCell(18, fila).getContents();
+
+					// VALIDACION CUADRILLA
+
+					if (cuadrilla == null) {
+
 						errores = errores + 1;
 						errorLinea = errorLinea + 1;
 						validacionError = "El codigo de la cuadrilla de la linea:"
@@ -301,21 +302,50 @@ public class CPlanificacion extends CGenerico {
 								+ " "
 								+ "no es valido, el valor es nulo";
 						erroresGenerados.add(validacionError);
-						
+
 					}
-					
+
 					String idTurno = sheet.getCell(3, fila).getContents();
-					
-					
+
+					// VALIDACION ID_TURNO
+
+					if (idTurno == null) {
+
+						errores = errores + 1;
+						errorLinea = errorLinea + 1;
+						validacionError = "El codigo del turno de la linea:"
+								+ (fila + 1) + " "
+								+ "no es valido, el valor es nulo";
+						erroresGenerados.add(validacionError);
+					} else {
+
+						if (servicioTurno.buscar(idTurno) == null) {
+							errores = errores + 1;
+							errorLinea = errorLinea + 1;
+							validacionError = "El codigo del turno:" + idTurno
+									+ " " + "de la linea:" + (fila + 1) + " "
+									+ "no es valido";
+							erroresGenerados.add(validacionError);
+						}
+
+					}
+
 					for (int columna = 0; columna < 7; columna++) {
 
-					
-						Date fechaTurno = df.parse(sheet.getCell(
-								4 + columna * 2, 7).getContents());
+						Date fechaTurno = null;
+						String fechaAuxiliar = "";
+						if (isFechaValida(sheet.getCell(4 + columna * 2, 7)
+								.getContents()))
+							fechaTurno = df.parse(sheet.getCell(
+									4 + columna * 2, 7).getContents());
+						else
+							fechaAuxiliar = sheet.getCell(4 + columna * 2, 7)
+									.getContents();
 
 						// VALIDACION FECHA DEL TURNO
 
-						if (fechaTurno == null) {
+						if (fechaTurno == null
+								&& fechaAuxiliar.compareTo("") == 0) {
 
 							errores = errores + 1;
 							errorLinea = errorLinea + 1;
@@ -324,10 +354,23 @@ public class CPlanificacion extends CGenerico {
 									+ "no es valido, el valor es nulo";
 							erroresGenerados.add(validacionError);
 
+						} else {
+
+							if (isFechaValida(sheet.getCell(4 + columna * 2, 7)
+									.getContents()) == false) {
+
+								errores = errores + 1;
+								errorLinea = errorLinea + 1;
+								validacionError = "La fecha del turno:"
+										+ fechaAuxiliar
+										+ " "
+										+ "de la linea: 8 no es valido, ya que debe tener el siguiente formato: dia/mes/año";
+								erroresGenerados.add(validacionError);
+
+							}
+
 						}
 
-						String fecha2 = df1.format(fechaTurno);
-						
 						String diaSemana = sheet.getCell(4 + columna * 2, 8)
 								.getContents();
 
@@ -344,7 +387,6 @@ public class CPlanificacion extends CGenerico {
 
 						}
 
-						
 						String idPermiso = "";
 
 						if (sheet.getCell(4 + columna * 2, fila).getContents() == " ") {
@@ -362,7 +404,6 @@ public class CPlanificacion extends CGenerico {
 								idPermiso = "";
 							}
 						}
-
 
 						// VALIDACION ID_PERMISO
 
@@ -449,8 +490,11 @@ public class CPlanificacion extends CGenerico {
 							String ficha = sheet.getCell(1, fila).getContents();
 							String nombre = sheet.getCell(2, fila)
 									.getContents();
-							Date fechaTurno = df.parse(sheet.getCell(
-									4 + columna * 2, 7).getContents());
+							Date fechaTurno = null;
+							if (isFechaValida(sheet.getCell(4 + columna * 2, 7)
+									.getContents()))
+								fechaTurno = df.parse(sheet.getCell(
+										4 + columna * 2, 7).getContents());
 							String fecha2 = df1.format(fechaTurno);
 							String idTurno = sheet.getCell(3, fila)
 									.getContents();
@@ -514,7 +558,7 @@ public class CPlanificacion extends CGenerico {
 						filaEvaluada++;
 
 					} else {
-						//filaInvalida++;
+						// filaInvalida++;
 						fila++;
 
 					}
@@ -571,6 +615,18 @@ public class CPlanificacion extends CGenerico {
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
+	}
+
+	public static boolean isFechaValida(String fecha) {
+		try {
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy",
+					Locale.getDefault());
+			formatoFecha.setLenient(false);
+			formatoFecha.parse(fecha);
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
 	}
 
 }
