@@ -22,8 +22,8 @@
 							tabindex="4" id="dtbFechaInicio" format="dd/MM/yyyy"
 							onCreate="self.value = new Date()"
 							tooltiptext="Ingrese la fecha" />
-							<hbox/>
-							<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -37,8 +37,8 @@
 							tabindex="4" id="dtbFechaFinal" format="dd/MM/yyyy"
 							onCreate="self.value = new Date()"
 							tooltiptext="Ingrese la fecha" />
-							<hbox/>
-							<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -52,8 +52,8 @@
 						<timebox id="tmbHoraInicio" width="100%"
 							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
-							<hbox/>
-							<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -67,8 +67,8 @@
 						<timebox id="tmbHoraFinal" width="100%"
 							tooltiptext="Ingrese la hora" format="hh:mm:ss" readonly="true"
 							onCreate="self.value = new Date()" />
-							<hbox/>
-							<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -85,9 +85,9 @@
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
-						
-						<hbox/>
-						<hbox/>
+
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -104,7 +104,22 @@
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
-						
+
+						<hbox />
+						<hbox />
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Turno:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<listbox id="lsbTurnos">
+							<template name="model">
+								<listitem label="${each.descripcion}" />
+							</template>
+						</listbox>
 						<hbox/>
 						<hbox/>
 					</row>
@@ -122,8 +137,8 @@
 								<comboitem label="${each.descripcion}" />
 							</template>
 						</combobox>
-						<hbox/>
-						<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -138,7 +153,7 @@
 							id="btnBuscarEmpleado" class="btn" label="Buscar"
 							tooltiptext="Catalogo de Empleados"
 							image="/public/imagenes/botones/buscar.png" />
-							<hbox/>
+						<hbox />
 
 					</row>
 					<row>
@@ -175,8 +190,8 @@
 								label="(R00007) Reporte 2 De Ausentismo vs Planificacion Diaria"
 								id="R00007" />
 						</combobox>
-						<hbox/>
-						<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 
 				</rows>

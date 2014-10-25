@@ -40,6 +40,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -68,6 +69,8 @@ public class CReportes extends CGenerico {
 	private Combobox cmbMolineteSalida;
 	@Wire
 	private Combobox cmbTurno;
+	@Wire
+	private Listbox lsbTurnos;
 	@Wire
 	private Button btnBuscarEmpleado;
 	@Wire
@@ -104,6 +107,15 @@ public class CReportes extends CGenerico {
 		turnos = servicioTurno.buscarTodos();
 		turnos.add(turno);
 		cmbTurno.setModel(new ListModelList<Turno>(turnos));
+		
+		
+		// Cargar lista e turnos
+		lsbTurnos.setModel(new ListModelList<Turno>(turnos));
+		lsbTurnos.setMultiple(false);
+		lsbTurnos.setCheckmark(false);
+		lsbTurnos.setMultiple(true);
+		lsbTurnos.setCheckmark(true);
+		
 
 		// Cargar los combos de molinees
 		molinetes = servicioMolinete.buscarTodos();
