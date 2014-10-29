@@ -39,8 +39,11 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -74,9 +77,11 @@ public class CReportes extends CGenerico {
 	@Wire
 	private Button btnBuscarEmpleado;
 	@Wire
-	private Div divCatalogoEmpleado;
+	private Div divCatalogoPlanificacion;
 	@Wire
 	private Textbox txtFicha;
+	@Wire
+	private Label lbEmpleado;
 	@Wire
 	private Combobox cmbReporte;
 	@Wire
@@ -86,8 +91,10 @@ public class CReportes extends CGenerico {
 	List<Molinete> molinetes = new ArrayList<Molinete>();
 	List<PlanificacionSemanal> planificaciones = new ArrayList<PlanificacionSemanal>();
 	List<PlanificacionSemanal> totalPlanificaciones = new ArrayList<PlanificacionSemanal>();
-	
-	Catalogo<Empleado> catalogo;
+	private static SimpleDateFormat formatoFecha = new SimpleDateFormat(
+			"dd-MM-yyyy");
+
+	Catalogo<PlanificacionSemanal> catalogo;
 
 	@Override
 	public void inicializar() throws IOException {
@@ -106,16 +113,13 @@ public class CReportes extends CGenerico {
 		Turno turno = new Turno("9999", "TODOS", null, null, 0, null, "", "");
 		turnos = servicioTurno.buscarTodos();
 		turnos.add(turno);
-		cmbTurno.setModel(new ListModelList<Turno>(turnos));
-		
-		
+
 		// Cargar lista e turnos
 		lsbTurnos.setModel(new ListModelList<Turno>(turnos));
 		lsbTurnos.setMultiple(false);
 		lsbTurnos.setCheckmark(false);
 		lsbTurnos.setMultiple(true);
 		lsbTurnos.setCheckmark(true);
-		
 
 		// Cargar los combos de molinees
 		molinetes = servicioMolinete.buscarTodos();
@@ -165,24 +169,37 @@ public class CReportes extends CGenerico {
 					String molineteSalida = servicioMolinete
 							.buscarPorDescripcion(cmbMolineteSalida.getValue())
 							.getId();
-					
-					String turno ="";
-					
-					if (cmbTurno.getValue().compareTo("TODOS")==0)
-					{
-						for (Turno turnoAux : servicioTurno.buscarTodos()) {
-							turno = turno + "" + turnoAux.getId() + ",";
+
+					String turno = "";
+
+					for (int i = 0; i < lsbTurnos.getItemCount(); i++) {
+
+						Turno turnoSeleccionado = lsbTurnos.getItems().get(i)
+								.getValue();
+
+						if (turnoSeleccionado.getDescripcion() == "TODOS" ) {
+
+							for (Turno turnoAux : servicioTurno.buscarTodos()) {
+								turno = turno + "" + turnoAux.getId() + ",";
+							}
+
+							turno = turno.substring(0, turno.length() - 1);
+						} else {
+							turno = "" + turnoSeleccionado.getId() + "";
 						}
-						
-						turno= turno.substring(0,turno.length()-1);
+
 					}
-					else
-					{
-						turno = "" + servicioTurno.buscarPorDescripcion(
-								cmbTurno.getValue()).getId() + "";
-					}
-					
-					
+
+					/*
+					 * if (cmbTurno.getValue().compareTo("TODOS") == 0) { for
+					 * (Turno turnoAux : servicioTurno.buscarTodos()) { turno =
+					 * turno + "" + turnoAux.getId() + ","; }
+					 * 
+					 * turno = turno.substring(0, turno.length() - 1); } else {
+					 * turno = "" + servicioTurno.buscarPorDescripcion(
+					 * cmbTurno.getValue()).getId() + ""; }
+					 */
+
 					String ficha = txtFicha.getValue();
 
 					int totalNomina = 0;
@@ -261,7 +278,8 @@ public class CReportes extends CGenerico {
 					System.out.println(reporte);
 
 					Clients.evalJavaScript("window.open('"
-							+ damePath() + "Generador?valor=1&valor2="
+							+ damePath()
+							+ "Generador?valor=1&valor2="
 							+ reporte
 							+ "&valor3="
 							+ fecha1
@@ -300,7 +318,6 @@ public class CReportes extends CGenerico {
 		botonera.getChildren().get(1).setVisible(false);
 		botoneraReporte.appendChild(botonera);
 	}
-	
 
 	/* Permite validar que todos los campos esten completos */
 	public boolean validar() {
@@ -310,7 +327,6 @@ public class CReportes extends CGenerico {
 				|| tmbHoraFinal.getText().compareTo("") == 0
 				|| cmbMolineteEntrada.getText().compareTo("") == 0
 				|| cmbMolineteSalida.getText().compareTo("") == 0
-				|| cmbTurno.getText().compareTo("") == 0
 				|| cmbReporte.getText().compareTo("") == 0) {
 			msj.mensajeError(Mensaje.camposVacios);
 			return false;
@@ -326,16 +342,17 @@ public class CReportes extends CGenerico {
 		tmbHoraFinal.setValue(new Date());
 		cmbMolineteEntrada.setValue("");
 		cmbMolineteSalida.setValue("");
-		cmbTurno.setValue("");
 		txtFicha.setValue("");
 		cmbReporte.setValue("");
+		lbEmpleado.setValue("");
+		lsbTurnos.clearSelection();
 
 	}
 
 	public byte[] reporte(String part2, String part3, String part4,
 			String part5, String part6, String part7, String part8,
 			String part9, String part10, String part11, String part12,
-			String part13,String part14,String part15) {
+			String part13, String part14, String part15) {
 
 		byte[] fichero = null;
 
@@ -367,21 +384,20 @@ public class CReportes extends CGenerico {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			String turnoParseado="";
-			
-			if (part9.indexOf(",")!=-1)
-			{
-			StringTokenizer tokens=new StringTokenizer(part9,",");
-			while(tokens.hasMoreTokens()){
-		            turnoParseado= turnoParseado + "'" + tokens.nextToken() + "',";
-		        }
-			 turnoParseado= turnoParseado.substring(0,turnoParseado.length()-1);
-			 part9= turnoParseado;
-			}
-			else
-			{
-				part9= "'" + part9 + "'";
+
+			String turnoParseado = "";
+
+			if (part9.indexOf(",") != -1) {
+				StringTokenizer tokens = new StringTokenizer(part9, ",");
+				while (tokens.hasMoreTokens()) {
+					turnoParseado = turnoParseado + "'" + tokens.nextToken()
+							+ "',";
+				}
+				turnoParseado = turnoParseado.substring(0,
+						turnoParseado.length() - 1);
+				part9 = turnoParseado;
+			} else {
+				part9 = "'" + part9 + "'";
 			}
 
 			Map parameters = new HashMap();
@@ -460,42 +476,56 @@ public class CReportes extends CGenerico {
 								parameters.put("ficha", part10);
 								parameters.put("nombre", part12);
 								parameters.put("minutos_fuera", part13);
-								parameters.put("molinete_entrada_mostrar", part14);
-								
+								parameters.put("molinete_entrada_mostrar",
+										part14);
+
 								fis = (cl
 										.getResourceAsStream("/reporte/R00005.jasper"));
 
 							} else {
 
 								if (part2.equals("R00006")) {
-									
+
 									parameters.put("fecha_desde", part3);
 									parameters.put("fecha_hasta", part4);
 									parameters.put("molinete_entrada", part7);
 									parameters.put("molinete_salida", part8);
 									parameters.put("ficha", part10);
-									parameters.put("total_nomina_planificada", part11);
-									parameters.put("molinete_entrada_mostrar", part14);
-									parameters.put("molinete_salida_mostrar", part15);
-									
+									parameters.put("total_nomina_planificada",
+											part11);
+									parameters.put("molinete_entrada_mostrar",
+											part14);
+									parameters.put("molinete_salida_mostrar",
+											part15);
+
 									fis = (cl
 											.getResourceAsStream("/reporte/R00006.jasper"));
-									
 
 								} else {
 
 									if (part2.equals("R00007")) {
-										
+
 										parameters.put("fecha_desde", part3);
-										parameters.put("total_nomina_planificada", Integer.parseInt(part11));
-										parameters.put("hora_ausencia_desde", part5);
-										parameters.put("molinete_entrada", part7);
-										parameters.put("molinete_entrada_mostrar", part14);
-										parameters.put("hora_ausencia_hasta", part6);
-										parameters.put("hora_ausencia_desde_date", part6);
-										parameters.put("hora_ausencia_hasta_date", part6);
-										parameters.put("turno",part9);
-										
+										parameters.put(
+												"total_nomina_planificada",
+												Integer.parseInt(part11));
+										parameters.put("hora_ausencia_desde",
+												part5);
+										parameters.put("molinete_entrada",
+												part7);
+										parameters.put(
+												"molinete_entrada_mostrar",
+												part14);
+										parameters.put("hora_ausencia_hasta",
+												part6);
+										parameters.put(
+												"hora_ausencia_desde_date",
+												part6);
+										parameters.put(
+												"hora_ausencia_hasta_date",
+												part6);
+										parameters.put("turno", part9);
+
 										fis = (cl
 												.getResourceAsStream("/reporte/R00007.jasper"));
 
@@ -512,17 +542,18 @@ public class CReportes extends CGenerico {
 				}
 
 			}
-			
+
 			List<String> lista = obtenerPropiedades();
 			String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			String user = lista.get(0);
 			String password = lista.get(1);
 			String url = lista.get(2);
 
-			
-			/*String url = "jdbc:sqlserver://localhost:1433;DatabaseName=dusa_sca";
-			String user = "client";
-			String password = "123";*/
+			/*
+			 * String url =
+			 * "jdbc:sqlserver://localhost:1433;DatabaseName=dusa_sca"; String
+			 * user = "client"; String password = "123";
+			 */
 
 			try {
 
@@ -563,91 +594,66 @@ public class CReportes extends CGenerico {
 		return fichero;
 
 	}
-	
-	
-	/* Muestra el catalogo de los turnos */
+
+	/* Muestra el catalogo de la Plnificacion */
 	@Listen("onClick = #btnBuscarEmpleado")
-	public void mostrarCatalogo() {
-		final List<Empleado> empleados = servicioEmpleado.buscarTodos();
-		catalogo = new Catalogo<Empleado>(divCatalogoEmpleado, "Catalogo de Empleados",
-				empleados, "Empresa", "Cargo", "Unidad Organizativa", "Nombre", "Ficha",
-				"Ficha Supervisor", "Grado Auxiliar") {
+	public void mostrarCatalogoPlanificacion() {
+		final List<PlanificacionSemanal> planificaciones = servicioPlanificacionSemanal
+				.buscarTodos();
+		catalogo = new Catalogo<PlanificacionSemanal>(divCatalogoPlanificacion,
+				"Catalogo de Planificaciones", planificaciones, "Ficha",
+				"Nombre", "Semana", "Día", "Turno", "Fecha Turno", "Cuadrilla") {
 
 			@Override
-			protected List<Empleado> buscar(String valor, String combo) {
+			protected List<PlanificacionSemanal> buscar(String valor,
+					String combo) {
 				switch (combo) {
-				case "Empresa":
-					return servicioEmpleado.filtroEmpresa(valor);
-				case "Cargo":
-					return servicioEmpleado.filtroCargo(valor);
-				case "Unidad Organizativa":
-					return servicioEmpleado.filtroUnidadOrganizativa(valor);
-				case "Nombre":
-					return servicioEmpleado.filtroNombre(valor);
 				case "Ficha":
-					return servicioEmpleado.filtroNombre(valor);
-				case "Ficha Supervisor":
-					return servicioEmpleado.filtroFichaSupervisor(valor);
-				case "Grado Auxiliar":
-					return servicioEmpleado.filtroGradoAuxiliar(valor);
+					return servicioPlanificacionSemanal.filtroFicha(valor);
+				case "Nombre":
+					return servicioPlanificacionSemanal.filtroNombre(valor);
+				case "Semana":
+					return servicioPlanificacionSemanal.filtroSemana(valor);
+				case "Día":
+					return servicioPlanificacionSemanal.filtroDiaSemana(valor);
+				case "Turno":
+					return servicioPlanificacionSemanal.filtroTurno(valor);
+				case "Fecha Turno":
+					return servicioPlanificacionSemanal.filtroFechaTurno(valor);
+				case "Cuadrilla":
+					return servicioPlanificacionSemanal.filtroCuadrilla(valor);
 				default:
-					return empleados;
+					return planificaciones;
 				}
 			}
 
 			@Override
-			protected String[] crearRegistros(Empleado empleado) {
+			protected String[] crearRegistros(PlanificacionSemanal planificacion) {
 				String[] registros = new String[7];
-				registros[0] = empleado.getEmpresa().getNombre();
-				registros[1] = empleado.getCargo().getDescripcion();
-				registros[2] = empleado.getUnidadOrganizativa()
-						.getDescripcion();
-				registros[3] = empleado.getNombre();
-				registros[4] = empleado.getFicha();
-				registros[5] = empleado.getFichaSupervisor();
-				registros[6] = String.valueOf(empleado.getGradoAuxiliar());
+				registros[0] = planificacion.getFicha();
+				registros[1] = planificacion.getNombre();
+				registros[2] = String.valueOf(planificacion.getSemana());
+				registros[3] = planificacion.getDiaSemana();
+				registros[4] = planificacion.getIdTurno();
+				registros[5] = formatoFecha.format(planificacion
+						.getFechaTurno());
+				registros[6] = planificacion.getCuadrilla();
 
 				return registros;
 			}
 
 		};
-		catalogo.setParent(divCatalogoEmpleado);
+		catalogo.setParent(divCatalogoPlanificacion);
 		catalogo.doModal();
 	}
-	
-	
-	@Listen("onSeleccion = #divCatalogoEmpleado")
+
+	@Listen("onSeleccion = #divCatalogoPlanificacion")
 	public void seleccionEmpleado() {
-		Empleado empleado = catalogo.objetoSeleccionadoDelCatalogo();
-		txtFicha.setValue(empleado.getFicha());
+		PlanificacionSemanal planificacion = catalogo
+				.objetoSeleccionadoDelCatalogo();
+		txtFicha.setValue(planificacion.getFicha());
+		lbEmpleado.setValue(planificacion.getNombre());
 		catalogo.setParent(null);
 	}
-	
-	/* Busca si existe un empleado de acuerdo a la ficha */
-	@Listen("onChange = #txtFicha")
-	public void buscarPorFicha() {
-		
-		if(txtFicha.getText().compareTo("") != 0){
-			
-			Empleado empleado = servicioEmpleado.buscarPorFicha(txtFicha.getValue());
-			if (empleado == null){
-				msj.mensajeAlerta(Mensaje.fichaoEmpleado);
-				txtFicha.setFocus(true);
-			}
-					
-		}
-				
-				
-		
-		
-			
-	}
-	
-
-	
-	
-	
-	
-	
 
 }
