@@ -17,6 +17,27 @@ public interface IPlanificacionSemanalDAO extends JpaRepository<PlanificacionSem
 	public List<PlanificacionSemanal> findByFechaTurnoAndIdTurno(Date fecha,
 			String turno);
 
+	public List<PlanificacionSemanal> findBySemanaStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByFichaStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByNombreStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByIdTurnoStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByDiaSemanaStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByFechaTurnoStartingWithAllIgnoreCase(
+			String valor);
+
+	public List<PlanificacionSemanal> findByCuadrillaStartingWithAllIgnoreCase(
+			String valor);
+
 	
 	
 }

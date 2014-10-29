@@ -1,13 +1,13 @@
 <zk>
 	<style src="/public/Estilo.css" />
 	<div id="divReporte" apply="controlador.reporte.CReportes">
-		<groupbox width="45em" mold="3d" title="Reportes">
+		<groupbox width="auto" mold="3d" title="Reportes">
 			<grid width="100%">
 				<columns visible="false">
 					<column label="" width="30%" />
 					<column label="" width="40%" />
-					<column label="" width="20%" />
-					<column label="" width="10%" />
+					<column label="" width="13%" />
+					<column label="" width="17%" />
 				</columns>
 				<rows>
 					<row>
@@ -125,23 +125,6 @@
 					</row>
 					<row>
 						<hbox>
-							<label class="etiqueta" value="Turno:" />
-							<space />
-							<label value="*"
-								style="font-weight:bold;color:red" />
-						</hbox>
-
-						<combobox tooltiptext="Seleccione un molinete"
-							id="cmbTurno" readonly="true" width="100%">
-							<template name="model">
-								<comboitem label="${each.descripcion}" />
-							</template>
-						</combobox>
-						<hbox />
-						<hbox />
-					</row>
-					<row>
-						<hbox>
 							<label class="etiqueta" value="Ficha:" />
 							<space />
 							<label value="*"
@@ -153,7 +136,7 @@
 							id="btnBuscarEmpleado" class="btn" label="Buscar"
 							tooltiptext="Catalogo de Empleados"
 							image="/public/imagenes/botones/buscar.png" />
-						<hbox />
+						<label id="lbEmpleado" />
 
 					</row>
 					<row>
@@ -198,7 +181,7 @@
 			</grid>
 			<separator />
 			<div id="botoneraReporte" />
-			<div id="divCatalogoEmpleado" />
+			<div id="divCatalogoPlanificacion" />
 		</groupbox>
 	</div>
 </zk>
