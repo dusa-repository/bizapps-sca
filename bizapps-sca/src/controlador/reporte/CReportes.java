@@ -171,21 +171,31 @@ public class CReportes extends CGenerico {
 							.getId();
 
 					String turno = "";
-
+					System.out.print("Total de cursos"
+							+ lsbTurnos.getItemCount());
+					System.out.println("");
 					for (int i = 0; i < lsbTurnos.getItemCount(); i++) {
 
-						Turno turnoSeleccionado = lsbTurnos.getItems().get(i)
-								.getValue();
+						Listitem listItem = lsbTurnos.getItemAtIndex(i);
 
-						if (turnoSeleccionado.getDescripcion() == "TODOS" ) {
+						if (lsbTurnos.getItems().get(i).isSelected()) {
 
-							for (Turno turnoAux : servicioTurno.buscarTodos()) {
-								turno = turno + "" + turnoAux.getId() + ",";
+							Turno turnoSeleccionado = listItem.getValue();
+
+							if (turnoSeleccionado.getDescripcion() == "TODOS") {
+
+								for (Turno turnoAux : servicioTurno
+										.buscarTodos()) {
+									turno = turno + "" + turnoAux.getId() + ",";
+								}
+								System.out.print("entre en el if de todos");
+
+								turno = turno.substring(0, turno.length() - 1);
+							} else {
+								turno = turno + "" + turnoSeleccionado.getId() + ",";
+							
 							}
 
-							turno = turno.substring(0, turno.length() - 1);
-						} else {
-							turno = "" + turnoSeleccionado.getId() + "";
 						}
 
 					}
