@@ -72,14 +72,13 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SEmpleado servicioEmpleado;
 	
 
-	protected static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+	private static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 			"/META-INF/ConfiguracionAplicacion.xml");
 	public Mensaje msj = new Mensaje();
 	public Tabbox tabBox;
 	public Include contenido;
 	public Tab tab;
 	protected DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-	// public static List<Tab> tabs = new ArrayList<Tab>();
 	public List<Tab> tabs = new ArrayList<Tab>();
 	protected DateFormat df = new SimpleDateFormat("HH:mm a");
 	public final Calendar calendario = Calendar.getInstance();
@@ -89,6 +88,7 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 			+ String.valueOf(calendario.get(Calendar.MINUTE));
 	public java.util.Date fecha = new Date();
 	public Timestamp fechaHora = new Timestamp(fecha.getTime());
+	public String titulo = "";
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -101,7 +101,6 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	public void cerrarVentana(Div div, String id, List<Tab> tabs2) {
 		div.setVisible(false);
 		tabs = tabs2;
-		System.out.println(tabs.size());
 		for (int i = 0; i < tabs.size(); i++) {
 			if (tabs.get(i).getLabel().equals(id)) {
 				if (i == (tabs.size() - 1) && tabs.size() > 1) {
@@ -112,7 +111,7 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 			}
 		}
 	}
-
+	
 	public String nombreUsuarioSesion() {
 		Authentication sesion = SecurityContextHolder.getContext()
 				.getAuthentication();
@@ -173,23 +172,7 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 		}
 	}
 
-	public static int calcularEdad(Date birthDate) {
-		Calendar birth = new GregorianCalendar();
-		Calendar today = new GregorianCalendar();
-		int age = 0;
-		int factor = 0;
-		Date currentDate = new Date();
-		birth.setTime(birthDate);
-		today.setTime(currentDate);
-		if (today.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
-			factor = -1;
-		}
-		age = (currentDate.getYear() - birthDate.getYear()) + factor;
-		if (age == -1)
-			age = 0;
-		return age;
-	}
-	
+
 	public String damePath() {
 		return Executions.getCurrent().getContextPath() + "/";
 	}

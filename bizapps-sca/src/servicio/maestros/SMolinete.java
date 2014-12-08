@@ -5,8 +5,6 @@ import interfacedao.maestros.IMolineteDAO;
 
 import java.util.List;
 
-
-
 import modelo.maestros.Molinete;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,14 @@ public class SMolinete {
 		return molineteDAO.findByDescripcion(value);
 	}
 
-	public void eliminar(Molinete molinete) {
-		molineteDAO.delete(molinete);
+	public void eliminarUno(String id) {
+		molineteDAO.delete(id);
+	}
+	
+	
+	/* Servicio que permite eliminar varios Molinetes */
+	public void eliminarVarios(List<Molinete> eliminar) {
+		molineteDAO.delete(eliminar);
 	}
 
 	public List<Molinete> buscarTodos() {

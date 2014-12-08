@@ -1,6 +1,9 @@
 <zk>
 	<style src="/public/Estilo.css" />
 	<div id="divReporte" apply="controlador.reporte.CReportes">
+		<div id="botoneraReporte" />
+		<separator />
+		<separator />
 		<groupbox width="auto" mold="3d" title="Reportes">
 			<grid width="100%">
 				<columns visible="false">
@@ -120,8 +123,8 @@
 								<listitem label="${each.descripcion}" />
 							</template>
 						</listbox>
-						<hbox/>
-						<hbox/>
+						<hbox />
+						<hbox />
 					</row>
 					<row>
 						<hbox>
@@ -180,7 +183,6 @@
 				</rows>
 			</grid>
 			<separator />
-			<div id="botoneraReporte" />
 			<div id="divCatalogoPlanificacion" />
 		</groupbox>
 	</div>

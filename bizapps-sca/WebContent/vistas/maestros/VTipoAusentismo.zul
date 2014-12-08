@@ -1,43 +1,61 @@
 <zk>
-	<style src="/public/Estilo.css" />
+	<style src="../public/Estilo.css" />
 	<div id="divTipoAusentismo"
 		apply="controlador.maestros.CTipoAusentismo">
-		<groupbox width="42em" mold="3d" title="Tipo de Ausentismo">
-			<grid width="100%">
-				<columns visible="false">
-					<column label="" width="22%" />
-					<column label="" width="60%" />
-					<column label="" width="18%" />
-				</columns>
-				<rows>
-					<row>
-						<hbox>
-							<label class="etiqueta" value="Código:" />
-							<space />
-							<label value="*"
-								style="font-weight:bold;color:red" />
-						</hbox>
-						<textbox id="txtCodigoTipoAusentismo" hflex="1"
-							maxlength="50"
-							tooltiptext="Ingrese el codigo del tipo de ausentismo" />
-						<button autodisable="self"
-							id="btnBuscarTipoAusentismo" class="btn" label="Buscar"
-							tooltiptext="Catalogo de tipos de ausentismos"
-							image="/public/imagenes/botones/buscar.png" />
-					</row>
-					<row>
-						<label class="etiqueta" value="Descripción:" />
-
-						<textbox class="multilinea"
-							id="txtDescripcionTipoAusentismo" hflex="1" maxlength="500"
-							multiline="true"
-							tooltiptext="Ingrese la descripcion del tipo de ausentismo" />
-					</row>
-				</rows>
-			</grid>
-			<separator />
+		<groupbox width="auto" mold="3d" title="Tipo de Ausentismo">
 			<div id="botoneraTipoAusentismo" />
-			<div id="catalogoTipoAusentismo" />
+			<separator />
+			<groupbox class="azul" id="gpxRegistro" width="auto"
+				title="" open="false">
+				<caption label="Nuevo" style="font-weight:bold"
+					tooltiptext="Presione para Registrar un Nuevo Tipo de Ausentismo" />
+				<separator />
+				<grid width="100%" style="border:0px">
+					<columns visible="false">
+						<column label="" width="18%" />
+						<column label="" width="35%" />
+						<column label="" width="12%" />
+						<column label="" width="35%" />
+					</columns>
+					<rows>
+						<row>
+							<hbox>
+								<label class="etiqueta" value="Código:" />
+								<space />
+								<label value="*"
+									style="font-weight:bold;color:red" />
+							</hbox>
+							<textbox id="txtCodigoTipoAusentismo"
+								hflex="1" maxlength="50"
+								tooltiptext="Ingrese el codigo del tipo de ausentismo (id)" />
+							<hbox />
+							<hbox />
+						</row>
+						<row>
+							<label class="etiqueta"
+								value="Descripción:" />
+
+							<textbox class="multilinea"
+								id="txtDescripcionTipoAusentismo" hflex="1" maxlength="500"
+								multiline="true"
+								tooltiptext="Ingrese la descripcion del tipo de ausentismo (descripcion)" />
+							<hbox />
+							<hbox />
+						</row>
+					</rows>
+				</grid>
+			</groupbox>
+			<separator />
+			<groupbox class="azul" id="gpxDatos" width="auto"
+				title="">
+				<caption label="Registros" style="font-weight:bold"
+					tooltiptext="Presione para Visualizar los Tipos de Ausentismos" />
+				<div id="divCatalogoTipoAusentismo"
+					tooltiptext="Seleccione el Tipo de Ausentismo Para Realizar una Accion" />
+			</groupbox>
+			<separator />
+			<separator />
 		</groupbox>
 	</div>
 </zk>
+

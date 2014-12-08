@@ -8,53 +8,105 @@ import org.zkoss.zul.Hbox;
 
 public abstract class Botonera extends Hbox {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Botonera() {
 		super();
+		Button btnSeleccionar = new Button();
+		Button btnBuscar = new Button();
+		Button btnAnnadir = new Button();
 		Button btnGuardar = new Button();
 		Button btnEliminar = new Button();
 		Button btnLimpiar = new Button();
 		Button btnReporte = new Button();
 		Button btnSalir = new Button();
+		Button btnAyuda = new Button();
+
+		this.appendChild(btnSeleccionar);
+		this.appendChild(btnBuscar);
+		this.appendChild(btnAnnadir);
 		this.appendChild(btnGuardar);
 		this.appendChild(btnEliminar);
 		this.appendChild(btnLimpiar);
 		this.appendChild(btnReporte);
 		this.appendChild(btnSalir);
-		
-		btnGuardar
-				.setSrc("/public/imagenes/botones/guardar.png");
-		btnEliminar
-				.setSrc("/public/imagenes/botones/eliminar.png");
-		btnLimpiar
-				.setSrc("/public/imagenes/botones/limpiar.png");
-		btnReporte.setSrc("/public/imagenes/botones/reporte.png");
-		btnSalir.setSrc("/public/imagenes/botones/salir.png");
-		
+		this.appendChild(btnAyuda);
+
+		btnSeleccionar.setImage("/public/imagenes/botones/seleccionar.png");
+		btnBuscar.setImage("/public/imagenes/botones/volver.png");
+		btnAnnadir.setImage("/public/imagenes/botones/annadir.png");
+		btnGuardar.setImage("/public/imagenes/botones/guardar.png");
+		btnEliminar.setImage("/public/imagenes/botones/eliminar.png");
+		btnLimpiar.setImage("/public/imagenes/botones/limpiar.png");
+		btnReporte.setImage("/public/imagenes/botones/reporte.png");
+		btnSalir.setImage("/public/imagenes/botones/salir.png");
+		btnAyuda.setImage("/public/imagenes/botones/ayuda.png");
+
+		btnAyuda.setSclass("btn");
+		btnEliminar.setSclass("btn");
+		btnAnnadir.setSclass("btn");
+		btnGuardar.setSclass("btn");
+		btnBuscar.setSclass("btn");
+		btnLimpiar.setSclass("btn");
+		btnSalir.setSclass("btn");
+		btnReporte.setSclass("btn");
+		btnSeleccionar.setSclass("btn");
+		btnSeleccionar.setWidth("118px");
+
+		btnSeleccionar.setLabel("Seleccionar");
+		btnBuscar.setLabel("Volver");
+		btnAnnadir.setLabel("AÒadir");
 		btnGuardar.setLabel("Guardar");
 		btnEliminar.setLabel("Eliminar");
 		btnLimpiar.setLabel("Limpiar");
-		btnSalir.setLabel("Salir");
 		btnReporte.setLabel("Reporte");
-		
+		btnSalir.setLabel("Salir");
+		btnAyuda.setLabel("Ayuda");
+
+		btnSeleccionar.setTooltiptext("Seleccionar");
+		btnBuscar.setTooltiptext("Volver");
+		btnAnnadir.setTooltiptext("AÒadir");
 		btnGuardar.setTooltiptext("Guardar");
 		btnEliminar.setTooltiptext("Eliminar");
 		btnLimpiar.setTooltiptext("Limpiar");
-		btnSalir.setTooltiptext("Salir");
 		btnReporte.setTooltiptext("Reporte");
-		
-		btnEliminar.setSclass("btn");
-		btnLimpiar.setSclass("btn");
-		btnSalir.setSclass("btn");
-		btnGuardar.setSclass("btn");
-		btnReporte.setSclass("btn");
+		btnSalir.setTooltiptext("Salir");
+		btnAyuda.setTooltiptext("Ayuda");
 
+		btnSeleccionar.addEventListener(Events.ON_CLICK,
+				new EventListener<Event>() {
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						seleccionar();
+					}
+				});
+		btnBuscar.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				buscar();
+			}
+
+		});
+		btnAnnadir.addEventListener(Events.ON_CLICK,
+				new EventListener<Event>() {
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						annadir();
+					}
+
+				});
 		btnGuardar.addEventListener(Events.ON_CLICK,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event arg0) throws Exception {
 						guardar();
 					}
+
 				});
+
 		btnEliminar.addEventListener(Events.ON_CLICK,
 				new EventListener<Event>() {
 					@Override
@@ -69,13 +121,6 @@ public abstract class Botonera extends Hbox {
 						limpiar();
 					}
 				});
-		btnSalir.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event arg0) throws Exception {
-				salir();
-			}
-		});
-		
 		btnReporte.addEventListener(Events.ON_CLICK,
 				new EventListener<Event>() {
 					@Override
@@ -83,12 +128,31 @@ public abstract class Botonera extends Hbox {
 						reporte();
 					}
 				});
+		btnSalir.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				salir();
+			}
+		});
+		btnAyuda.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				ayuda();
+			}
+		});
 	}
 
 	/**
 	 * Metodo que guarda un registro nuevo si no a sido guardado con
-	 * anterioridad, de ser as√≠ se modifica aquellos datos que el usuario cambie
+	 * anterioridad, de ser as√≠ se modifica aquellos datos que el usuario
+	 * cambie
 	 */
+	public abstract void seleccionar();
+
+	public abstract void buscar();
+
+	public abstract void annadir();
+
 	public abstract void guardar();
 
 	/**
@@ -97,17 +161,18 @@ public abstract class Botonera extends Hbox {
 	 */
 	public abstract void limpiar();
 
+	public abstract void reporte();
+
 	/**
 	 * Metodo que permite cerrar el div que se genera al entrar a la vista
 	 */
 	public abstract void salir();
 
 	/**
-	 * Metodo que permite la eliminacion de un registro siempre y cuando
-	 * no este asociado a otra entidad
+	 * Metodo que permite la eliminacion de un registro siempre y cuando no este
+	 * asociado a otra entidad
 	 */
 	public abstract void eliminar();
-	
-	
-	public abstract void reporte();
+
+	public abstract void ayuda();
 }

@@ -1,7 +1,11 @@
 <zk>
 	<style src="/public/Estilo.css" />
-	<div id="divGrupo" apply="controlador.seguridad.CGrupo" width="80%">
-		<groupbox width="40em" mold="3d" title="Grupos">
+	<div id="divGrupo" apply="controlador.seguridad.CGrupo"
+		width="100%">
+		<div id="botoneraGrupo" />
+		<separator />
+		<separator />
+		<groupbox width="auto" mold="3d" title="Grupos">
 			<grid>
 				<columns visible="false">
 					<column label="" width="28%" />
@@ -14,31 +18,38 @@
 						<hbox>
 							<label class="etiqueta" value="Nombre:" />
 							<space />
-							<label value="*" style="font-weight:bold;color:red" />
+							<label value="*"
+								style="font-weight:bold;color:red" />
 						</hbox>
-						<textbox id="txtNombreGrupo" tooltiptext="Ingrese el Nombre del Grupo" />
+						<textbox id="txtNombreGrupo"
+							tooltiptext="Ingrese el Nombre del Grupo" />
 						<hbox />
-						<button autodisable="self" id="btnCatalogoGrupo" class="btn"
-							label="Buscar" tooltiptext="Catalogo" image="/public/imagenes/botones/buscar.png" />
+						<button autodisable="self" id="btnCatalogoGrupo"
+							class="btn" label="Buscar" tooltiptext="Catalogo"
+							image="/public/imagenes/botones/buscar.png" />
 					</row>
 				</rows>
 			</grid>
 			<separator />
 
 			<hbox width="100%">
-				<groupbox width="100%" title="Funcionalidades Disponibles">
+				<groupbox width="100%"
+					title="Funcionalidades Disponibles">
 					<tree id="treeGrupo" width="99%">
 						<template name="model">
 							<treeitem context="menupopup" open="true">
 								<treerow>
-									<treecell context="${each.index}" label="${each.label}" />
+									<treecell context="${each.index}"
+										label="${each.label}" />
 								</treerow>
 							</treeitem>
 						</template>
 					</tree>
 				</groupbox>
-				<groupbox width="100%" title="Funcionalidades Seleccionadas">
-					<listbox width="auto" id="ltbFuncionalidadesSeleccionados">
+				<groupbox width="100%"
+					title="Funcionalidades Seleccionadas">
+					<listbox width="auto"
+						id="ltbFuncionalidadesSeleccionados">
 						<listhead></listhead>
 						<template name="model">
 							<listitem>
@@ -49,7 +60,6 @@
 				</groupbox>
 			</hbox>
 			<separator />
-			<div id="botoneraGrupo" />
 			<div id="catalogoGrupo" />
 		</groupbox>
 	</div>

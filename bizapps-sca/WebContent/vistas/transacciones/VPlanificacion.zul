@@ -2,7 +2,11 @@
 	<style src="/public/Estilo.css" />
 	<div id="divPlanificacion"
 		apply="controlador.transacciones.CPlanificacion">
-		<groupbox width="50em" mold="3d" title="Planificación Semanal">
+		<groupbox width="auto" mold="3d" title="Planificación Semanal">
+			<separator />
+			<div id="botoneraPlanificacion" style="margin-left:10px" />
+			<separator />
+			<separator />
 			<separator />
 			<separator />
 			<div align="left">
@@ -32,14 +36,11 @@
 						<button autodisable="self" id="btnSubirArchivo"
 							style="margin-left:20px" class="btn" label="Subir archivo"
 							tooltiptext="Subir archivo" />
+							<hbox/>
 					</row>
 				</rows>
 			</grid>
 			<separator />
-			<separator />
-			<separator />
-			<separator />
-			<div id="botoneraPlanificacion" style="margin-left:10px" />
 			<separator />
 			<separator />
 		</groupbox>
