@@ -7,6 +7,7 @@ import java.util.List;
 
 
 
+import modelo.maestros.Molinete;
 import modelo.maestros.Turno;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,13 @@ public class STurno {
 		return turnoDAO.findByDescripcion(value);
 	}
 
-	public void eliminar(Turno turno) {
+	public void eliminarUno(String turno) {
 		turnoDAO.delete(turno);
+	}
+	
+
+	public void eliminarVarios(List<Turno> eliminar) {
+		turnoDAO.delete(eliminar);
 	}
 
 	public List<Turno> buscarTodos() {

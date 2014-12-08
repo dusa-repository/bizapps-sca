@@ -5,6 +5,7 @@ import org.zkoss.zul.Messagebox;
 public class Mensaje {
 	public static String guardado = "Registro Guardado Exitosamente.";
 	public static String claveUsada = "La Clave ha sido Usada por Otro Registro.";
+	public static String codigoMolinete = "El codigo ha sido Usado por Otro Registro.";
 	public static String camposVacios = "Debe Llenar Todos los Campos Requeridos.";
 	public static String errorEnReporte = "Ha ocurrido un error originando el reporte";
 	public static String noSeleccionoItem = "No ha seleccionado ningun Item";
@@ -44,7 +45,7 @@ public class Mensaje {
 				Messagebox.INFORMATION);
 	}
 
-	public void mensajeAlerta(String msj) {
+	public static void mensajeAlerta(String msj) {
 		Messagebox.show(msj, "Alerta", Messagebox.OK, Messagebox.EXCLAMATION);
 	}
 

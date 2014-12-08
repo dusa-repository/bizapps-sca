@@ -322,10 +322,38 @@ public class CReportes extends CGenerico {
 				}
 
 			}
+
+			@Override
+			public void seleccionar() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void buscar() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void annadir() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void ayuda() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 		botonera.getChildren().get(0).setVisible(false);
 		botonera.getChildren().get(1).setVisible(false);
+		botonera.getChildren().get(2).setVisible(false);
+		botonera.getChildren().get(3).setVisible(false);
+		botonera.getChildren().get(4).setVisible(false);
+		botonera.getChildren().get(8).setVisible(false);
 		botoneraReporte.appendChild(botonera);
 	}
 

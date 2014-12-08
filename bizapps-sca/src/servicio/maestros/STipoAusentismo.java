@@ -5,8 +5,6 @@ import interfacedao.maestros.ITipoAusentismoDAO;
 
 import java.util.List;
 
-
-
 import modelo.maestros.TipoAusentismo;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,14 @@ public class STipoAusentismo {
 		return ausentismoDAO.findByDescripcion(value);
 	}
 
-	public void eliminar(TipoAusentismo ausentismo) {
+	public void eliminarUno(String ausentismo) {
 		ausentismoDAO.delete(ausentismo);
+	}
+	
+	
+	/* Servicio que permite eliminar varios Molinetes */
+	public void eliminarVarios(List<TipoAusentismo> eliminar) {
+		ausentismoDAO.delete(eliminar);
 	}
 
 	public List<TipoAusentismo> buscarTodos() {

@@ -2,6 +2,9 @@
 	<style src="/public/Estilo.css" />
 	<div id="divUsuario" width="100%"
 		apply="controlador.maestros.CUsuario">
+		<div id="botoneraUsuario" />
+		<separator />
+		<separator />
 		<groupbox mold="3d" width="auto" title="Usuario">
 			<separator />
 			<grid width="100%">
@@ -244,7 +247,6 @@
 				</tabpanels>
 			</tabbox>
 			<separator />
-			<div id="botoneraUsuario" />
 			<div id="catalogoUsuario" />
 		</groupbox>
 	</div>

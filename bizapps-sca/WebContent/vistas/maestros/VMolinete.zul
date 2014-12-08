@@ -1,41 +1,59 @@
 <zk>
-	<style src="/public/Estilo.css" />
+	<style src="../public/Estilo.css" />
 	<div id="divMolinete" apply="controlador.maestros.CMolinete">
-		<groupbox width="45em" mold="3d" title="Molinete">
-			<grid width="100%">
-				<columns visible="false">
-					<column label="" width="22%" />
-					<column label="" width="60%" />
-					<column label="" width="18%" />
-				</columns>
-				<rows>
-					<row>
-						<hbox>
-							<label class="etiqueta" value="Código:" />
-							<space />
-							<label value="*"
-								style="font-weight:bold;color:red" />
-						</hbox>
-						<textbox id="txtCodigoMolinete" hflex="1"
-							maxlength="50" tooltiptext="Ingrese el codigo del molinete" />
-						<button autodisable="self"
-							id="btnBuscarMolinete" class="btn" label="Buscar"
-							tooltiptext="Catalogo de Molinetes"
-							image="/public/imagenes/botones/buscar.png" />
-					</row>
-					<row>
-						<label class="etiqueta" value="Descripción:" />
-
-						<textbox class="multilinea"
-							id="txtDescripcionMolinete" hflex="1" maxlength="500"
-							multiline="true"
-							tooltiptext="Ingrese la descripcion del molinete" />
-					</row>
-				</rows>
-			</grid>
-			<separator />
+		<groupbox width="auto" mold="3d" title="Molinete">
 			<div id="botoneraMolinete" />
-			<div id="catalogoMolinete" />
+			<separator />
+			<groupbox class="azul" id="gpxRegistro" width="auto"
+				title="" open="false">
+				<caption label="Nuevo" style="font-weight:bold"
+					tooltiptext="Presione para Registrar un Nuevo Molinete" />
+				<separator />
+				<grid width="100%" style="border:0px">
+					<columns visible="false">
+						<column label="" width="18%" />
+						<column label="" width="35%" />
+						<column label="" width="12%" />
+						<column label="" width="35%" />
+					</columns>
+					<rows>
+						<row>
+							<hbox>
+								<label class="etiqueta" value="Código:" />
+								<space />
+								<label value="*"
+									style="font-weight:bold;color:red" />
+							</hbox>
+							<textbox id="txtCodigoMolinete" hflex="1"
+								maxlength="50" tooltiptext="Ingrese el codigo del molinete (id)" />
+							<hbox />
+							<hbox />
+						</row>
+						<row>
+							<label class="etiqueta"
+								value="Descripción:" />
+
+							<textbox class="multilinea"
+								id="txtDescripcionMolinete" hflex="1" maxlength="500"
+								multiline="true"
+								tooltiptext="Ingrese la descripcion del molinete (descripcion)" />
+							<hbox />
+							<hbox />
+						</row>
+					</rows>
+				</grid>
+			</groupbox>
+			<separator />
+			<groupbox class="azul" id="gpxDatos" width="auto"
+				title="">
+				<caption label="Registros" style="font-weight:bold"
+					tooltiptext="Presione para Visualizar los Molinetes" />
+				<div id="divCatalogoMolinete"
+					tooltiptext="Seleccione el Molinete Para Realizar una Accion" />
+			</groupbox>
+			<separator />
+			<separator />
 		</groupbox>
 	</div>
 </zk>
+

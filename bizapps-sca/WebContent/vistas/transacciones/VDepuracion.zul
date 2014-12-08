@@ -2,10 +2,12 @@
 	<style src="/public/Estilo.css" />
 	<div id="divDepuracion"
 		apply="controlador.transacciones.CDepuracion">
-		<groupbox width="42em" mold="3d" title="Depuración">
+		<div id="botoneraDepuracion" />
+		<separator />
+		<separator />
+		<groupbox width="auto" mold="3d" title="Depuración">
 			<separator />
 			<separator />
-
 			<listbox id="lsbDepuracion" width="100%" mold="paging"
 				pageSize="10" oddRowSclass="non-odd"
 				emptyMessage="No hay planificaciones semanales cargadas">
@@ -23,9 +25,6 @@
 				</template>
 			</listbox>
 			<separator />
-			<separator />
-			<separator />
-			<div id="botoneraDepuracion" />
 			<separator />
 		</groupbox>
 	</div>
