@@ -26,4 +26,6 @@ public interface IUsuarioDAO extends JpaRepository<Usuario, Long> {
 	List<Usuario> findByGrupos(Grupo grupo);
 
 	Usuario findByFicha(String ficha);
+
+	Usuario findByCedulaAndEmail(String value, String value2);
 }

@@ -164,6 +164,7 @@ public class CUsuario extends CGenerico {
 			@Override
 			public void guardar() {
 				if (validar()) {
+					if (buscarPorLogin()) {
 					Set<Grupo> gruposUsuario = new HashSet<Grupo>();
 					for (int i = 0; i < ltbGruposAgregados.getItemCount(); i++) {
 						Grupo grupo = ltbGruposAgregados.getItems().get(i)
@@ -213,6 +214,7 @@ public class CUsuario extends CGenerico {
 					limpiar();
 					msj.mensajeInformacion(Mensaje.guardado);
 
+				}
 				}
 			}
 
@@ -579,5 +581,22 @@ public class CUsuario extends CGenerico {
 		llenarListas(usuario);
 	}
 
+	@Listen("onChange = #txtLoginUsuario")
+	public boolean buscarPorLogin() {
+		Usuario usuario = servicioUsuario.buscarPorLogin(txtLoginUsuario
+				.getValue());
+		if (usuario == null)
+			return true;
+		else {
+			if (usuario.getCedula().equals(id))
+				return true;
+			else {
+				msj.mensajeAlerta(Mensaje.loginUsado);
+				txtLoginUsuario.setValue("");
+				txtLoginUsuario.setFocus(true);
+				return false;
+			}
+		}
+	}
 
 }

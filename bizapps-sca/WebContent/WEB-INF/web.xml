@@ -9,11 +9,9 @@
 	<welcome-file-list>
 		<welcome-file>index.zul</welcome-file>
 	</welcome-file-list>
-
 	<session-config>
-		<session-timeout>15</session-timeout>
+		<session-timeout>360</session-timeout>
 	</session-config>
-
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value> 
@@ -33,8 +31,7 @@
 
 	<listener>
 		<listener-class>
-			org.springframework.security.web.session.HttpSessionEventPublisher
-		</listener-class>
+			org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
 	</listener>
 
 	<listener>
@@ -43,6 +40,7 @@
 
 	<listener>
 		<listener-class>
-			org.springframework.web.context.request.RequestContextListener</listener-class>
+			org.springframework.web.context.request.RequestContextListener
+		</listener-class>
 	</listener>
 </web-app>

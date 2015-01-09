@@ -137,28 +137,28 @@ public class CPlanificacion extends CGenerico {
 			@Override
 			public void seleccionar() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void buscar() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void annadir() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void ayuda() {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
-		
+
 		botonera.getChildren().get(0).setVisible(false);
 		botonera.getChildren().get(1).setVisible(false);
 		botonera.getChildren().get(2).setVisible(false);
@@ -185,11 +185,8 @@ public class CPlanificacion extends CGenerico {
 		if (mediaPlanificacion != null) {
 
 			if (mediaPlanificacion.getContentType().equals(
-					"application/vnd.ms-excel"))
-
-			{
+					"application/vnd.ms-excel")) {
 				txtArchivoPlanificacion.setValue(mediaPlanificacion.getName());
-
 				// Copiar archivo excel en el directorio C:\files\
 				Files.copy(
 						new File("C:\\files\\" + mediaPlanificacion.getName()),
@@ -200,6 +197,7 @@ public class CPlanificacion extends CGenerico {
 						.show(mediaPlanificacion.getName()
 								+ " No es un tipo de archivo valido!, el archivo debe tener la extensión .xls",
 								"Error", Messagebox.OK, Messagebox.ERROR);
+				mediaPlanificacion = null;
 			}
 		}
 	}

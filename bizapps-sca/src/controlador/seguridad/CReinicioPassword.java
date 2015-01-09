@@ -1,20 +1,18 @@
 package controlador.seguridad;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 import modelo.seguridad.Usuario;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Tab;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -35,28 +33,18 @@ public class CReinicioPassword extends CGenerico {
 	@Wire
 	private Div botoneraReinicio;
 	@Wire
-	private Window wdwReiniciar;
+	private Window wdwRecordar;
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private static final long serialVersionUID = 6988038390488496987L;
 
 	@Override
 	public void inicializar() throws IOException {
-		
-		HashMap<String, Object> mapa = (HashMap<String, Object>) Sessions
-				.getCurrent().getAttribute("mapaGeneral");
-		if (mapa != null) {
-			if (mapa.get("tabsGenerales") != null) {
-				tabs = (List<Tab>) mapa.get("tabsGenerales");
-				mapa.clear();
-				mapa = null;
-			}
-		}
-
+		// TODO Auto-generated method stub
 		Botonera botonera = new Botonera() {
 
 			@Override
 			public void salir() {
-				wdwReiniciar.onClose();
+				wdwRecordar.onClose();
 			}
 
 			@Override
@@ -70,14 +58,11 @@ public class CReinicioPassword extends CGenerico {
 				String password = KeyGenerators.string().generateKey();
 				String correo;
 				if (validar()) {
-					Usuario usuario = servicioUsuario
-							.buscarPorCedula(txtCedulaUsuario.getValue());
+					Usuario usuario = servicioUsuario.buscarPorCedulayCorreo(
+							txtCedulaUsuario.getValue(),
+							txtCorreoUsuario.getValue());
 					if (usuario != null) {
-						if (usuario.getEmail() != null) {
-							correo = usuario.getEmail();
-						} else {
-							correo = txtCorreoUsuario.getValue();
-						}
+						correo = usuario.getEmail();
 						usuario.setPassword(password);
 						servicioUsuario.guardar(usuario);
 						enviarEmailNotificacion(
@@ -100,12 +85,6 @@ public class CReinicioPassword extends CGenerico {
 			}
 
 			@Override
-			public void reporte() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
 			public void seleccionar() {
 				// TODO Auto-generated method stub
 				
@@ -124,16 +103,26 @@ public class CReinicioPassword extends CGenerico {
 			}
 
 			@Override
+			public void reporte() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
 			public void ayuda() {
 				// TODO Auto-generated method stub
 				
 			}
 		};
 		botonera.getChildren().get(0).setVisible(false);
-		botonera.getChildren().get(1).setVisible(false);
 		botonera.getChildren().get(2).setVisible(false);
+		botonera.getChildren().get(1).setVisible(false);
+		botonera.getChildren().get(4).setVisible(false);
 		botonera.getChildren().get(6).setVisible(false);
 		botonera.getChildren().get(8).setVisible(false);
+		
+		Button guardar = (Button) botonera.getChildren().get(3);
+		guardar.setLabel("Enviar");
 		botoneraReinicio.appendChild(botonera);
 	}
 
