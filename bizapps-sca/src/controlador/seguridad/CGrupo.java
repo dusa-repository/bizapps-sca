@@ -10,16 +10,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 import modelo.seguridad.Arbol;
 import modelo.seguridad.Grupo;
-import modelo.seguridad.Usuario;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -34,16 +38,14 @@ import org.zkoss.zul.Treeitem;
 
 import arbol.MArbol;
 import arbol.Nodos;
-
 import componentes.Botonera;
-import componentes.Catalogo;
+import componentes.CatalogoGenerico;
 import componentes.Mensaje;
-
+import componentes.Validador;
 import controlador.maestros.CGenerico;
-import controlador.maestros.CUsuario;
 
 public class CGrupo extends CGenerico {
-
+	
 	@Wire
 	private Tree treeGrupo;
 	@Wire
@@ -53,295 +55,347 @@ public class CGrupo extends CGenerico {
 	@Wire
 	private Div botoneraGrupo;
 	@Wire
-	private Div catalogoGrupo;
+	private Div divCatalogoGrupo;
 	@Wire
 	private Div divGrupo;
 	long id = 0;
+	@Wire
+	private Groupbox gpxDatos;
+	@Wire
+	private Groupbox gpxRegistro;
+	
 	TreeModel _model;
-	Catalogo<Grupo> catalogo;
+	CatalogoGenerico<Grupo> catalogo;
 	public static List<String> funcionalidades = new ArrayList<String>();
-
-	private static final long serialVersionUID = 3771289676166008495L;
-
-	private boolean usuario = false;
-	private CUsuario cUsuario = new CUsuario();
-	List<Grupo> grupoUsuario = new ArrayList<Grupo>();
-	Listbox listas;
+	protected List<Grupo> listaGeneral = new ArrayList<Grupo>();
+	Botonera botonera;
 
 	@Override
 	public void inicializar() throws IOException {
-		HashMap<String, Object> mapa = (HashMap<String, Object>) Sessions
+		HashMap<String, Object> map = (HashMap<String, Object>) Sessions
 				.getCurrent().getAttribute("mapaGeneral");
-		if (mapa != null) {
-			if (mapa.get("tabsGenerales") != null) {
-				tabs = (List<Tab>) mapa.get("tabsGenerales");
-				mapa.clear();
-				mapa = null;
+		if (map != null) {
+			if (map.get("tabsGenerales") != null) {
+				tabs = (List<Tab>) map.get("tabsGenerales");
+				titulo = (String) map.get("titulo");
+				map.clear();
+				map = null;
 			}
 		}
 		treeGrupo.setModel(getModel());
 		treeGrupo.setCheckmark(true);
 		treeGrupo.setMultiple(true);
 		ltbFuncionalidadesSeleccionados.getItems().clear();
-		HashMap<String, Object> map = (HashMap<String, Object>) Sessions
-				.getCurrent().getAttribute("itemsCatalogo");
-		if (map != null) {
-			if (map.get("id") != null) {
-				usuario = true;
-				grupoUsuario = (List<Grupo>) map.get("lista");
-				listas = (Listbox) map.get("listbox");
-				map.clear();
-				map = null;
+		txtNombreGrupo.setFocus(true);
+		mostrarCatalogo();
+
+		botonera = new Botonera() {
+			
+			@Override
+			public void seleccionar() {
+				if (validarSeleccion()) {
+					if (catalogo.obtenerSeleccionados().size() == 1) {
+						mostrarBotones(false);
+						abrirRegistro();
+						Grupo grupo = catalogo.objetoSeleccionadoDelCatalogo();
+						txtNombreGrupo.setValue(grupo.getNombre());
+						id = grupo.getIdGrupo();
+						visualizarFuncionalidades();
+
+					} else
+						msj.mensajeAlerta(Mensaje.editarSoloUno);
+				}
 			}
-		}
-		Botonera botonera = new Botonera() {
 
 			@Override
 			public void salir() {
-				cerrarVentana(divGrupo, "Grupo", tabs);
+				cerrarVentana(divGrupo, titulo , tabs);
+
+			}
+
+			@Override
+			public void reporte() {
 			}
 
 			@Override
 			public void limpiar() {
-				metodoLimpiar();
+				mostrarBotones(false);
+				limpiarCampos();
+				id = 0;
 			}
 
 			@Override
 			public void guardar() {
-				if (validar()) {
+				if (validar()) {				
 					List<Arbol> listaArbol = servicioArbol.listarArbol();
 					Set<Arbol> arboles = new HashSet<Arbol>();
 					Treechildren treeChildren = treeGrupo.getTreechildren();
 					Collection<Treeitem> lista = treeChildren.getItems();
 					String nombreGrupo = txtNombreGrupo.getValue();
-					for (int i = 0; i < listaArbol.size(); i++) {
-						for (Iterator<?> iterator = lista.iterator(); iterator
-								.hasNext();) {
-							Treeitem treeitem = (Treeitem) iterator.next();
-							if (listaArbol.get(i).getNombre()
-									.equals(treeitem.getLabel())) {
-								if (treeitem.isSelected()) {
+						for (int i = 0; i < listaArbol.size(); i++) {
+							for (Iterator<?> iterator = lista.iterator(); iterator
+									.hasNext();) {
+								Treeitem treeitem = (Treeitem) iterator.next();
+								if (listaArbol.get(i).getNombre()
+										.equals(treeitem.getLabel())) {
+									if (treeitem.isSelected()) {
 
-									Arbol arbol = listaArbol.get(i);
-									arboles.add(arbol);
+										Arbol arbol = listaArbol.get(i);
+										arboles.add(arbol);
+									}
 								}
 							}
 						}
-					}
-					Boolean estatus = true;
-					String nombre = txtNombreGrupo.getValue();
-					Grupo grupo1 = new Grupo(id, estatus, nombre, arboles);
-					servicioGrupo.guardarGrupo(grupo1);
-					if (usuario) {
-						if (id != 0)
-							grupo1 = servicioGrupo.buscarGrupo(id);
-						else {
-							grupo1 = servicioGrupo.buscarUltimo();
-							grupoUsuario.add(grupo1);
-						}
-						cUsuario.recibirGrupo(grupoUsuario, listas);
-					}
+						Boolean estatus = true;
+						String nombre = txtNombreGrupo.getValue();
+						Grupo grupo1 = new Grupo(id, estatus, nombre, arboles);
+						servicioGrupo.guardarGrupo(grupo1);
 					msj.mensajeInformacion(Mensaje.guardado);
 					limpiar();
+					listaGeneral = servicioGrupo.buscarTodos();
+					catalogo.actualizarLista(listaGeneral);
 				}
+
 			}
 
 			@Override
 			public void eliminar() {
-				if (id != 0) {
-					Messagebox.show("¿Esta Seguro de Eliminar el Grupo?",
-							"Alerta", Messagebox.OK | Messagebox.CANCEL,
-							Messagebox.QUESTION,
-							new org.zkoss.zk.ui.event.EventListener<Event>() {
-								public void onEvent(Event evt)
-										throws InterruptedException {
-									if (evt.getName().equals("onOK")) {
-										Grupo grupo = servicioGrupo
-												.buscarGrupo(id);
+				if (gpxDatos.isOpen()) {
+					/* Elimina Varios Registros */
+					if (validarSeleccion()) {
+						final List<Grupo> eliminarLista = catalogo
+								.obtenerSeleccionados();
+						Messagebox
+								.show("¿Desea Eliminar los "
+										+ eliminarLista.size() + " Registros?",
+										"Alerta",
+										Messagebox.OK | Messagebox.CANCEL,
+										Messagebox.QUESTION,
+										new org.zkoss.zk.ui.event.EventListener<Event>() {
+											public void onEvent(Event evt)
+													throws InterruptedException {
+												if (evt.getName()
+														.equals("onOK")) {
+													servicioGrupo
+															.eliminarVarios(eliminarLista);
+													msj.mensajeInformacion(Mensaje.eliminado);
+													listaGeneral = servicioGrupo.buscarTodos();
+													catalogo.actualizarLista(listaGeneral);
+												}
+											}
+										});
+					}
+				} else {
+					/* Elimina un solo registro */
+					if (id != 0) {
+						Messagebox
+								.show(Mensaje.deseaEliminar,
+										"Alerta",
+										Messagebox.OK | Messagebox.CANCEL,
+										Messagebox.QUESTION,
+										new org.zkoss.zk.ui.event.EventListener<Event>() {
+											public void onEvent(Event evt)
+													throws InterruptedException {
+												if (evt.getName()
+														.equals("onOK")) {
+													servicioGrupo
+															.eliminarUno(id);
+													msj.mensajeInformacion(Mensaje.eliminado);
+													limpiar();
+													listaGeneral = servicioGrupo.buscarTodos();
+													catalogo.actualizarLista(listaGeneral);
+												}
+											}
+										});
+					} else
+						msj.mensajeAlerta(Mensaje.noSeleccionoRegistro);
+				}
 
-										List<Usuario> usuario = servicioUsuario
-												.buscarPorGrupo(grupo);
-										if (!usuario.isEmpty())
-											msj.mensajeError(Mensaje.noEliminar);
-										else {
-											servicioGrupo.eliminar(grupo);
-											limpiar();
-											msj.mensajeInformacion(Mensaje.eliminado);
-										}
-									}
-								}
-							});
-				} else
-					msj.mensajeAlerta(Mensaje.noSeleccionoRegistro);
-			}
-
-			@Override
-			public void reporte() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void seleccionar() {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void buscar() {
-				// TODO Auto-generated method stub
 				
-			}
-
-			@Override
-			public void annadir() {
-				// TODO Auto-generated method stub
+				abrirCatalogo();
 				
 			}
 
 			@Override
 			public void ayuda() {
-				// TODO Auto-generated method stub
-				
+
+			}
+
+			@Override
+			public void annadir() {
+				abrirRegistro();
+				mostrarBotones(false);
 			}
 		};
-		botonera.getChildren().get(0).setVisible(false);
-		botonera.getChildren().get(1).setVisible(false);
-		botonera.getChildren().get(2).setVisible(false);
 		botonera.getChildren().get(6).setVisible(false);
 		botonera.getChildren().get(8).setVisible(false);
+		botonera.getChildren().get(1).setVisible(false);
+		botonera.getChildren().get(3).setVisible(false);
+		botonera.getChildren().get(5).setVisible(false);
 		botoneraGrupo.appendChild(botonera);
+		
 	}
 
-	public TreeModel getModel() {
-		if (_model == null) {
-			_model = new MArbol(getFooRoot());
-		}
-		return _model;
-	}
+	private void mostrarCatalogo() {
+		listaGeneral = servicioGrupo.buscarTodos();
+		catalogo = new CatalogoGenerico<Grupo>(divCatalogoGrupo, "Catalogo de Grupos",
+				listaGeneral, false,false,false,"Nombre") {
+			@Override
+			protected String[] crearRegistros(Grupo grupo) {
+				String[] registros = new String[1];
+				registros[0] = grupo.getNombre();
+				return registros;
+			}
+			@Override
+			protected List<Grupo> buscar(List<String> valores) {
+				List<Grupo> lista = new ArrayList<Grupo>();
 
-	private Nodos getFooRoot() {
-		Nodos root = new Nodos(null, 0, "");
-		Nodos oneLevelNode = new Nodos(null, 0, "");
-		Nodos twoLevelNode = new Nodos(null, 0, "");
-		Nodos threeLevelNode = new Nodos(null, 0, "");
-		Nodos fourLevelNode = new Nodos(null, 0, "");
-		List<Arbol> listaArbol = servicioArbol.listarArbol();
-		ArrayList<Arbol> arbole = new ArrayList<Arbol>();
-		List<Arbol> arboles = new ArrayList<Arbol>();
-		ArrayList<Long> ids = new ArrayList<Long>();
-		for (int k = 0; k < listaArbol.size(); k++) {
-			Arbol arbol;
-			long nombre = listaArbol.get(k).getIdArbol();
-			arbol = servicioArbol.buscarPorId(nombre);
-			if (arbol != null)
-				ids.add(arbol.getIdArbol());
-			arbole.add(arbol);
-		}
-		Collections.sort(ids);
-		for (int t = 0; t < ids.size(); t++) {
-			Arbol a;
-			a = servicioArbol.buscarPorId(ids.get(t));
-			arboles.add(a);
-		}
-		long temp1, temp2, temp3 = 0;
-		for (int i = 0; i < arboles.size(); i++) {
-			if (arboles.get(i).getPadre() == 0) {
-				oneLevelNode = new Nodos(root, (int) arboles.get(i)
-						.getIdArbol(), arboles.get(i).getNombre());
-				root.appendChild(oneLevelNode);
-				temp1 = arboles.get(i).getIdArbol();
-				arboles.remove(i);
-				for (int j = i; j < arboles.size(); j++) {
-					if (temp1 == arboles.get(j).getPadre()) {
-						twoLevelNode = new Nodos(oneLevelNode, (int) arboles
-								.get(i).getIdArbol(), arboles.get(j)
-								.getNombre());
-						oneLevelNode.appendChild(twoLevelNode);
-						temp2 = arboles.get(j).getIdArbol();
-						arboles.remove(j);
-						for (int k = j; k < arboles.size(); k++) {
-							if (temp2 == arboles.get(k).getPadre()) {
-								threeLevelNode = new Nodos(twoLevelNode,
-										(int) arboles.get(i).getIdArbol(),
-										arboles.get(k).getNombre());
-								twoLevelNode.appendChild(threeLevelNode);
-								temp3 = arboles.get(k).getIdArbol();
-								arboles.remove(k);
-								for (int z = k; z < arboles.size(); z++) {
-									if (temp3 == arboles.get(z).getPadre()) {
-										fourLevelNode = new Nodos(
-												threeLevelNode, (int) arboles
-														.get(i).getIdArbol(),
-												arboles.get(z).getNombre());
-										threeLevelNode
-												.appendChild(fourLevelNode);
-										arboles.remove(z);
-										z = z - 1;
-									}
-								}
-								k = k - 1;
-							}
-						}
-						j = j - 1;
+				for (Grupo grupo : listaGeneral) {
+					if (grupo.getNombre().toLowerCase()
+							.contains(valores.get(0).toLowerCase())) {
+						lista.add(grupo);
 					}
 				}
-				i = i - 1;
+				return lista;
 			}
-		}
-		return root;
+		};
+		catalogo.setParent(divCatalogoGrupo);		
+	}
+	
+	public void mostrarBotones(boolean bol) {
+		botonera.getChildren().get(1).setVisible(!bol);
+		botonera.getChildren().get(2).setVisible(bol);
+		botonera.getChildren().get(6).setVisible(false);
+		botonera.getChildren().get(8).setVisible(false);
+		botonera.getChildren().get(0).setVisible(bol);
+		botonera.getChildren().get(3).setVisible(!bol);
+		botonera.getChildren().get(5).setVisible(!bol);
 	}
 
-	public boolean validarNodoHijo(SelectEvent<Treeitem, String> event) {
-		Treeitem itemSeleccionado = event.getReference();
-		Treecell celda = (Treecell) itemSeleccionado.getChildren().get(0)
-				.getChildren().get(0);
-		long item = Long.valueOf(celda.getContext());
-		Arbol arbol = servicioArbol.buscarPorId(item);
-		long padre = arbol.getIdArbol();
-		boolean encontrado = false;
-		List<Arbol> listaArbol = servicioArbol.listarArbol();
-		for (int i = 0; i < listaArbol.size(); i++) {
-			if (padre == listaArbol.get(i).getPadre()) {
-				if (itemSeleccionado.isSelected()) {
-					msj.mensajeAlerta(Mensaje.seleccioneFuncionalidades);
-					itemSeleccionado.setSelected(false);
-					i = listaArbol.size();
-					encontrado = true;
-				} else {
-					msj.mensajeAlerta(Mensaje.seleccioneFuncionalidades);
-					itemSeleccionado.setSelected(true);
-					i = listaArbol.size();
-					encontrado = true;
-				}
-				return encontrado;
+	public void limpiarCampos() {
+		txtNombreGrupo.setFocus(true);
+		txtNombreGrupo.setValue("");
+		txtNombreGrupo.setDisabled(false);
+		Treechildren treeChildren = treeGrupo.getTreechildren();
+		Collection<Treeitem> lista = treeChildren.getItems();
+		for (int i = 0; i < treeChildren.getItemCount(); i++) {
+			for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
+				Treeitem treeitem = (Treeitem) iterator.next();
+				treeitem.setSelected(false);
 			}
 		}
-		return encontrado;
-	}
-
-	public void llenarFuncionalidadesSeleccionadas() {
-		Grupo grupo = servicioGrupo.buscarGrupo(id);
-		List<Arbol> listaArbol = servicioArbol.buscarporGrupo(grupo);
-		int ItemEncontrado = 0;
-		for (int i = 0; i < listaArbol.size(); i++) {
-			long padre = listaArbol.get(i).getIdArbol();
-			ItemEncontrado = 0;
-			for (int j = 0; j < listaArbol.size(); j++) {
-				long hijo = listaArbol.get(j).getPadre();
-				if (padre == hijo) {
-					ItemEncontrado = 1;
-					j = listaArbol.size();
-				}
-			}
-			if (ItemEncontrado == 0) {
-				funcionalidades.add(listaArbol.get(i).getNombre());
+		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
+			Treeitem treeitem = (Treeitem) iterator.next();
+			if (treeitem.isOpen()) {
+				treeitem.setOpen(false);
+				lista = treeGrupo.getTreechildren().getItems();
+				iterator = lista.iterator();
 			}
 		}
+		id = 0;
+		treeGrupo.setVisible(true);
+		funcionalidades.clear();
 		ltbFuncionalidadesSeleccionados.setModel(new ListModelList<String>(
 				funcionalidades));
+		catalogo.limpiarSeleccion();
+	}
+	
+	public void visualizarFuncionalidades() {
+		llenarFuncionalidadesSeleccionadas();
+		treeGrupo.setVisible(true);
+		Treechildren treeChildren = treeGrupo.getTreechildren();
+		Collection<Treeitem> lista = treeChildren.getItems();
+		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
+			Treeitem treeitem = (Treeitem) iterator.next();
+			if (!treeitem.isOpen()) {
+				treeitem.setOpen(true);
+				lista = treeChildren.getItems();
+				iterator = lista.iterator();
+			}
+		}
+		Grupo grupo = servicioGrupo.buscarGrupo(id);
+		List<Arbol> listaArbol = servicioArbol.buscarporGrupo(grupo);
+		for (int i = 0; i < listaArbol.size(); i++) {
+			for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
+				Treeitem treeitem = (Treeitem) iterator.next();
+				if (listaArbol.get(i).getNombre().equals(treeitem.getLabel())) {
+					treeitem.setSelected(true);
+				}
+			}
+		}
+		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
+			Treeitem treeitem = (Treeitem) iterator.next();
+			if (treeitem.isOpen()) {
+				treeitem.setOpen(false);
+				lista = treeGrupo.getTreechildren().getItems();
+				iterator = lista.iterator();
+			}
+		}
 	}
 
+	private boolean validar() {
+		if (txtNombreGrupo.getValue().equals("")) {
+			msj.mensajeError(Mensaje.camposVacios);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean validarSeleccion() {
+		List<Grupo> seleccionados = catalogo.obtenerSeleccionados();
+		if (seleccionados == null) {
+			msj.mensajeAlerta(Mensaje.noHayRegistros);
+			return false;
+		} else {
+			if (seleccionados.isEmpty()) {
+				msj.mensajeAlerta(Mensaje.noSeleccionoItem);
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	
+	@Listen("onClick = #gpxRegistro")
+	public void abrirRegistro() {
+		gpxDatos.setOpen(false);
+		gpxRegistro.setOpen(true);
+		mostrarBotones(false);
+	}
+	
+	@Listen("onOpen = #gpxDatos")
+	public void abrirCatalogo() {
+		gpxDatos.setOpen(false);
+		if (txtNombreGrupo.getText().compareTo("") != 0) {
+			Messagebox.show(Mensaje.estaEditando, "Alerta", Messagebox.YES
+					| Messagebox.NO, Messagebox.QUESTION,
+					new org.zkoss.zk.ui.event.EventListener<Event>() {
+						public void onEvent(Event evt)
+								throws InterruptedException {
+							if (evt.getName().equals("onYes")) {
+								gpxDatos.setOpen(false);
+								gpxRegistro.setOpen(true);
+							} else {
+								if (evt.getName().equals("onNo")) {
+									gpxDatos.setOpen(true);
+									gpxRegistro.setOpen(false);
+									limpiarCampos();
+									mostrarBotones(true);
+								}
+							}
+						}
+					});
+		} else {
+			limpiarCampos();
+			gpxDatos.setOpen(true);
+			gpxRegistro.setOpen(false);
+			mostrarBotones(true);
+		}
+	}
 	@Listen("onSelect = #treeGrupo")
 	public void selectedNode(SelectEvent<Treeitem, String> event) {
 		if (!validarNodoHijo(event)) {
@@ -383,6 +437,7 @@ public class CGrupo extends CGenerico {
 						.setModel(new ListModelList<String>(funcionalidades));
 			}
 			Arbol arbolItem = servicioArbol.buscarPorId(idArbol);
+//			listaArbol.remove((int) (long) arbolItem.getIdArbol() - 1);
 			listaArbol.remove(arbolItem);
 			long temp = arbolItem.getPadre();
 			long temp2 = 0;
@@ -450,117 +505,194 @@ public class CGrupo extends CGenerico {
 			}
 		}
 	}
-
-	@Listen("onClick = #btnCatalogoGrupo")
-	public void buscarItem() {
-		metodoLimpiar();
-		List<Grupo> grupos = servicioGrupo.buscarTodos();
-		catalogo = new Catalogo<Grupo>(catalogoGrupo, "Catalogo de Grupos",
-				grupos, "Nombre") {
-			@Override
-			protected String[] crearRegistros(Grupo grupo) {
-				String[] registros = new String[1];
-				registros[0] = grupo.getNombre();
-				return registros;
+	public void llenarFuncionalidadesSeleccionadas() {
+		Grupo grupo = servicioGrupo.buscarGrupo(id);
+		List<Arbol> listaArbol = servicioArbol.buscarporGrupo(grupo);
+		int ItemEncontrado = 0;
+		for (int i = 0; i < listaArbol.size(); i++) {
+			long padre = listaArbol.get(i).getIdArbol();
+			ItemEncontrado = 0;
+			for (int j = 0; j < listaArbol.size(); j++) {
+				long hijo = listaArbol.get(j).getPadre();
+				if (padre == hijo) {
+					ItemEncontrado = 1;
+					j = listaArbol.size();
+				}
 			}
-
-			@Override
-			protected List<Grupo> buscar(String valor, String combo) {
-				if (combo.equals("Nombre"))
-					return servicioGrupo.filtroNombre(valor);
-				else
-					return servicioGrupo.buscarTodos();
-			}
-		};
-		catalogo.setParent(catalogoGrupo);
-		catalogo.doModal();
-	}
-
-	@Listen("onSeleccion = #catalogoGrupo")
-	public void seleccionGrupo() {
-		Grupo grupo = catalogo.objetoSeleccionadoDelCatalogo();
-		llenarCampos(grupo);
-		catalogo.setParent(null);
-	}
-
-	public void llenarCampos(Grupo grupo) {
-		txtNombreGrupo.setValue(grupo.getNombre());
-		id = grupo.getIdGrupo();
-		visualizarFuncionalidades();
-	}
-
-	/* Busca si existe un grupo con el mismo nombre escrito */
-	@Listen("onChange = #txtNombreGrupo")
-	public void buscarPorNombre() {
-		Grupo grupo = servicioGrupo.buscarPorNombre(txtNombreGrupo.getValue());
-		if (grupo != null)
-			llenarCampos(grupo);
-	}
-
-	public void metodoLimpiar() {
-		txtNombreGrupo.setValue("");
-		txtNombreGrupo.setDisabled(false);
-		Treechildren treeChildren = treeGrupo.getTreechildren();
-		Collection<Treeitem> lista = treeChildren.getItems();
-		for (int i = 0; i < treeChildren.getItemCount(); i++) {
-			for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
-				Treeitem treeitem = (Treeitem) iterator.next();
-				treeitem.setSelected(false);
+			if (ItemEncontrado == 0) {
+				funcionalidades.add(listaArbol.get(i).getNombre());
 			}
 		}
-		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
-			Treeitem treeitem = (Treeitem) iterator.next();
-			if (treeitem.isOpen()) {
-				treeitem.setOpen(false);
-				lista = treeGrupo.getTreechildren().getItems();
-				iterator = lista.iterator();
-			}
-		}
-		id = 0;
-		treeGrupo.setVisible(true);
-		funcionalidades.clear();
 		ltbFuncionalidadesSeleccionados.setModel(new ListModelList<String>(
 				funcionalidades));
 	}
+	
+	public boolean validarNodoHijo(SelectEvent<Treeitem, String> event) {
+		Treeitem itemSeleccionado = event.getReference();
+		if (itemSeleccionado.isSelected()) {
+			itemSeleccionado.setOpen(true);
+			Treecell celda = (Treecell) itemSeleccionado.getChildren().get(0)
+					.getChildren().get(0);
+			long item = Long.valueOf(celda.getContext());
+			if (itemSeleccionado.getChildren().size() > 1) {
+				Treechildren treeChildren = (Treechildren) itemSeleccionado
+						.getChildren().get(1);
+				Collection<Treeitem> listaItems = treeChildren.getItems();
+				for (Iterator<?> iterator = listaItems.iterator(); iterator
+						.hasNext();) {
+					Treeitem itemTree = (Treeitem) iterator.next();
+					celda = (Treecell) itemTree.getChildren().get(0)
+							.getChildren().get(0);
+					long itemHijo = Long.valueOf(celda.getContext());
+					Arbol arbol = servicioArbol.buscarPorId(itemHijo);
+					if (item == arbol.getPadre()) {
+						itemTree.setSelected(true);
+						// for (Iterator<?> iteratortra = listaItems.iterator();
+						// iterator
+						// .hasNext();) {
+						// Treeitem itemTree2 = (Treeitem) iteratortra.next();
+						// celda = (Treecell) itemTree2.getChildren().get(0)
+						// .getChildren().get(0);
+						// long itemHijo2 = Long.valueOf(celda.getContext());
+						// Arbol arbol2 = servicioArbol.buscarPorId(itemHijo2);
+						// if (itemHijo == arbol2.getPadre()) {
+						// itemTree2.setSelected(true);
+						//
+						// }
+						// }
+					}
+					// Treeitem itemSeleccionado = event.getReference();
+					// Arbol arbol = servicioArbol.buscarPorId(item);
+					// long padre = arbol.getIdArbol();
+					// boolean encontrado = false;
+					// List<Arbol> listaArbol = servicioArbol.listarArbol();
+					// for (int i = 0; i < listaArbol.size(); i++) {
+					// if (padre == listaArbol.get(i).getPadre()) {
+					//
+					// if (itemSeleccionado.isSelected()) {
+					// msj.mensajeAlerta(Mensaje.seleccioneFuncionalidades);
+					// itemSeleccionado.setSelected(false);
+					// i = listaArbol.size();
+					// encontrado = true;
+					// } else {
+					// msj.mensajeAlerta(Mensaje.seleccioneFuncionalidades);
+					// itemSeleccionado.setSelected(true);
+					// i = listaArbol.size();
+					// encontrado = true;
+					// }
+					// return encontrado;
+					// }
+					// }
+				}
 
-	public void visualizarFuncionalidades() {
-		llenarFuncionalidadesSeleccionadas();
-		treeGrupo.setVisible(true);
-		Treechildren treeChildren = treeGrupo.getTreechildren();
-		Collection<Treeitem> lista = treeChildren.getItems();
-		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
-			Treeitem treeitem = (Treeitem) iterator.next();
-			if (!treeitem.isOpen()) {
-				treeitem.setOpen(true);
-				lista = treeChildren.getItems();
-				iterator = lista.iterator();
 			}
-		}
-		Grupo grupo = servicioGrupo.buscarGrupo(id);
-		List<Arbol> listaArbol = servicioArbol.buscarporGrupo(grupo);
-		for (int i = 0; i < listaArbol.size(); i++) {
-			for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
-				Treeitem treeitem = (Treeitem) iterator.next();
-				if (listaArbol.get(i).getNombre().equals(treeitem.getLabel())) {
-					treeitem.setSelected(true);
+		} else {
+			itemSeleccionado.setOpen(true);
+			Treecell celda = (Treecell) itemSeleccionado.getChildren().get(0)
+					.getChildren().get(0);
+			long item = Long.valueOf(celda.getContext());
+			if (itemSeleccionado.getChildren().size() > 1) {
+				Treechildren treeChildren = (Treechildren) itemSeleccionado
+						.getChildren().get(1);
+				Collection<Treeitem> listaItems = treeChildren.getItems();
+				for (Iterator<?> iterator = listaItems.iterator(); iterator
+						.hasNext();) {
+					Treeitem itemTree = (Treeitem) iterator.next();
+					celda = (Treecell) itemTree.getChildren().get(0)
+							.getChildren().get(0);
+					long itemHijo = Long.valueOf(celda.getContext());
+					Arbol arbol = servicioArbol.buscarPorId(itemHijo);
+					if (item == arbol.getPadre()) {
+						itemTree.setSelected(false);
+						// for (Iterator<?> iteratortra = listaItems.iterator();
+						// iterator
+						// .hasNext();) {
+						// Treeitem itemTree2 = (Treeitem) iteratortra.next();
+						// celda = (Treecell) itemTree2.getChildren().get(0)
+						// .getChildren().get(0);
+						// long itemHijo2 = Long.valueOf(celda.getContext());
+						// Arbol arbol2 = servicioArbol.buscarPorId(itemHijo2);
+						// if (itemHijo == arbol2.getPadre()) {
+						// itemTree2.setSelected(true);
+						//
+						// }
+						// }
+					}
 				}
 			}
 		}
-		for (Iterator<?> iterator = lista.iterator(); iterator.hasNext();) {
-			Treeitem treeitem = (Treeitem) iterator.next();
-			if (treeitem.isOpen()) {
-				treeitem.setOpen(false);
-				lista = treeGrupo.getTreechildren().getItems();
-				iterator = lista.iterator();
-			}
+		return false;
+	}
+	
+	public TreeModel getModel() {
+		if (_model == null) {
+			_model = new MArbol(getFooRoot());
 		}
+		return _model;
 	}
 
-	private boolean validar() {
-		if (txtNombreGrupo.getValue().equals("")) {
-			msj.mensajeError(Mensaje.camposVacios);
-			return false;
+	private Nodos getFooRoot() {
+
+		Nodos root = new Nodos(null, 0, "");
+
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(
+				auth.getAuthorities());
+
+		ArrayList<Arbol> arbole = new ArrayList<Arbol>();
+		List<Arbol> arboles = new ArrayList<Arbol>();
+		ArrayList<Long> ids = new ArrayList<Long>();
+		for (int k = 0; k < authorities.size(); k++) {
+
+			Arbol arbol;
+			String nombre = authorities.get(k).toString();
+			if (Validador.validarNumero(nombre)) {
+				arbol = servicioArbol.buscar(Long.parseLong(nombre));
+				if (arbol != null)
+					ids.add(arbol.getIdArbol());
+				arbole.add(arbol);
+			}
 		}
-		return true;
+
+		Collections.sort(ids);
+		for (int t = 0; t < ids.size(); t++) {
+			Arbol a;
+			a = servicioArbol.buscarPorId(ids.get(t));
+			arboles.add(a);
+		}
+
+		List<Long> idsPadre = new ArrayList<Long>();
+		List<Nodos> nodos = new ArrayList<Nodos>();
+		return crearArbol(root, nodos, arboles, 0, idsPadre);
+
 	}
+
+	private Nodos crearArbol(Nodos roote, List<Nodos> nodos,
+			List<Arbol> arboles, int i, List<Long> idsPadre) {
+		for (int z = 0; z < arboles.size(); z++) {
+			Nodos oneLevelNode = new Nodos(null, 0, "");
+			Nodos two = new Nodos(null, 0, "");
+			if (arboles.get(z).getPadre() == 0) {
+				oneLevelNode = new Nodos(roote, (int) arboles.get(z)
+						.getIdArbol(), arboles.get(z).getNombre());
+				roote.appendChild(oneLevelNode);
+				idsPadre.add(arboles.get(z).getIdArbol());
+				nodos.add(oneLevelNode);
+			} else {
+				for (int j = 0; j < idsPadre.size(); j++) {
+					if (idsPadre.get(j) == arboles.get(z).getPadre()) {
+						oneLevelNode = nodos.get(j);
+						two = new Nodos(oneLevelNode, (int) arboles.get(z)
+								.getIdArbol(), arboles.get(z).getNombre());
+						oneLevelNode.appendChild(two);
+						idsPadre.add(arboles.get(z).getIdArbol());
+						nodos.add(two);
+					}
+				}
+			}
+		}
+		return roote;
+	}
+
 }

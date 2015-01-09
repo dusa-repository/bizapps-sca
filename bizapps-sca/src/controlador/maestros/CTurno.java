@@ -117,9 +117,15 @@ public class CTurno extends CGenerico {
 				if (validar()) {
 					String id = txtCodigoTurno.getValue();
 					String descripcion = txtDescripcionTurno.getValue();
-					Date horaEntrada = tmbHoraEntrada.getValue();
-					Date horaSalida = tmbHoraSalida.getValue();
-					int minutos = itbMinutos.getValue();
+					Date horaEntrada =null;
+					if (tmbHoraEntrada.getValue()!=null)
+					horaEntrada = tmbHoraEntrada.getValue();
+					Date horaSalida =null;
+					if (tmbHoraSalida.getValue()!=null)
+					horaSalida = tmbHoraSalida.getValue();
+					int minutos =0;
+					if (itbMinutos.getValue()!=null)
+				    minutos = itbMinutos.getValue();
 					String usuario = nombreUsuarioSesion();
 					Turno turno = new Turno(id, descripcion, horaEntrada,
 							horaSalida, minutos, fechaHora, horaAuditoria,

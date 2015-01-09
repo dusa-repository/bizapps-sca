@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Label;
@@ -71,6 +72,7 @@ public class CArbol extends CGenerico {
 
 	@Override
 	public void inicializar() throws IOException {
+		Clients.confirmClose("Mensaje de la Aplicacion:");
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 
@@ -364,4 +366,12 @@ public class CArbol extends CGenerico {
 			taba.setSelected(true);
 	}
 
+	@Listen("onClick = #mnuItem")
+	public void cerrarTodas() {
+		for (int i = 0; i < tabs.size(); i++) {
+			tabs.get(i).close();
+			tabs.remove(i);
+			i--;
+		}
+	}
 }

@@ -1,22 +1,17 @@
 <zk>
 	<style src="/public/Estilo.css" />
-	<div id="divPlanificacion"
-		apply="controlador.transacciones.CPlanificacion">
+	<div id="divPlanificacion" apply="controlador.transacciones.CPlanificacion">
 		<groupbox width="auto" mold="3d" title="Planificación Semanal">
-			<separator />
-			<div id="botoneraPlanificacion" style="margin-left:10px" />
-			<separator />
-			<separator />
+
+			<div id="botoneraPlanificacion" />
 			<separator />
 			<separator />
 			<div align="left">
 				<label
 					value="Seleccione un archivo que contenga la planificación semanal con el formato válido para subir al portal."
-					class="etiqueta" style="margin-right:10px">
+					style="margin-right:10px;color:black; font-size: 14px; font-weight:bold">
 				</label>
 			</div>
-			<separator />
-			<separator />
 			<separator />
 			<separator />
 			<grid width="100%">
@@ -27,16 +22,16 @@
 				</columns>
 				<rows>
 					<row>
-						<button autodisable="self"
-							id="btnSeleccionarArchivo" class="btn" upload="true"
-							label="Seleccionar archivo" tooltiptext="Seleccionar archivo"
-							style="width:auto" />
-						<textbox id="txtArchivoPlanificacion"
-							style="color:black !important;" disabled="true" />
-						<button autodisable="self" id="btnSubirArchivo"
-							style="margin-left:20px" class="btn" label="Subir archivo"
-							tooltiptext="Subir archivo" />
-							<hbox/>
+						<button autodisable="self" id="btnSeleccionarArchivo"
+							style="	width:auto;background: #952C2C;font-size: 13px;color: white;cursor: pointer;width: 100px;height: 33px;	-webkit-border-radius: 0.7em;-moz-border-radius: 0.7em;	border-radius: 0.7em;"
+							image="/public/imagenes/botones/cargar.png" upload="true"
+							label="Seleccionar archivo" tooltiptext="Seleccionar archivo" />
+						<textbox id="txtArchivoPlanificacion" style="color:black !important;"
+							disabled="true" />
+						<button autodisable="self" id="btnSubirArchivo" style="margin-left:20px"
+							image="/public/imagenes/botones/guardar.png" class="btn"
+							label="Subir archivo" tooltiptext="Subir archivo" />
+						<hbox />
 					</row>
 				</rows>
 			</grid>

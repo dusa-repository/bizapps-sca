@@ -57,4 +57,13 @@ public class SGrupo {
 	public List<Grupo> buscarGruposUsuario(Usuario u) {
 		return grupoDAO.findByUsuariosOrderByNombreAsc(u);
 	}
+
+
+	public void eliminarUno(long id) {
+		grupoDAO.delete(id);
+	}
+
+	public void eliminarVarios(List<Grupo> eliminarLista) {
+		grupoDAO.delete(eliminarLista);
+	}
 }

@@ -1,92 +1,78 @@
-<?page id="mainPage" title="SCA" contentType="text/html;charset=utf-8"?>
 <zk>
 	<style src="public/Estilo.css" />
 
 	<style>
-		.z-groupbox-hr { background:#661313;border-radius: 30px 30px
-		30px 30px } .z-groupbox { border-radius: 30px 30px 30px 30px }
+		.z-groupbox-hr { background:#800400;border-radius: 30px 30px
+		30px 30px }
+		.z-groupbox { border-radius: 30px 30px 30px 30px }
 	</style>
 	<zscript>
-	String variable = execution.getParameter("respuesta");
-	String a = "";
-	if (variable == null)
+		String variable = execution.getParameter("respuesta");
+		String
+		a
+		= "";
+		if (variable == null)
 		a = "INICIAR SESION";
-	else
-		a = execution.getParameter("respuesta");
-</zscript>
-	<window title="" border="0" height="100%"
-		contentStyle="overflow:auto" apply="controlador.portal.CIndex">
+		else
+		a =
+		execution.getParameter("respuesta");
+	</zscript>
+	<window title="" border="0" height="100%" width="100%"
+		apply="controlador.portal.CIndex">
 		<borderlayout height="100%"
-			style="background-image: url('public/imagenes/generales/fondo.png'); background-repeat:no-repeat;height=100%; width=100% ; background-color:white">
-			<north height="4,5em" class="banner">
-				<hbox hflex="1">
-					<separator />
-					<separator />
-					<separator />
-				</hbox>
+			style="background-image: url('public/imagenes/generales/fondo.png'); background-repeat:no-repeat;height=50%; width=50% ; background-color:white">
+			<north height="2%" class="banner">
 			</north>
-			<west border="none">
-				<borderlayout style="overflow-y:scroll;">
-					<center border="none">
-						<div align="center"></div>
-					</center>
-				</borderlayout>
-			</west>
-			<east width="60%" border="none">
-				<vlayout>
-					<div align="center">
-						<separator />
-						<separator />
-						<separator />
-						<separator />
-						<image
-							src="/public/imagenes/generales/LogoDusa.png" height="4em"
-							width="15em" />
+			<east width="80%" border="none">
+				<vbox height="100%" align="end" pack="center">
+					<div width="100%" height="100%" align="right">
+					<image src="/public/imagenes/generales/LogoIndex.jpg" />
 					</div>
-					<div height="240px" align="rigth">
-						<separator />
-						<separator />
-						<separator />
-						<separator />
-						<separator />
-						<separator />
-						<separator />
-						<label class="lblIndex"
-							value="SISTEMA DE CONTROL DE ASISTENCIA (SCA)" />
-					</div>
-					<div align="center">
-						<groupbox width="35em" height="18em">
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<label height="100%" class="lblIndex" value="SISTEMA DE CONTROL DE ASISTENCIA (SCA)" style="padding-left: 
+						100px;" />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<separator />
+					<div height="100%" width="100%" align="center">
+						<groupbox style="padding-left: 
+						20%;" closable="false"
+							height="100%" width="70%">
 							<caption label="${a}"
-								style="color:black; font-size: 16px; font-weight:bold" />
-							<separator></separator>
-							<separator></separator>
+								style="color:black; font-size: 24px; font-weight:bold" />
+							<separator />
+							<separator />
 							<hlayout width="100%">
-								<h:form id="inicioSesion"
-									action="j_spring_security_check" method="POST" xmlns:h="native"
-									align="left">
+								<h:form id="inicioSesion" action="j_spring_security_check"
+									method="POST" xmlns:h="native" align="left">
 									<vlayout width="100%">
-										<label class="etiqueta"
-											height="20px" style="font-size:16px"
+										<label class="etiqueta" height="20px" style="font-size:14px"
 											value="Nombre de Usuario :" />
-										<textbox placeholder="Usuario"
-											height="22px" id="log_usuario" name="j_username" hflex="1"
-											width="200px" />
+										<textbox placeholder="Usuario" height="22px" id="log_usuario"
+											name="j_username" hflex="1" width="200px" />
 									</vlayout>
-									<separator></separator>
+									<separator />
 									<vlayout width="100%">
-										<label class="etiqueta"
-											height="20px" style="font-size:16px" value="Contraseña :" />
-										<textbox
-											placeholder="Contraseña" height="22px" id="log_clave"
+										<label class="etiqueta" height="20px" style="font-size:14px"
+											value="Contraseña :" />
+										<textbox placeholder="Contraseña" height="22px" id="log_clave"
 											hflex="1" type="password" name="j_password" width="200px" />
 									</vlayout>
 									<separator />
 									<separator />
 									<hlayout width="100%">
-										<button type="submit"
-											class="btn" label="Entrar"
+										<button type="submit" class="btn" label="Entrar"
 											image="/public/imagenes/botones/entrar.png" height="37px"
-											width="170px" />
+											width="170px" style="font-size:18px" />
 									</hlayout>
 								</h:form>
 							</hlayout>
@@ -94,17 +80,16 @@
 								<separator />
 								<separator />
 								<a href="">
-									<label id="lblOlvidoClave"
-										sclass="pointer" value="¿Olvido su Contraseña?"
+									<label id="lblOlvidoClave" sclass="pointer"
+										value="¿Olvido su Contraseña?"
 										style="color:red;margin-left:10px;font-weight:bold;font-size:14px" />
 								</a>
 							</vlayout>
 						</groupbox>
 					</div>
-				</vlayout>
+				</vbox>
 			</east>
-			<south class="banner" vflex="2" border="0" height="3em"
-				collapsible="false">
+			<south class="banner" border="0" height="5%" collapsible="false">
 				<div align="center" sclass="footer">
 					<separator></separator>
 					<label style="padding-center:35%;color: white"

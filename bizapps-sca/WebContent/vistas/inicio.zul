@@ -2,58 +2,41 @@
 <zk>
 	<style src="../public/Estilo.css" />
 	<script src="/public/progress.js" />
-	<window title="" border="0" height="100%"
-		contentStyle="overflow:auto" apply="arbol.CArbol">
+	<window id="wdwIndex" title="" height="100%" width="100%"
+		border="0" apply="arbol.CArbol">
 		<borderlayout height="100%" style="background-color:#fff;">
-			<north height="4,5em" class="banner">
-				<hbox hflex="1">
-					<separator />
-					<separator />
-					<separator />
-					<vbox>
-						<separator />
-						<image
-							src="../public/imagenes/generales/LogoDusa.png" height="3em"
-							width="13em" />
+			<north height="10%" class="banner">
+				<hbox width="100%" widths="12%,55%,33%">
+					<vbox width="100%">
+						<image src="../public/imagenes/generales/LogoInicio.jpg" />
 					</vbox>
-					<separator />
-					<separator />
-					<separator />
-					<separator />
-					<div align="center" width="40em">
+					<div align="center" width="100%">
+						<separator />
 						<separator />
 						<separator />
 						<hbox>
-							<separator />
-							<separator />
-							<separator />
-							<label
-								style="font-size:23px;color:white;font-weight: bold"
+							<label style="font-size:23px;color:white;font-weight: bold"
 								value="SISTEMA DE CONTROL DE ASISTENCIA (SCA)" />
 						</hbox>
 					</div>
 					<div align="center" width="100%">
-						<hbox>
-							<vbox>
+						<hbox height="100%" width="100%">
+							<vbox height="100%" width="100%">
 								<separator />
-								<image id="imagenes" width="60px"
-									height="55px" />
+								<image id="imagenes" width="60px" height="55px" />
 							</vbox>
 							<separator />
 							<vbox>
 								<separator />
-								<label
-									style="color: white;font-weight: bold"
+								<label style="color: white;font-weight: bold"
 									value="Usuario: ${desktop.execution.userPrincipal.name}" />
-								<a href="../j_spring_security_logout"
-									style="color: white">
+								<a href="../j_spring_security_logout" style="color: white">
 									<space />
 									<label value="Cerrar Sesion" />
 								</a>
 								<a style="color: white">
 									<space />
-									<label id="lblEditarCuenta"
-										value="Editar Cuenta" />
+									<label id="lblEditarCuenta" value="Editar Cuenta" />
 									<!-- onClick='contenido.src="../vistas/seguridad/VEditarUsuario.zul"' -->
 								</a>
 							</vbox>
@@ -63,13 +46,12 @@
 							<separator />
 							<separator />
 							<vbox>
-								<listbox style="border:none"
-									width="200px" id="ltbRoles">
+								<listbox style="border:none" width="200px" id="ltbRoles">
 									<template name="model">
 										<listitem>
 											<listcell
-												style="color:white;font-weight: bold; background:#661313"
-												label="${each.nombre}">
+												style="border:none;font-size:14px;color:white;font-weight: bold"
+												class="gruposUsuario" label="${each.nombre}">
 											</listcell>
 										</listitem>
 									</template>
@@ -79,30 +61,27 @@
 					</div>
 				</hbox>
 			</north>
-			<west title="Menú" id="west" size="20%" splittable="true"
+			<west title="Menú" id="west" size="19%" splittable="true"
 				collapsible="true" autoscroll="true">
 				<tree id="arbolMenu" width="99%" zclass="z-vfiletree">
 					<template name="model">
 						<treeitem context="menupopup">
 							<treerow>
-								<treecell id="${each.index}"
-									label="${each.label}" />
+								<treecell id="${each.index}" label="${each.label}" />
 							</treerow>
 						</treeitem>
 					</template>
 				</tree>
 			</west>
 			<center border="none">
-				<borderlayout style="overflow-y:scroll;"
-					sclass="complex-layout">
+				<borderlayout sclass="complex-layout">
 					<center
-						style="background-image: url('../public/imagenes/generales/LogoDusaAgua.png'); background-repeat:no-repeat; "
+						style="background-image: url('../public/imagenes/generales/LogoAgua.png'); background-repeat:no-repeat; "
 						border="none" autoscroll="true">
-						<tabbox width="auto" id="tabBox" hflex="1">
-							<tabs>
+						<tabbox width="100%" id="tabBox">
+							<tabs context="editPopup">
 								<tab visible="false">Tab A</tab>
-								<tab id="tab" label="+"
-									visible="false">
+								<tab id="tab" label="+" visible="false">
 								</tab>
 							</tabs>
 							<tabpanels>
@@ -110,24 +89,21 @@
 									<include id="contenido"></include>
 								</tabpanel>
 							</tabpanels>
-
 						</tabbox>
 					</center>
 				</borderlayout>
 			</center>
-			<south class="banner" vflex="2" border="0" height="3em"
-				collapsible="false">
+			<south class="banner" border="0" height="3%" collapsible="false">
 				<div align="center" sclass="footer">
-					<a style="color: white"
-						href="../j_spring_security_logout">
-						<label value="INICIO"></label>
-					</a>
-					<separator></separator>
+					<separator />
 					<label style="padding-center:35%;color: white"
 						value="© 2014 Destilería Unidas S.A | RIF: J-30940783-0 | Todos los derechos reservados | Desarrollado por BIZAPPS,C.A">
 					</label>
 				</div>
 			</south>
 		</borderlayout>
+		<menupopup id="editPopup">
+			<menuitem id="mnuItem" label="Cerrar Todas" apply="arbol.CArbol" />
+		</menupopup>
 	</window>
 </zk>
