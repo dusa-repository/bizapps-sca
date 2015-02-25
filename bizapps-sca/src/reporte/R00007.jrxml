@@ -19,14 +19,15 @@
 	<parameter name="hora_ausencia_desde_date" class="java.util.Date"/>
 	<parameter name="hora_ausencia_hasta_date" class="java.util.Date"/>
 	<parameter name="turno" class="java.lang.String"/>
+	<parameter name="ficha_jefe" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT nombre, ficha, id_turno,cuadrilla,id_permiso FROM (SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso
 FROM         planificacion_semanal
-WHERE     fecha_turno = convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno})  AND    ficha not IN    (SELECT     distinct(ficha)   FROM   registro_acceso
+WHERE     fecha_turno = convert(datetime,$P{fecha_desde},103) and planificacion_semanal.ficha_jefe like '%$P!{ficha_jefe}%' and id_turno in ($P!{turno})  AND    ficha not IN    (SELECT     distinct(ficha)   FROM   registro_acceso
                             WHERE   fecha = convert(datetime,$P{fecha_desde} ,103) )
 UNION
 SELECT     nombre,fecha_turno as fecha, ficha, id_turno,cuadrilla,id_permiso
-FROM         planificacion_semanal where fecha_turno =convert(datetime,$P{fecha_desde},103) and id_turno in ($P!{turno}) and ficha in (SELECT     distinct(ficha)   FROM   registro_acceso  WHERE   fecha =convert(datetime,$P{fecha_desde},103) and ficha  in (select distinct(ficha) from planificacion_semanal where id_permiso<>'' and id_turno in ($P!{turno}) and fecha_turno =convert(datetime,$P{fecha_desde},103)) )) as tmp
+FROM         planificacion_semanal where fecha_turno =convert(datetime,$P{fecha_desde},103) and planificacion_semanal.ficha_jefe like '%$P!{ficha_jefe}%' and id_turno in ($P!{turno}) and ficha in (SELECT     distinct(ficha)   FROM   registro_acceso  WHERE   fecha =convert(datetime,$P{fecha_desde},103) and ficha  in (select distinct(ficha) from planificacion_semanal where id_permiso<>'' and id_turno in ($P!{turno}) and fecha_turno =convert(datetime,$P{fecha_desde},103)) )) as tmp
 ORDER BY id_turno,cuadrilla]]>
 	</queryString>
 	<field name="nombre" class="java.lang.String"/>
@@ -48,7 +49,7 @@ ORDER BY id_turno,cuadrilla]]>
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="95" splitType="Stretch">
+		<band height="108" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText" x="89" y="0" width="387" height="20" uuid="dfa82a7e-918d-4be5-b801-b4ef70402ba3"/>
 				<box>
@@ -134,6 +135,23 @@ ORDER BY id_turno,cuadrilla]]>
 				<reportElement x="235" y="68" width="100" height="20" uuid="54d34bd5-3b94-47aa-8eab-35878405579a"/>
 				<textFieldExpression><![CDATA[$P{turno}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement key="staticText-2" x="137" y="88" width="91" height="18" uuid="c3b5fa37-203a-4cbd-8f56-4d5d8f3cac72"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Jefe:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="231" y="88" width="100" height="20" uuid="ec9b066c-9209-4da2-a963-83759875f47f"/>
+				<textFieldExpression><![CDATA[( $P{ficha_jefe}=='' ? "TODOS" : $P{ficha_jefe} )]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -209,9 +227,9 @@ ORDER BY id_turno,cuadrilla]]>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="126" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="436" y="106" width="80" height="20" uuid="660e8b82-f5d5-4092-913c-38ba5751d00a"/>
+				<reportElement key="textField" x="438" y="0" width="80" height="20" uuid="660e8b82-f5d5-4092-913c-38ba5751d00a"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -222,7 +240,7 @@ ORDER BY id_turno,cuadrilla]]>
 				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="false">
-				<reportElement key="textField" x="516" y="106" width="40" height="20" uuid="018980c7-13d1-497b-9a7d-a0c4ccce23ae"/>
+				<reportElement key="textField" x="518" y="0" width="40" height="20" uuid="018980c7-13d1-497b-9a7d-a0c4ccce23ae"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -232,7 +250,7 @@ ORDER BY id_turno,cuadrilla]]>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false">
-				<reportElement key="textField" x="10" y="106" width="100" height="20" uuid="e372499c-839f-484d-9286-da44098b872f"/>
+				<reportElement key="textField" x="12" y="0" width="100" height="20" uuid="e372499c-839f-484d-9286-da44098b872f"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -241,60 +259,64 @@ ORDER BY id_turno,cuadrilla]]>
 				</box>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="95">
 			<staticText>
-				<reportElement x="10" y="30" width="164" height="20" uuid="7c21a92d-0453-4e87-be0f-f0b6ffc3fbec"/>
+				<reportElement x="14" y="35" width="164" height="20" uuid="7c21a92d-0453-4e87-be0f-f0b6ffc3fbec"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Trabajadores Faltantes:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="50" width="164" height="20" uuid="0fa090e4-9f0f-4725-919c-0c3b5f4af4fa"/>
+				<reportElement x="14" y="55" width="164" height="20" uuid="0fa090e4-9f0f-4725-919c-0c3b5f4af4fa"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[% Ausencia Nomina Planificada:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="10" width="164" height="20" uuid="9751ad2f-f820-4e1e-aabc-03cf1ab3d262"/>
+				<reportElement x="14" y="15" width="164" height="20" uuid="9751ad2f-f820-4e1e-aabc-03cf1ab3d262"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Nomina Planificada:]]></text>
 			</staticText>
 			<textField pattern="###0">
-				<reportElement x="174" y="30" width="57" height="20" uuid="6acde6ca-c87c-40f2-b579-b5f60456709d"/>
+				<reportElement x="178" y="35" width="57" height="20" uuid="6acde6ca-c87c-40f2-b579-b5f60456709d"/>
 				<textElement textAlignment="Right">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="70" width="164" height="20" uuid="b7a6cbbb-4a1a-4c47-815a-192a19469d90"/>
+				<reportElement x="14" y="75" width="164" height="20" uuid="b7a6cbbb-4a1a-4c47-815a-192a19469d90"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Horas/Hombre Ausencia:]]></text>
 			</staticText>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="174" y="50" width="57" height="20" uuid="ec4320e7-6f34-4875-b2dc-0bc6bd27eaff"/>
+				<reportElement x="178" y="55" width="57" height="20" uuid="ec4320e7-6f34-4875-b2dc-0bc6bd27eaff"/>
 				<textElement textAlignment="Right">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[( $P{total_nomina_planificada}!=0 ? ($V{contador}/$P{total_nomina_planificada}) : 0 )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="174" y="70" width="57" height="20" uuid="c0dc61cb-cee5-4fd8-b4c1-d6c2f5a4163e"/>
+				<reportElement x="178" y="75" width="57" height="20" uuid="c0dc61cb-cee5-4fd8-b4c1-d6c2f5a4163e"/>
 				<textElement textAlignment="Right">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{contador}*8]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="174" y="10" width="57" height="20" uuid="9144c141-2938-45c5-a13b-b87b6e0841dd"/>
+				<reportElement x="178" y="15" width="57" height="20" uuid="9144c141-2938-45c5-a13b-b87b6e0841dd"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{total_nomina_planificada}]]></textFieldExpression>
 			</textField>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 </jasperReport>
