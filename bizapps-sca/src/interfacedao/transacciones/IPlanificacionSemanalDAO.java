@@ -1,6 +1,7 @@
 package interfacedao.transacciones;
 
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +15,8 @@ public interface IPlanificacionSemanalDAO extends JpaRepository<PlanificacionSem
 
 	public List<PlanificacionSemanal> findByLoteUpload(int lote);
 
-	public List<PlanificacionSemanal> findByFechaTurnoAndIdTurno(Date fecha,
-			String turno);
+	/*public List<PlanificacionSemanal> findByFechaTurnoAndIdTurno(Date fecha,
+			String turno);*/
 
 	public List<PlanificacionSemanal> findBySemanaStartingWithAllIgnoreCase(
 			String valor);
@@ -37,6 +38,16 @@ public interface IPlanificacionSemanalDAO extends JpaRepository<PlanificacionSem
 
 	public List<PlanificacionSemanal> findByCuadrillaStartingWithAllIgnoreCase(
 			String valor);
+	
+	@Query("select distinct a.ficha, a.nombre from PlanificacionSemanal a")
+	List<Object> findAllDistinctDataEmpleado();
+	
+	@Query("select distinct a.fichaJefe from PlanificacionSemanal a")
+	List<Object> findAllDistinctDataJefe();
+	
+	
+	@Query("select c from PlanificacionSemanal c WHERE c.fechaTurno between ?1 and ?2  and c.idTurno in ?3 and c.fichaJefe in ?4 and  c.idPermiso<>'VAC'  ")
+	List<PlanificacionSemanal> obtenerCantidadNomina(Date fechaDesde, Date fechaHasta,List<String> turno,List<String> fichaJefe);
 
 	
 	

@@ -3,6 +3,7 @@ package servicio.transacciones;
 
 import interfacedao.transacciones.IPlanificacionSemanalDAO;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,16 +33,47 @@ public class SPlanificacionSemanal {
 	
 	
 	/* Servicio que permite buscar los registros de una planificacion de acuerdo a la fecha y al id_turno*/
-	public List<PlanificacionSemanal> buscarPorFechaYTurno(Date fecha, String turno) {
+	public List<PlanificacionSemanal> buscarPorFechaYTurno(Date fechaDesde,Date fechaHasta, List<String> turno,List<String> fichaJefe) {
 		List<PlanificacionSemanal> planificaciones;
-		planificaciones = planificacionSemanalDAO.findByFechaTurnoAndIdTurno(fecha,turno);
+		//planificaciones = planificacionSemanalDAO.findByFechaTurnoAndIdTurno(fecha,turno);
+		planificaciones= planificacionSemanalDAO.obtenerCantidadNomina(fechaDesde,fechaHasta,turno,fichaJefe);
 		return planificaciones;
 	}
 	
 	
-	public List<PlanificacionSemanal> buscarTodos() {
-		return planificacionSemanalDAO.findAll();
+public List<PlanificacionSemanal> buscarTodos() {
+		
+		List<Object> cdataList=planificacionSemanalDAO.findAllDistinctDataEmpleado();
+		List<PlanificacionSemanal> listaPlanificacionAuxiliar= new ArrayList<PlanificacionSemanal>();
+		for (Object cdata:cdataList) {
+		   Object[] obj= (Object[]) cdata;
+		     String ficha = (String)obj[0];
+		     String nombre = (String)obj[1];
+		     PlanificacionSemanal planificacionAuxiliar= new PlanificacionSemanal();
+		     planificacionAuxiliar.setFicha(ficha);
+		     planificacionAuxiliar.setNombre(nombre);
+		     listaPlanificacionAuxiliar.add(planificacionAuxiliar);
+		  }
+
+		return listaPlanificacionAuxiliar ;
 	}
+
+	public List<PlanificacionSemanal> buscarJefes() {
+	
+	List<Object> cdataList=planificacionSemanalDAO.findAllDistinctDataJefe();
+	List<PlanificacionSemanal> listaPlanificacionAuxiliar= new ArrayList<PlanificacionSemanal>();
+	for (Object cdata:cdataList) {
+	   Object obj= (Object) cdata;
+	     String ficha = (String)obj;
+	     String nombre = "";
+	     PlanificacionSemanal planificacionAuxiliar= new PlanificacionSemanal();
+	     planificacionAuxiliar.setFicha(ficha);
+	     planificacionAuxiliar.setNombre(nombre);
+	     listaPlanificacionAuxiliar.add(planificacionAuxiliar);
+	  }
+
+	return listaPlanificacionAuxiliar ;
+}
 	
 	public void eliminar(PlanificacionSemanal planificacion) {
 		planificacionSemanalDAO.delete(planificacion);

@@ -128,7 +128,7 @@
 					</row>
 					<row>
 						<hbox>
-							<label class="etiqueta" value="Ficha:" />
+							<label class="etiqueta" value="Ficha Trabajador:" />
 							<space />
 							<label value="*"
 								style="font-weight:bold;color:red" />
@@ -140,6 +140,22 @@
 							tooltiptext="Catalogo de Empleados"
 							image="/public/imagenes/botones/buscar.png" />
 						<label id="lbEmpleado" />
+
+					</row>
+					<row>
+						<hbox>
+							<label class="etiqueta" value="Ficha Jefe:" />
+							<space />
+							<label value="*"
+								style="font-weight:bold;color:red" />
+						</hbox>
+						<textbox id="txtJefe" width="100%"
+							tooltiptext="Ingrese la ficha" />
+						<button autodisable="self"
+							id="btnBuscarJefe" class="btn" label="Buscar"
+							tooltiptext="Catalogo de Empleados"
+							image="/public/imagenes/botones/buscar.png" />
+						<label id="lbJefe" />
 
 					</row>
 					<row>
@@ -184,6 +200,7 @@
 			</grid>
 			<separator />
 			<div id="divCatalogoPlanificacion" />
+			<div id="divCatalogoJefe" />
 		</groupbox>
 	</div>
 </zk>

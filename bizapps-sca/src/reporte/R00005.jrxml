@@ -20,6 +20,7 @@
 	<parameter name="nombre" class="java.lang.String"/>
 	<parameter name="minutos_fuera" class="java.lang.Integer"/>
 	<parameter name="molinete_entrada_mostrar" class="java.lang.String"/>
+	<parameter name="ficha_jefe" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT     registro_acceso.id_molinete, registro_acceso.fecha, registro_acceso.tipo_movimiento, registro_acceso.hora, registro_acceso.ficha, molinete.descripcion
 FROM         registro_acceso INNER JOIN
@@ -44,7 +45,7 @@ ORDER BY registro_acceso.fecha, registro_acceso.hora]]>
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="85" splitType="Stretch">
+		<band height="102" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText" x="121" y="0" width="371" height="20" uuid="dfa82a7e-918d-4be5-b801-b4ef70402ba3"/>
 				<box>
@@ -159,6 +160,23 @@ ORDER BY registro_acceso.fecha, registro_acceso.hora]]>
 				<reportElement x="226" y="45" width="200" height="18" uuid="f08b2b45-2eb9-4b50-b237-c5ac04d62722"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{molinete_entrada_mostrar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-2" x="130" y="81" width="91" height="18" uuid="1a706d2f-e0b5-47b1-870a-156066de4479"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Jefe:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="224" y="81" width="100" height="20" uuid="d1170eac-bfde-4729-b885-5b9cef82bea0"/>
+				<textFieldExpression><![CDATA[( $P{ficha_jefe}=='' ? "TODOS" : $P{ficha_jefe} )]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

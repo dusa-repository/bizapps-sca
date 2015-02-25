@@ -79,6 +79,8 @@ public class CReportes extends CGenerico {
 	@Wire
 	private Div divCatalogoPlanificacion;
 	@Wire
+	private Div divCatalogoJefe;
+	@Wire
 	private Textbox txtFicha;
 	@Wire
 	private Label lbEmpleado;
@@ -86,6 +88,15 @@ public class CReportes extends CGenerico {
 	private Combobox cmbReporte;
 	@Wire
 	private Div botoneraReporte;
+	@Wire
+	private Button btnBuscarJefe;
+	@Wire
+	private Textbox txtJefe;
+	@Wire
+	private Label lbJefe;
+	
+	
+	
 	protected Connection conexion;
 	List<Turno> turnos = new ArrayList<Turno>();
 	List<Molinete> molinetes = new ArrayList<Molinete>();
@@ -174,6 +185,8 @@ public class CReportes extends CGenerico {
 					System.out.print("Total de cursos"
 							+ lsbTurnos.getItemCount());
 					System.out.println("");
+					List<String> listaTurnos = new ArrayList<String>();
+					
 					for (int i = 0; i < lsbTurnos.getItemCount(); i++) {
 
 						Listitem listItem = lsbTurnos.getItemAtIndex(i);
@@ -187,12 +200,14 @@ public class CReportes extends CGenerico {
 								for (Turno turnoAux : servicioTurno
 										.buscarTodos()) {
 									turno = turno + "" + turnoAux.getId() + ",";
+									listaTurnos.add(turnoAux.getId());
 								}
 								System.out.print("entre en el if de todos");
 
 								turno = turno.substring(0, turno.length() - 1);
 							} else {
 								turno = turno + "" + turnoSeleccionado.getId() + ",";
+								listaTurnos.add(turnoSeleccionado.getId());
 							
 							}
 
@@ -211,32 +226,32 @@ public class CReportes extends CGenerico {
 					 */
 
 					String ficha = txtFicha.getValue();
-
-					int totalNomina = 0;
-					planificaciones = servicioPlanificacionSemanal
-							.buscarPorFechaYTurno(dtbFechaInicio.getValue(),
-									turno);
-
-					if (planificaciones.size() != 0) {
-
-						for (int i = 0; i < planificaciones.size(); i++) {
-
-							if (planificaciones.get(i).getIdPermiso()
-									.equals("VAC")) {
-
-							} else {
-
-								PlanificacionSemanal planificacion = planificaciones
-										.get(i);
-								totalPlanificaciones.add(planificacion);
-							}
-
+					String fichaJefe = txtJefe.getValue();
+					
+					List<String> listaJefes= new ArrayList<String>();
+					
+					if (fichaJefe.compareTo("")==0)
+					{
+						
+						for(PlanificacionSemanal ps: servicioPlanificacionSemanal.buscarJefes() )
+						{
+							listaJefes.add(ps.getFicha());
 						}
-
-						totalNomina = totalPlanificaciones.size();
-
 					}
+					else
+					{
+						listaJefes.add(fichaJefe);
+					}
+					
+					int totalNomina = 0;
+					
 
+						planificaciones = servicioPlanificacionSemanal
+								.buscarPorFechaYTurno(dtbFechaInicio.getValue(),dtbFechaFinal.getValue(),
+										listaTurnos,listaJefes);
+						
+						totalNomina = planificaciones.size();
+				
 					String nombreFicha = "Ficha";
 					int minutosFuera = 0;
 
@@ -317,6 +332,8 @@ public class CReportes extends CGenerico {
 							+ cmbMolineteEntrada.getValue()
 							+ "&valor15="
 							+ cmbMolineteSalida.getValue()
+							+ "&valor16="
+							+ fichaJefe
 							+ "','','top=100,left=200,height=600,width=800,scrollbars=1,resizable=1')");
 
 				}
@@ -381,8 +398,11 @@ public class CReportes extends CGenerico {
 		cmbMolineteEntrada.setValue("");
 		cmbMolineteSalida.setValue("");
 		txtFicha.setValue("");
+		txtJefe.setValue("");
 		cmbReporte.setValue("");
 		lbEmpleado.setValue("");
+		lbEmpleado.setValue("");
+		lbJefe.setValue("");
 		lsbTurnos.clearSelection();
 
 	}
@@ -390,7 +410,7 @@ public class CReportes extends CGenerico {
 	public byte[] reporte(String part2, String part3, String part4,
 			String part5, String part6, String part7, String part8,
 			String part9, String part10, String part11, String part12,
-			String part13, String part14, String part15) {
+			String part13, String part14, String part15, String part16) {
 
 		byte[] fichero = null;
 
@@ -447,6 +467,7 @@ public class CReportes extends CGenerico {
 				parameters.put("fecha_desde", part3);
 				parameters.put("fecha_hasta", part4);
 				parameters.put("ficha", part10);
+				parameters.put("ficha_jefe", part16);
 				parameters.put("molinete_entrada", part7);
 				parameters.put("molinete_entrada_mostrar", part14);
 				parameters.put("molinete_salida", part8);
@@ -465,6 +486,7 @@ public class CReportes extends CGenerico {
 					parameters.put("fecha_desde", part3);
 					parameters.put("fecha_hasta", part4);
 					parameters.put("ficha", part10);
+					parameters.put("ficha_jefe", part16);
 					parameters.put("molinete_entrada", part7);
 					parameters.put("molinete_entrada_mostrar", part14);
 					parameters.put("molinete_salida", part8);
@@ -495,6 +517,7 @@ public class CReportes extends CGenerico {
 							parameters.put("fecha_desde", part3);
 							parameters.put("fecha_hasta", part4);
 							parameters.put("ficha", part10);
+							parameters.put("ficha_jefe", part16);
 							parameters.put("molinete_entrada", part7);
 							parameters.put("molinete_entrada_mostrar", part14);
 							parameters.put("molinete_salida", part8);
@@ -512,6 +535,7 @@ public class CReportes extends CGenerico {
 								parameters.put("molinete_entrada", part7);
 								parameters.put("molinete_salida", part8);
 								parameters.put("ficha", part10);
+								parameters.put("ficha_jefe", part16);
 								parameters.put("nombre", part12);
 								parameters.put("minutos_fuera", part13);
 								parameters.put("molinete_entrada_mostrar",
@@ -529,6 +553,7 @@ public class CReportes extends CGenerico {
 									parameters.put("molinete_entrada", part7);
 									parameters.put("molinete_salida", part8);
 									parameters.put("ficha", part10);
+									parameters.put("ficha_jefe", part16);
 									parameters.put("total_nomina_planificada",
 											part11);
 									parameters.put("molinete_entrada_mostrar",
@@ -544,25 +569,15 @@ public class CReportes extends CGenerico {
 									if (part2.equals("R00007")) {
 
 										parameters.put("fecha_desde", part3);
-										parameters.put(
-												"total_nomina_planificada",
-												Integer.parseInt(part11));
-										parameters.put("hora_ausencia_desde",
-												part5);
-										parameters.put("molinete_entrada",
-												part7);
-										parameters.put(
-												"molinete_entrada_mostrar",
-												part14);
-										parameters.put("hora_ausencia_hasta",
-												part6);
-										parameters.put(
-												"hora_ausencia_desde_date",
-												part6);
-										parameters.put(
-												"hora_ausencia_hasta_date",
-												part6);
+										parameters.put("total_nomina_planificada",Integer.parseInt(part11));
+										parameters.put("hora_ausencia_desde",part5);
+										parameters.put("molinete_entrada",part7);
+										parameters.put("molinete_entrada_mostrar",part14);
+										parameters.put("hora_ausencia_hasta",part6);
+										parameters.put("hora_ausencia_desde_date",part6);
+										parameters.put("hora_ausencia_hasta_date",part6);
 										parameters.put("turno", part9);
+										parameters.put("ficha_jefe", part16);
 
 										fis = (cl
 												.getResourceAsStream("/reporte/R00007.jasper"));
@@ -640,7 +655,7 @@ public class CReportes extends CGenerico {
 				.buscarTodos();
 		catalogo = new Catalogo<PlanificacionSemanal>(divCatalogoPlanificacion,
 				"Catalogo de Planificaciones", planificaciones, "Ficha",
-				"Nombre", "Semana", "Día", "Turno", "Fecha Turno", "Cuadrilla") {
+				"Nombre") {
 
 			@Override
 			protected List<PlanificacionSemanal> buscar(String valor,
@@ -650,16 +665,6 @@ public class CReportes extends CGenerico {
 					return servicioPlanificacionSemanal.filtroFicha(valor);
 				case "Nombre":
 					return servicioPlanificacionSemanal.filtroNombre(valor);
-				case "Semana":
-					return servicioPlanificacionSemanal.filtroSemana(valor);
-				case "Día":
-					return servicioPlanificacionSemanal.filtroDiaSemana(valor);
-				case "Turno":
-					return servicioPlanificacionSemanal.filtroTurno(valor);
-				case "Fecha Turno":
-					return servicioPlanificacionSemanal.filtroFechaTurno(valor);
-				case "Cuadrilla":
-					return servicioPlanificacionSemanal.filtroCuadrilla(valor);
 				default:
 					return planificaciones;
 				}
@@ -667,15 +672,10 @@ public class CReportes extends CGenerico {
 
 			@Override
 			protected String[] crearRegistros(PlanificacionSemanal planificacion) {
-				String[] registros = new String[7];
+				String[] registros = new String[2];
 				registros[0] = planificacion.getFicha();
 				registros[1] = planificacion.getNombre();
-				registros[2] = String.valueOf(planificacion.getSemana());
-				registros[3] = planificacion.getDiaSemana();
-				registros[4] = planificacion.getIdTurno();
-				registros[5] = formatoFecha.format(planificacion
-						.getFechaTurno());
-				registros[6] = planificacion.getCuadrilla();
+				
 
 				return registros;
 			}
@@ -684,6 +684,38 @@ public class CReportes extends CGenerico {
 		catalogo.setParent(divCatalogoPlanificacion);
 		catalogo.doModal();
 	}
+	
+	/* Muestra el catalogo de la Plnificacion */
+	@Listen("onClick = #btnBuscarJefe")
+	public void mostrarCatalogoJefe() {
+		final List<PlanificacionSemanal> planificaciones = servicioPlanificacionSemanal
+				.buscarJefes();
+		catalogo = new Catalogo<PlanificacionSemanal>(divCatalogoJefe,
+				"Catalogo de Planificaciones", planificaciones, "Ficha") {
+
+			@Override
+			protected List<PlanificacionSemanal> buscar(String valor,
+					String combo) {
+				switch (combo) {
+				case "Ficha":
+					return servicioPlanificacionSemanal.filtroFicha(valor);
+				default:
+					return planificaciones;
+				}
+			}
+
+			@Override
+			protected String[] crearRegistros(PlanificacionSemanal planificacion) {
+				String[] registros = new String[1];
+				registros[0] = planificacion.getFicha();
+				return registros;
+			}
+
+		};
+		catalogo.setParent(divCatalogoJefe);
+		catalogo.doModal();
+	}
+	
 
 	@Listen("onSeleccion = #divCatalogoPlanificacion")
 	public void seleccionEmpleado() {
@@ -691,6 +723,16 @@ public class CReportes extends CGenerico {
 				.objetoSeleccionadoDelCatalogo();
 		txtFicha.setValue(planificacion.getFicha());
 		lbEmpleado.setValue(planificacion.getNombre());
+		catalogo.setParent(null);
+	}
+	
+	
+	@Listen("onSeleccion = #divCatalogoJefe")
+	public void seleccionJefe() {
+		PlanificacionSemanal planificacion = catalogo
+				.objetoSeleccionadoDelCatalogo();
+		txtJefe.setValue(planificacion.getFicha());
+		lbJefe.setValue(planificacion.getNombre());
 		catalogo.setParent(null);
 	}
 
