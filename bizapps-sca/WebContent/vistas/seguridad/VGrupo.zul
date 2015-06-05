@@ -1,6 +1,6 @@
 <zk>
 	<style src="/public/Estilo.css" />
-	<div id="divGrupo" apply="controlador.seguridad.CGrupo">
+	<div id="divGrupo" apply="security.controlador.CGrupo">
 		<groupbox width="auto" mold="3d" title="Grupo (VGrupo)">
 			<div id="botoneraGrupo" />
 			<separator />
@@ -41,16 +41,6 @@
 								</treeitem>
 							</template>
 						</tree>
-					</groupbox>
-					<groupbox width="100%" title="Funcionalidades Seleccionadas" class="blanco">
-						<listbox width="auto" id="ltbFuncionalidadesSeleccionados">
-							<listhead></listhead>
-							<template name="model">
-								<listitem>
-									<listcell label="${each}"></listcell>
-								</listitem>
-							</template>
-						</listbox>
 					</groupbox>
 				</hbox>
 				<separator />

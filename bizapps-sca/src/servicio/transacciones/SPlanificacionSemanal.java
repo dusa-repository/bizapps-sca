@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import modelo.maestros.Empleado;
 import modelo.transacciones.PlanificacionSemanal;
 
 import org.springframework.beans.factory.annotation.Autowired;

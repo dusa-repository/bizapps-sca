@@ -3,12 +3,14 @@ package servicio.seguridad;
 import interfacedao.seguridad.IUsuarioDAO;
 
 import java.util.List;
-import modelo.seguridad.Grupo;
+
 import modelo.seguridad.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import security.modelo.Grupo;
 
 @Service("SUsuario")
 public class SUsuario {
@@ -67,11 +69,6 @@ public class SUsuario {
 
 	public List<Usuario> filtroApellido(String valor) {
 		return usuarioDAO.findByPrimerApellidoStartingWithAllIgnoreCase(valor);
-	}
-
-
-	public List<Usuario> buscarPorGrupo(Grupo grupo) {
-		return usuarioDAO.findByGrupos(grupo);
 	}
 
 	public Usuario buscarPorLogin(String value) {

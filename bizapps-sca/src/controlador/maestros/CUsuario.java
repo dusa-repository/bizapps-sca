@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +12,6 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import modelo.seguridad.Arbol;
-import modelo.seguridad.Grupo;
 import modelo.seguridad.Usuario;
 
 import org.zkoss.image.AImage;
@@ -40,8 +37,9 @@ import org.zkoss.zul.Spinner;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
-import arbol.CArbol;
-
+import security.controlador.CArbol;
+import security.modelo.Grupo;
+import security.modelo.UsuarioSeguridad;
 import componentes.Botonera;
 import componentes.Catalogo;
 import componentes.Mensaje;
@@ -124,6 +122,7 @@ public class CUsuario extends CGenerico {
 	@Wire
 	private Groupbox gpxDatos;
 	private CArbol cArbol = new CArbol();
+	private List<Usuario> listaGeneral = new ArrayList<Usuario>();
 	String id = "";
 	Catalogo<Usuario> catalogo;
 	List<Grupo> gruposDisponibles = new ArrayList<Grupo>();
@@ -165,62 +164,59 @@ public class CUsuario extends CGenerico {
 			public void guardar() {
 				if (validar()) {
 					if (buscarPorLogin()) {
-					Set<Grupo> gruposUsuario = new HashSet<Grupo>();
-					for (int i = 0; i < ltbGruposAgregados.getItemCount(); i++) {
-						Grupo grupo = ltbGruposAgregados.getItems().get(i)
-								.getValue();
-						gruposUsuario.add(grupo);
-					}
-					String cedula = txtCedulaUsuario.getValue();
-					String correo = txtCorreoUsuario.getValue();
-					String direccion = txtDireccionUsuario.getValue();
-					String login = txtLoginUsuario.getValue();
-					String password = txtPasswordUsuario.getValue();
-					String nombre = txtNombreUsuario.getValue();
-					String apellido = txtApellidoUsuario.getValue();
-					String nombre2 = txtNombre2Usuario.getValue();
-					String apellido2 = txtApellido2Usuario.getValue();
-					String telefono = txtTelefonoUsuario.getValue();
-					String ficha = txtFichaUsuario.getValue();
-					String usuarioAuditoria = nombreUsuarioSesion();
-
-					String sexo = "";
-					if (rdoSexoFUsuario.isChecked())
-						sexo = "F";
-					else
-						sexo = "M";
-					byte[] imagenUsuario = null;
-					if (media instanceof org.zkoss.image.Image) {
-						imagenUsuario = imagen.getContent().getByteData();
-
-					} else {
-						try {
-							imagen.setContent(new AImage(url));
-						} catch (IOException e) {
-							e.printStackTrace();
+						Set<Grupo> gruposUsuario = new HashSet<Grupo>();
+						for (int i = 0; i < ltbGruposAgregados.getItemCount(); i++) {
+							Grupo grupo = ltbGruposAgregados.getItems().get(i)
+									.getValue();
+							gruposUsuario.add(grupo);
 						}
-						imagenUsuario = imagen.getContent().getByteData();
+						String cedula = txtCedulaUsuario.getValue();
+						String correo = txtCorreoUsuario.getValue();
+						String direccion = txtDireccionUsuario.getValue();
+						String login = txtLoginUsuario.getValue();
+						String password = txtPasswordUsuario.getValue();
+						String nombre = txtNombreUsuario.getValue();
+						String apellido = txtApellidoUsuario.getValue();
+						String nombre2 = txtNombre2Usuario.getValue();
+						String apellido2 = txtApellido2Usuario.getValue();
+						String telefono = txtTelefonoUsuario.getValue();
+						String ficha = txtFichaUsuario.getValue();
+						String usuarioAuditoria = nombreUsuarioSesion();
+
+						String sexo = "";
+						if (rdoSexoFUsuario.isChecked())
+							sexo = "F";
+						else
+							sexo = "M";
+						byte[] imagenUsuario = null;
+						if (media instanceof org.zkoss.image.Image) {
+							imagenUsuario = imagen.getContent().getByteData();
+
+						} else {
+							try {
+								imagen.setContent(new AImage(url));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							imagenUsuario = imagen.getContent().getByteData();
+						}
+
+						Usuario usuario = new Usuario(cedula, correo, login,
+								password, imagenUsuario, true, ficha,
+								usuarioAuditoria, apellido, nombre, apellido2,
+								nombre2, sexo, telefono, direccion);
+						servicioUsuario.guardar(usuario);
+						guardarDatosSeguridad(usuario, gruposUsuario);
+						limpiar();
+						msj.mensajeInformacion(Mensaje.guardado);
+
 					}
-
-					Usuario usuario = new Usuario(cedula, correo, login, password,
-							imagenUsuario, true, ficha,
-							usuarioAuditoria,  gruposUsuario, apellido,
-							nombre, apellido2, nombre2,
-							sexo, telefono, direccion);
-					
-					
-
-					servicioUsuario.guardar(usuario);
-					limpiar();
-					msj.mensajeInformacion(Mensaje.guardado);
-
-				}
 				}
 			}
 
 			@Override
 			public void eliminar() {
-				if (id.equals("")) {
+				if (!id.equals("")) {
 					Messagebox.show("¿Esta Seguro de Eliminar el Usuario?",
 							"Alerta", Messagebox.OK | Messagebox.CANCEL,
 							Messagebox.QUESTION,
@@ -230,6 +226,7 @@ public class CUsuario extends CGenerico {
 									if (evt.getName().equals("onOK")) {
 										Usuario usuario = servicioUsuario
 												.buscarUsuarioPorId(id);
+										inhabilitarSeguridad(usuario);
 										servicioUsuario.eliminar(usuario);
 										limpiar();
 										msj.mensajeInformacion(Mensaje.eliminado);
@@ -245,31 +242,31 @@ public class CUsuario extends CGenerico {
 			@Override
 			public void reporte() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void seleccionar() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void buscar() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void annadir() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void ayuda() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 		};
@@ -280,7 +277,7 @@ public class CUsuario extends CGenerico {
 		botonera.getChildren().get(8).setVisible(false);
 		botoneraUsuario.appendChild(botonera);
 	}
-	
+
 	public void recibirGrupo(List<Grupo> lista, Listbox l) {
 		ltbGruposDisponibles = l;
 		gruposDisponibles = lista;
@@ -379,12 +376,15 @@ public class CUsuario extends CGenerico {
 
 	/* LLena las listas dado un usario */
 	public void llenarListas(Usuario usuario) {
+		UsuarioSeguridad user = null;
+		if (usuario != null)
+			user = servicioUsuarioSeguridad.buscarPorLogin(usuario.getLogin());
 		gruposDisponibles = servicioGrupo.buscarTodos();
 		if (usuario == null) {
 			ltbGruposDisponibles.setModel(new ListModelList<Grupo>(
 					gruposDisponibles));
 		} else {
-			gruposOcupados = servicioGrupo.buscarGruposDelUsuario(usuario);
+			gruposOcupados = servicioGrupo.buscarGruposDelUsuario(user);
 			ltbGruposAgregados
 					.setModel(new ListModelList<Grupo>(gruposOcupados));
 			if (!gruposOcupados.isEmpty()) {
@@ -492,9 +492,9 @@ public class CUsuario extends CGenerico {
 	/* Muestra un catalogo de Usuarios */
 	@Listen("onClick = #btnBuscarUsuario")
 	public void mostrarCatalogo() throws IOException {
-		final List<Usuario> usuarios = servicioUsuario.buscarTodos();
+		listaGeneral = servicioUsuario.buscarTodos();
 		catalogo = new Catalogo<Usuario>(catalogoUsuario,
-				"Catalogo de Usuarios", usuarios, "Cedula", "Correo",
+				"Catalogo de Usuarios", listaGeneral, "Cedula", "Correo",
 				"Primer Nombre", "Segundo Nombre", "Primer Apellido",
 				"Segundo Apellido", "Sexo", "Telefono", "Direccion") {
 
@@ -510,7 +510,7 @@ public class CUsuario extends CGenerico {
 				case "Apellido":
 					return servicioUsuario.filtroApellido(valor);
 				default:
-					return usuarios;
+					return listaGeneral;
 				}
 			}
 
@@ -533,7 +533,7 @@ public class CUsuario extends CGenerico {
 		catalogo.setParent(catalogoUsuario);
 		catalogo.doModal();
 	}
-	
+
 	/*
 	 * Selecciona un usuario del catalogo y llena los campos con la informacion
 	 */
@@ -559,13 +559,13 @@ public class CUsuario extends CGenerico {
 		txtApellidoUsuario.setValue(usuario.getPrimerApellido());
 		txtApellido2Usuario.setValue(usuario.getSegundoApellido());
 		txtTelefonoUsuario.setValue(usuario.getTelefono());
-	
+
 		String sexo = usuario.getSexo();
 		if (sexo.equals("F"))
 			rdoSexoFUsuario.setChecked(true);
 		else
 			rdoSexoMUsuario.setChecked(true);
-		
+
 		BufferedImage imag;
 		if (usuario.getImagen() != null) {
 			try {
