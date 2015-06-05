@@ -2,6 +2,8 @@ package componentes;
 
 import java.util.List;
 
+import modelo.seguridad.Usuario;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -58,7 +60,8 @@ public abstract class Catalogo<Clase> extends Window {
 				new EventListener<InputEvent>() {
 					@Override
 					public void onEvent(InputEvent e) throws Exception {
-						List<Clase> listaNueva = buscar(e.getValue(), cmbBuscarPor.getValue());
+						List<Clase> listaNueva = buscar(e.getValue(),
+								cmbBuscarPor.getValue());
 						lsbCatalogo.setModel(new ListModelList<Clase>(
 								listaNueva));
 					}
@@ -91,7 +94,7 @@ public abstract class Catalogo<Clase> extends Window {
 		lsbCatalogo.setWidth("100%");
 		lsbCatalogo.setSpan(true);
 		this.appendChild(separador1);
-		this.appendChild(hbxBusqueda);		
+		this.appendChild(hbxBusqueda);
 		lblBuscar.setValue("   Buscar Por :  ");
 		lblBuscar.setSclass("etiqueta");
 		hbxBusqueda.appendChild(lblBuscar);
@@ -121,5 +124,13 @@ public abstract class Catalogo<Clase> extends Window {
 
 	public Listbox getListbox() {
 		return lsbCatalogo;
+	}
+
+	public void actualizarLista(List<Clase> listaGeneral) {
+		lsbCatalogo.setModel(new ListModelList<Clase>(listaGeneral));
+		lsbCatalogo.setMultiple(false);
+		lsbCatalogo.setCheckmark(false);
+		lsbCatalogo.setMultiple(true);
+		lsbCatalogo.setCheckmark(true);
 	}
 }

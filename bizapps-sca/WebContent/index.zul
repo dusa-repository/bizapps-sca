@@ -58,14 +58,14 @@
 										<label class="etiqueta" height="20px" style="font-size:14px"
 											value="Nombre de Usuario :" />
 										<textbox placeholder="Usuario" height="22px" id="log_usuario"
-											name="j_username" hflex="1" width="200px" />
+											name="username" hflex="1" width="200px" />
 									</vlayout>
 									<separator />
 									<vlayout width="100%">
 										<label class="etiqueta" height="20px" style="font-size:14px"
 											value="Contraseña :" />
 										<textbox placeholder="Contraseña" height="22px" id="log_clave"
-											hflex="1" type="password" name="j_password" width="200px" />
+											hflex="1" type="password" name="password" width="200px" />
 									</vlayout>
 									<separator />
 									<separator />

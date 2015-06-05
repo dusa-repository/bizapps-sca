@@ -1,7 +1,6 @@
 package modelo.seguridad;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +13,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
+
+import security.modelo.Grupo;
 
 /**
  * The persistent class for the usuario database table.
@@ -47,18 +48,8 @@ public class Usuario implements Serializable {
 	@Column(name="ficha")
 	private String ficha;
 
-//	@Column(name = "fecha_auditoria")
-//	private Timestamp fechaAuditoria;
-//
-//	@Column(name = "hora_auditoria", length = 10)
-//	private Timestamp horaAuditoria;
-
 	@Column(name = "usuario_auditoria", length = 50)
 	private String usuarioAuditoria;
-
-	@ManyToMany
-	@JoinTable(name = "grupo_usuario", joinColumns = { @JoinColumn(name = "id_usuario", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "id_grupo", nullable = false) })
-	private Set<Grupo> grupos;
 	
 	@Column(name="primer_apellido", length=100)
 	private String primerApellido;
@@ -88,7 +79,7 @@ public class Usuario implements Serializable {
 
 	public Usuario(String cedula, String email, String login, String password,
 			byte[] imagen, boolean estado, String ficha,
-			String usuarioAuditoria, Set<Grupo> grupos, String primerApellido,
+			String usuarioAuditoria, String primerApellido,
 			String primerNombre, String segundoApellido, String segundoNombre,
 			String sexo, String telefono, String direccion) {
 		super();
@@ -100,7 +91,6 @@ public class Usuario implements Serializable {
 		this.estado = estado;
 		this.ficha = ficha;
 		this.usuarioAuditoria = usuarioAuditoria;
-		this.grupos = grupos;
 		this.primerApellido = primerApellido;
 		this.primerNombre = primerNombre;
 		this.segundoApellido = segundoApellido;
@@ -172,14 +162,6 @@ public class Usuario implements Serializable {
 
 	public void setUsuarioAuditoria(String usuarioAuditoria) {
 		this.usuarioAuditoria = usuarioAuditoria;
-	}
-
-	public Set<Grupo> getGrupos() {
-		return grupos;
-	}
-
-	public void setGrupos(Set<Grupo> grupos) {
-		this.grupos = grupos;
 	}
 
 	public String getPrimerApellido() {

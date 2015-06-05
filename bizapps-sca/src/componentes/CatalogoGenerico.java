@@ -28,8 +28,6 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.XulElement;
 
-import componentes.Mensaje;
-
 public abstract class CatalogoGenerico<Modelo> extends Window {
 
 	private static final long serialVersionUID = 1L;

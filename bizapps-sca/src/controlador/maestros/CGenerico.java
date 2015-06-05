@@ -7,10 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.mail.Address;
 import javax.mail.Authenticator;
@@ -38,16 +37,18 @@ import org.zkoss.zul.Include;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 
+import security.modelo.Grupo;
+import security.modelo.UsuarioSeguridad;
+import security.servicio.SArbol;
+import security.servicio.SGrupo;
+import security.servicio.SUsuarioSeguridad;
 import servicio.maestros.SEmpleado;
 import servicio.maestros.SMolinete;
 import servicio.maestros.STipoAusentismo;
 import servicio.maestros.STurno;
-import servicio.seguridad.SArbol;
-import servicio.seguridad.SGrupo;
 import servicio.seguridad.SUsuario;
 import servicio.transacciones.SPlanificacionSemanal;
 import servicio.transacciones.SRegistroAcceso;
-
 import componentes.Mensaje;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
@@ -58,6 +59,8 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SGrupo servicioGrupo;
 	@WireVariable("SUsuario")
 	protected SUsuario servicioUsuario;
+	@WireVariable("SUsuarioSeguridad")
+	protected SUsuarioSeguridad servicioUsuarioSeguridad;
 	@WireVariable("SArbol")
 	protected SArbol servicioArbol;
 	@WireVariable("STurno")
@@ -72,7 +75,6 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 	protected SPlanificacionSemanal servicioPlanificacionSemanal;
 	@WireVariable("SEmpleado")
 	protected SEmpleado servicioEmpleado;
-	
 
 	private static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 			"/META-INF/ConfiguracionAplicacion.xml");
@@ -113,7 +115,7 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 			}
 		}
 	}
-	
+
 	public String nombreUsuarioSesion() {
 		Authentication sesion = SecurityContextHolder.getContext()
 				.getAuthentication();
@@ -172,7 +174,6 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 		}
 	}
 
-
 	public String damePath() {
 		return Executions.getCurrent().getContextPath() + "/";
 	}
@@ -187,5 +188,21 @@ public abstract class CGenerico extends SelectorComposer<Component> {
 		return arreglo;
 	}
 
-	
+	public void guardarDatosSeguridad(Usuario usuarioLogica,
+			Set<Grupo> gruposUsuario) {
+		UsuarioSeguridad usuario = new UsuarioSeguridad(
+				usuarioLogica.getLogin(), usuarioLogica.getEmail(),
+				usuarioLogica.getPassword(), usuarioLogica.getImagen(), true,
+				usuarioLogica.getPrimerNombre(),
+				usuarioLogica.getPrimerApellido(), fechaHora, horaAuditoria,
+				nombreUsuarioSesion(), gruposUsuario);
+		servicioUsuarioSeguridad.guardar(usuario);
+	}
+
+	public void inhabilitarSeguridad(Usuario usuario2) {
+		UsuarioSeguridad usuario = servicioUsuarioSeguridad
+				.buscarPorLogin(usuario2.getLogin());
+		usuario.setEstado(false);
+		servicioUsuarioSeguridad.guardar(usuario);
+	}
 }

@@ -1,7 +1,7 @@
 package controlador.transacciones;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,43 +10,31 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
-import java.io.File;
-
-import jxl.*;
+import jxl.Sheet;
+import jxl.Workbook;
 import jxl.read.biff.BiffException;
-
-import modelo.maestros.Empleado;
-import modelo.maestros.Molinete;
-import modelo.seguridad.Arbol;
 import modelo.transacciones.PlanificacionSemanal;
 
 import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.West;
 
-import arbol.CArbol;
+import security.controlador.CArbol;
+import security.modelo.Arbol;
 
 import componentes.Botonera;
-import componentes.Catalogo;
-import componentes.Mensaje;
+
 import controlador.maestros.CGenerico;
 
 public class CPlanificacion extends CGenerico {
@@ -484,8 +472,7 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab,
-							tabs);
+					cArbol.abrirVentanas(arbolItem);
 				}
 
 			} else {
@@ -605,8 +592,7 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab,
-							tabs);
+					cArbol.abrirVentanas(arbolItem);
 				}
 
 			}
