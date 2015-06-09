@@ -18,7 +18,7 @@
 		execution.getParameter("respuesta");
 	</zscript>
 	<window title="" border="0" height="100%" width="100%"
-		apply="controlador.portal.CIndex">
+		apply="security.controlador.CIndex">
 		<borderlayout height="100%"
 			style="background-image: url('public/imagenes/generales/fondo.png'); background-repeat:no-repeat;height=50%; width=50% ; background-color:white">
 			<north height="2%" class="banner">
