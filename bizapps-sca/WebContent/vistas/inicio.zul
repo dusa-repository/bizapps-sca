@@ -30,7 +30,7 @@
 	<style src="../public/Estilo.css" />
 	<script src="../public/progress.js" />
 	<window id="wdwIndex" title="" height="100%" width="100%"
-		border="0" apply="security.controlador.CArbol">
+		border="0" apply="controlador.seguridad.CArbol">
 		<borderlayout height="100%" style="background-color:#fff;">
 			<north height="10%" class="banner">
 				<hbox width="100%" widths="12%,55%,33%">

@@ -30,7 +30,7 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 
-import security.controlador.CArbol;
+import controlador.seguridad.CArbol;
 import security.modelo.Arbol;
 
 import componentes.Botonera;
@@ -472,7 +472,7 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
 				}
 
 			} else {
@@ -592,7 +592,7 @@ public class CPlanificacion extends CGenerico {
 						.buscarPorNombreArbol("Resultado Importacion");
 				if (!arboles.isEmpty()) {
 					Arbol arbolItem = arboles.get(0);
-					cArbol.abrirVentanas(arbolItem);
+					cArbol.abrirVentanas(arbolItem, tabBox, contenido, tab, tabs);
 				}
 
 			}
